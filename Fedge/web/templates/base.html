@@ -1,0 +1,43 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Factory Edge Schrankmonitoring</title>
+    <style>
+        body {
+            background-color: lightblue;
+        }
+        
+        h1 {
+            color: navy;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Factory Edge Schrankmonitoring</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        
+        {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <!-- Add more navigation links as needed -->
+        {% endif %}
+        </ul>
+    </nav>
+    
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+    <footer>
+        <p>&copy; 2023 Factory Edge Schrankmonitoring. All rights reserved.</p>
+    </footer>
+</body>
+</html>
