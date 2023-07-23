@@ -41,4 +41,6 @@ class User(AbstractBaseUser): #on_delete = CASCADE
             self.accessable_cabinets = ["'server', 'PS'"]
         super(User, self).save(*args, **kwargs)
 
-
+class Token(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    token = models.CharField(max_length=20)

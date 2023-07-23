@@ -1,6 +1,6 @@
 from django.contrib import admin
 from  .mainmodels.cabinets import Cabinet
-from  .mainmodels.users import User
+from  .mainmodels.users import User, Token
 from  .mainmodels.doors import Door
 from .mainmodels.Ports import Ports
 from .mainmodels.temperature_sensor import Temperature_sensor
@@ -22,3 +22,5 @@ admin.site.register(Lock_actuator)
 admin.site.register(Led)
 admin.site.register(Ports)
 admin.site.register(Access_Checker)
+admin.site.register(Token)
+# admin.site.register(QR_code)

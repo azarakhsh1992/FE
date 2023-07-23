@@ -4,8 +4,8 @@ from .cabinets import Cabinet
 
 
 class Door(models.Model):
-    cabinet = models.ForeignKey (Cabinet, on_delete=models.CASCADE)
-    qr_code = models.CharField(max_length=50)
+    cabinet = models.ForeignKey(Cabinet, on_delete=models.CASCADE)
+    qr = models.CharField(max_length=20, default=None)
     name = models.CharField(max_length=50)
     def save(self, *args, **kwargs):
         self.profinet_name = str(self.cabinet.profinet_name) + str(self.name) 
@@ -23,3 +23,7 @@ class Door(models.Model):
         PS = "PS", "Powe supply"
         FE = "FE", "Factory Edge Server"
     section = models.CharField(choices=Section.choices, default=None, max_length=20)
+
+# class QR_code(models.Model):
+#     door =models.OneToOneField(Door, on_delete=models.CASCADE)
+#     qr = models.CharField(max_length=20)
