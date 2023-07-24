@@ -51,3 +51,6 @@ class Lock_actuator (Ports):
         self.profinet_name = str(self.iolink.profinet_name) + str(self.geraet)
         self.profinet_address = str(self.iolink.profinet_address)
         super(Lock_actuator, self).save(*args, **kwargs)
+        
+    class Meta:
+        pass

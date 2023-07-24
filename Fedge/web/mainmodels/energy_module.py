@@ -41,3 +41,6 @@ class Energy_sensor (models.Model):
     pultbereich_sk = models.CharField(max_length=1, editable=False)
     station = models.CharField(max_length=4, editable=False)
     funktionseinheit = models.CharField(max_length=3, editable=False)
+    
+    class Meta:
+        pass

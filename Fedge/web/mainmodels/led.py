@@ -52,3 +52,5 @@ class Led (Ports):
         self.profinet_address = self.iolink.profinet_address
         super(Led, self).save(*args, **kwargs)
         
+    class Meta:
+        pass

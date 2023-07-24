@@ -57,3 +57,6 @@ class Temperature_sensor (Ports):
         self.profinet_name = str(self.iolink.profinet_name) + str(self.geraet)
         self.profinet_address = self.iolink.profinet_address
         super(Temperature_sensor, self).save(*args, **kwargs)
+        
+    class Meta:
+        pass

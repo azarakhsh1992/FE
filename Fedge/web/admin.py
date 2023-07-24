@@ -12,7 +12,7 @@ from .mainmodels.functions import Access_Checker
 
 # Register your models here.
 
-admin.site.register(User)
+# admin.site.register(User)
 admin.site.register(Cabinet)
 admin.site.register(Door)
 admin.site.register(Io_link)
@@ -24,3 +24,9 @@ admin.site.register(Ports)
 admin.site.register(Access_Checker)
 admin.site.register(Token)
 # admin.site.register(QR_code)
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    # fields = ('name', 'email', 'password')
+    list_display = ('email','full_name','password')
+    

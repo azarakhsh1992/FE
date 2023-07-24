@@ -3,7 +3,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
 class User(AbstractBaseUser): #on_delete = CASCADE
-    email = models.EmailField(max_length=254, default="max_musterman@volkswagen.de")
+    email = models.EmailField(max_length=254, default="max_musterman@volkswagen.de", unique=True)
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["email", "password"]
     password = models.CharField(max_length= 20)
@@ -40,6 +41,8 @@ class User(AbstractBaseUser): #on_delete = CASCADE
         if self.role == "TECHNICIAN":
             self.accessable_cabinets = ["'server', 'PS'"]
         super(User, self).save(*args, **kwargs)
+    class Meta:
+        pass
 
 class Token(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

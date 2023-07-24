@@ -27,3 +27,5 @@ class Cabinet(models.Model):
         + str(self.pultbereich_sk) + str(self.station) + str(self.funktionseinheit)
         super(Cabinet, self).save(*args, **kwargs)
     profinet_name = models.CharField (max_length=15, editable=False, default=None, unique=True)
+    class Meta:
+        pass   
