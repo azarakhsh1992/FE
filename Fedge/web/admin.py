@@ -8,6 +8,8 @@ from .mainmodels.led import Led
 from .mainmodels.lock import Lock_actuator
 from .mainmodels.iolink import Io_link
 from .mainmodels.functions import Access_Checker
+from .mainmodels.door_sensor import Door_sensor
+from .mainmodels.button import Button
 
 
 # Register your models here.
@@ -23,6 +25,9 @@ admin.site.register(Led)
 admin.site.register(Ports)
 admin.site.register(Access_Checker)
 admin.site.register(Token)
+admin.site.register(Door_sensor)
+admin.site.register(Button)
+
 # admin.site.register(QR_code)
 
 @admin.register(User)

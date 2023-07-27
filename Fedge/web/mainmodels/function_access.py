@@ -34,17 +34,20 @@ def access_checker(user, door):
         current_shift = "NACHT"
     else:
         print ("current time is not defined as any of the shifts")
-    print(current_time)
+    print(datetime.now())
     print(current_shift)
     if this_user.bereich != this_door.cabinet.bereich:
         print ("access denied because wrong location")
+        print("your accessible cabinets are in:",this_user.bereich )
         return False
     elif current_shift != this_user.shift:
         print("access denied because worng shift time")
         return False
-    # elif this_door.cabinet.funktionseinheit not in this_user.accessable_cabinets:
-    #     return False
-    #TODO: check the last elif. it shoudl be changed
+    elif this_door.section not in this_user.accessible_cabinets:
+        print ("access denied because you don't have access to this section")
+        print ("your accessible sections are", this_user.accessible_cabinets)
+        return False
+    #TODO: check the last elif. it shoudl be changed. Also a function of logging the event should be added to the end of this function
     
     else:
         print("access granted")
