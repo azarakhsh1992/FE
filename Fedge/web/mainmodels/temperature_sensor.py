@@ -18,8 +18,8 @@ class Temperature_sensor (Ports):
 
     value_temperature = models.FloatField(default=0)
     value_humidity = models.FloatField(default=0)
-    
-    
+    # value model dorost konim ke OneToOneField ke faghat value update she
+
     bmk = models.CharField(max_length =4, default=None)
     serial_number = models.CharField(max_length=50, unique=True)
     manufacturer = models.CharField(max_length = 50)
@@ -44,7 +44,7 @@ class Temperature_sensor (Ports):
     geraet = models.CharField(max_length=3, editable=False)
     
     port = Ports.port
-    
+
     def save(self, *args, **kwargs):
         self.bereich = self.iolink.bereich
         self.segment = self.iolink.segment

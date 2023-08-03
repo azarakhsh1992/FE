@@ -9,14 +9,18 @@ from .mainmodels.door_status import Check_door, is_safe
 from .mainmodels.function_access import access_checker
 from .mainmodels.cabinets import Cabinet
 from .mainmodels.button import Button
+from .mainmodels.json import Json_draft
 import time
 from datetime import datetime, date, time, timezone
 from django.views.decorators.csrf import csrf_exempt
 import random
 import json
+import requests
 from django.db.models import CharField
 from django.db.models.functions import Lower
 
+
+#TODO: az hameye modela serializer dorost koni ba attributayi ke niaz hast, va classe viewset dorost koni
 
 CharField.register_lookup(Lower)
 
@@ -42,17 +46,17 @@ def home(request):
 @csrf_exempt #baraye exempt kardane csrf protection for security reasons
 def access_check(request):
     print (request.POST)
-    # this_user = User.objects.filter(token__token = this_token)
-    # print(this_user)
+# this_user = User.objects.filter(token__token = this_token)
+# print(this_user)
     if request.method == 'POST':
         this_token = request.POST.get('token', None)
         this_qr = request.POST.get('qr', None)
-    
+
     this_user = User.objects.get(token__token = this_token)
     this_door = Door.objects.get(qr= this_qr)
     # this_door_cabinet = str(Door.objects.filter(qr= this_qr).values_list('cabinet').first())[1:-2]
     this_cabinet = str(Cabinet.objects.filter(id=str(Door.objects.filter(qr= this_qr).values_list('cabinet').first())[1:-2]).values_list('profinet_name').first())[2:-3]
-    
+
     # this_users = User.objects.get(email =this_user)
     # this_doors = Door.objects.get(name = this_door)
     # # I think I should work with their ID or PK instead of editing everything
@@ -135,3 +139,6 @@ def unlocking(request):
         return  JsonResponse({
             'status': 'this door must be closed due to safety issues'
         }, encoder=json.JSONEncoder)
+        
+response1=Json_draft.objects.get(id=1).send_json()
+print(response1)

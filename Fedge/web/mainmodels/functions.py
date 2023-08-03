@@ -7,11 +7,12 @@ from .led import Led
 from .temperature_sensor import Temperature_sensor
 from .users import User
 from datetime import datetime, date, time, timezone
+from rest_framework import viewsets, status
 
 
 
-class Access_Checker(models.Model):
-    
+class Access_Checker(viewsets.ModelViewSet):
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, default= None)
     cabinet = models.ForeignKey(Cabinet, on_delete=models.CASCADE, default=None)
     door = models.ForeignKey(Door, on_delete=models.CASCADE, default=None)
@@ -51,6 +52,3 @@ class Access_Checker(models.Model):
         else:
             print("access granted")
             return True
-        
-        
-        
