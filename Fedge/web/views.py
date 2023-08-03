@@ -24,6 +24,7 @@ import time
 from datetime import datetime, date, time, timezone
 from django.views.decorators.csrf import csrf_exempt
 import random
+import json
 import requests
 from django.db.models import CharField
 from django.db.models.functions import Lower
@@ -85,26 +86,26 @@ from django.db.models.functions import Lower
 #
 #
 #
-# @csrf_exempt #baraye exempt kardane csrf protection for security reasons
-# def door_status(request):
-#     print (request.POST)
-#
-#     if request.method == 'POST':
-#         this_qr = request.POST.get('qr', None)
-#     this_door = Door.objects.get(qr= this_qr)
-#     this_cabinet = Cabinet.objects.get(door =this_door)
-#     print(this_cabinet)
-#     print(this_door)
-#     print(type(this_door))
-#
-#     status = Check_door(this_cabinet)
-#
-#     return  JsonResponse({
-#         'status': status
-#
-#     }, encoder=json.JSONEncoder)
-#
-#
+@csrf_exempt #baraye exempt kardane csrf protection for security reasons
+def door_status(request):
+    print (request.POST)
+
+    if request.method == 'POST':
+        this_qr = request.POST.get('qr', None)
+    this_door = Door.objects.get(qr= this_qr)
+    this_cabinet = Cabinet.objects.get(door =this_door)
+    print(this_cabinet)
+    print(this_door)
+    print(type(this_door))
+
+    status = Check_door(this_cabinet)
+
+    return  JsonResponse({
+        'status': status
+
+    }, encoder=json.JSONEncoder)
+
+
 # @csrf_exempt #baraye exempt kardane csrf protection for security reasons
 # def unlocking(request):
 #     print (request.POST)
