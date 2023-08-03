@@ -22,11 +22,6 @@ admin.site.register(Temperature_sensor)
 admin.site.register(Lock_actuator)
 admin.site.register(Led)
 admin.site.register(Ports)
-<<<<<<< HEAD
-admin.site.register(Token)
-=======
-admin.site.register(Access_Checker)
->>>>>>> 0d1a122e7d8ac3af406b740f51d8a5e33f1a6662
 admin.site.register(Door_sensor)
 admin.site.register(Button)
 admin.site.register(Json_draft)
