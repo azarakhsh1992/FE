@@ -1,26 +1,53 @@
 from rest_framework import serializers
-from .users import User
-from .iolink import Io_link
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from .users import UserProfile
+from .button import Button
 from .cabinets import Cabinet
-from .doors import Door
-from .energy_module import Energy_sensor
-from .led import Led
-from .Ports import Ports
-from .temperature_sensor import Temperature_sensor
+from .door_sensor import Door_sensor
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ('id', 'accessable_cabinets', 'role', 'bereich', 'telephone', 'shift')
 
 
 class UserSerializer(serializers.ModelSerializer):
-    
+    profile = UserProfileSerializer()
+
     class Meta:
-        pass
+        model = User
+        fields = ('id', 'username', 'email', 'password', 'profile')
 
-class iolinkSerializer(serializers.ModelSerializer):
-	class Meta:
-		pass
+    def create(self, validated_data):
+        profile_data = validated_data.pop('profile')
+        password = validated_data.pop('password')
+        user = User.objects.create_user(**validated_data)
+        UserProfile.objects.create(user=user, **profile_data)
+        Token.objects.create(user=user)
+        user.set_password(password)
+        user.save()
+        return User
 
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if 'request' in self.context and self.context['request'].method == 'POST':
+            ret.pop('password', None)
+        return ret
+# ///////////// Button Serializer ////////////////
 
-class cabinetSerializer(serializers.ModelSerializer):
-	class Meta:
-		# model = Cabinet
-		# fields = ('name', 'profinet_name', 'location', 'segment')
-		pass
+class ButtonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Button
+        fields = ('port', 'module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'iolink')
+
+# ///////// Cabinet Serializer /////////////////////
+class CabinetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cabinet
+        fields = ('bereich', 'segment', 'anlage', 'arg_sps', 'pultbereich_sk', 'station', 'funktionseinheit')
+# ///////// Door_Sensor Serializer /////////////
+class DoorSensorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Door_sensor
+        fields = ('module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'iolink')

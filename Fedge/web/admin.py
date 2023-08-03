@@ -1,7 +1,7 @@
 from django.contrib import admin
-from  .mainmodels.cabinets import Cabinet
-from  .mainmodels.users import User, Token
-from  .mainmodels.doors import Door
+from .mainmodels.cabinets import Cabinet
+from .mainmodels.users import UserProfile
+from .mainmodels.doors import Door
 from .mainmodels.Ports import Ports
 from .mainmodels.temperature_sensor import Temperature_sensor
 from .mainmodels.led import Led
@@ -18,19 +18,20 @@ from .mainmodels.json import Json_draft
 admin.site.register(Cabinet)
 admin.site.register(Door)
 admin.site.register(Io_link)
-
 admin.site.register(Temperature_sensor)
 admin.site.register(Lock_actuator)
 admin.site.register(Led)
 admin.site.register(Ports)
+<<<<<<< HEAD
 admin.site.register(Token)
+=======
+admin.site.register(Access_Checker)
+>>>>>>> 0d1a122e7d8ac3af406b740f51d8a5e33f1a6662
 admin.site.register(Door_sensor)
 admin.site.register(Button)
 admin.site.register(Json_draft)
 # admin.site.register(QR_code)
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    # fields = ('name', 'email', 'password')
-    list_display = ('email','full_name','password')
-    
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    fields = ('user', 'accessable_cabinets' , 'role', 'bereich', 'telephone', 'shift')
+    list_display = ('id','accessable_cabinets' , 'role', 'bereich', 'telephone', 'shift')

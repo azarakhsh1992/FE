@@ -13,8 +13,6 @@ class Door_sensor (models.Model):
     bmk = models.CharField(max_length =4, default=None)
     serial_number = models.CharField(max_length=50, unique=True)
     manufacturer = models.CharField(max_length = 50)
-    profinet_address = models.GenericIPAddressField(default=None, unique=False, editable=False)
-    profinet_name = models.CharField(max_length=22, editable=False, default=None)
     value = models.BooleanField(default=False)
     # module_type = models.CharField(max_length=22, editable=False, default=None)
     class Bereich (models.TextChoices):
@@ -26,6 +24,8 @@ class Door_sensor (models.Model):
         L = 'L', 'Lackiererei'
         B = 'B', 'Batteriefertigung'
         C = 'C', 'Komponente'
+
+    # ///////////////////////////////////////////////////////////
     bereich = models.CharField(choices= Bereich.choices, max_length=1, editable=False)
     segment = models.CharField(max_length=1, editable=False)
     anlage = models.CharField(max_length=4, editable=False)
@@ -34,9 +34,11 @@ class Door_sensor (models.Model):
     station = models.CharField(max_length=4, editable=False)
     funktionseinheit = models.CharField(max_length=3, editable=False)
     geraet = models.CharField(max_length=3, editable=False)
-    
+    profinet_name = models.CharField(max_length=22, editable=False, default=None)
+    profinet_address = models.GenericIPAddressField(default=None, unique=False, editable=False)
+
     # port = (models.OneToOneField(Io_link, on_delete=models.CASCADE)).port
-    
+
     iolink = models.ForeignKey(Io_link, on_delete= models.CASCADE)
     def save(self, *args, **kwargs):
         self.bereich = self.iolink.bereich
@@ -50,6 +52,6 @@ class Door_sensor (models.Model):
         self.profinet_name = str(self.iolink.profinet_name) + str(self.bmk)
         self.profinet_address = self.iolink.profinet_address
         super(Door_sensor, self).save(*args, **kwargs)
-        
+
     class Meta:
         pass

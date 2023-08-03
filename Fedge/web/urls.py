@@ -1,14 +1,20 @@
-from django.urls import path
 from . import views
-from django.contrib.auth import views as auth_views
+from django.conf.urls import include
+from rest_framework import routers
+from django.urls import path,re_path
 
+router = routers.DefaultRouter()
+router.register(r'userprofile',views.UserProfileViewset)
+router.register(r'users',views.UserViewset)
+router.register(r'button',views.ButtonViewset)
+router.register(r'cabinet',views.CabinetViewset)
+router.register(r'doorsensor',views.CabinetViewset)
 
 urlpatterns = [
-    path('', views.home, name='web-home'),
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='logout.html', next_page=None), name='logout'),
-    path('update/', views.update, name='update'),
-    path ('access_check/', views.access_check, name='access_check'),
-    path ('door_status/', views.door_status, name='door_status'),
-    path ('unlocking/', views.unlocking, name='unlocking'),
+    # path('', views.home, name='web-home'),
+    # path('update/', views.update, name='update'),
+    # path ('access_check/', views.access_check, name='access_check'),
+    # path ('door_status/', views.door_status, name='door_status'),
+    # path ('unlocking/', views.unlocking, name='unlocking'),
+    re_path(r'^', include(router.urls)),
 ]
