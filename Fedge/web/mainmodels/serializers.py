@@ -5,6 +5,7 @@ from .users import UserProfile
 from .button import Button
 from .cabinets import Cabinet
 from .door_sensor import Door_sensor
+from .json import Json_draft
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,3 +52,9 @@ class DoorSensorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Door_sensor
         fields = ('module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'iolink')
+        
+        
+class Jsonserializer(serializers.ModelSerializer):
+    class Meta:
+        model = Json_draft
+        fields = ('url', 'payload')

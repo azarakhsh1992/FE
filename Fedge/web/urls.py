@@ -6,9 +6,10 @@ from django.urls import path,re_path
 router = routers.DefaultRouter()
 router.register(r'userprofile',views.UserProfileViewset)
 router.register(r'users',views.UserViewset)
-router.register(r'button',views.ButtonViewset)
+# router.register(r'button',views.ButtonViewset)
 router.register(r'cabinet',views.CabinetViewset)
 router.register(r'doorsensor',views.CabinetViewset)
+router.register(r'json',views.JasonViewset)
 
 urlpatterns = [
     # path('', views.home, name='web-home'),
