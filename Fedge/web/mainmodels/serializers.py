@@ -64,3 +64,7 @@ class Jsonserializer(serializers.ModelSerializer):
         if 'request' in self.context and self.context['request'].method == 'POST':
             ret.pop('name', None)
         return ret
+
+class CommandSerializer(serializers.ModelSerializer):
+    sensor = serializers.CharField(required=True)
+    command = serializers.CharField(required=True)

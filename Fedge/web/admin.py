@@ -24,9 +24,13 @@ admin.site.register(Led)
 admin.site.register(Ports)
 admin.site.register(Door_sensor)
 admin.site.register(Button)
-admin.site.register(Json_draft)
 # admin.site.register(QR_code)
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ('user', 'accessable_cabinets' , 'role', 'bereich', 'telephone', 'shift')
     list_display = ('id','accessable_cabinets' , 'role', 'bereich', 'telephone', 'shift')
+
+@admin.register(Json_draft)
+class UserProfileAdmin(admin.ModelAdmin):
+    fields = ('name', 'code' , 'cid', 'adr', 'url', 'data', 'sensor', 'command')
+    list_display = ('name', 'code' , 'cid', 'adr', 'url', 'data', 'sensor', 'command')
