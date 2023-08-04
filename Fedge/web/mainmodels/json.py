@@ -1,16 +1,4 @@
 from django.db import models
-import requests
-import json
-from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.decorators import action
-from rest_framework import viewsets, status
-from django.http import HttpResponse
-from django.http import JsonResponse
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 
 
 

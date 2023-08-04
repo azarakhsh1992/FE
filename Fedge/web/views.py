@@ -1,35 +1,38 @@
 from django.contrib.auth.models import User
-from .mainmodels.users import UserProfile
-from .mainmodels.serializers import UserProfileSerializer, UserSerializer, ButtonSerializer, CabinetSerializer
-from .mainmodels.serializers import DoorSensorSerializer
-from .mainmodels.button import Button
-from .mainmodels.cabinets import Cabinet
-from .mainmodels.door_sensor import Door_sensor
-from .mainmodels.doors import Door
-from .mainmodels.iolink import Io_link
-from .mainmodels.temperature_sensor import Temperature_sensor
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
+from .mainmodels.users import UserProfile
+from .mainmodels.serializers import UserProfileSerializer, UserSerializer, ButtonSerializer, CabinetSerializer
+from .mainmodels.serializers import DoorSensorSerializer
+from .mainmodels.door_sensor import Door_sensor
+from .mainmodels.doors import Door
+from .mainmodels.iolink import Io_link
+from .mainmodels.temperature_sensor import Temperature_sensor
+from .mainmodels.serializers import Jsonserializer
+from .mainmodels.json import Json_draft
+from .mainmodels.cabinets import Cabinet
+from .mainmodels.cabinets import Cabinet
+from .mainmodels.json import Json_draft
+from .mainmodels.button import Button
 from django.http import HttpResponse
 from django.http import JsonResponse
 from .mainmodels.door_status import Check_door, is_safe
 from .mainmodels.function_access import access_checker
-from .mainmodels.cabinets import Cabinet
 from .mainmodels.button import Button
-from .mainmodels.json import Json_draft
 import time
 from datetime import datetime, date, time, timezone
 from django.views.decorators.csrf import csrf_exempt
 import random
 import json
 import requests
+from .mainmodels.serializers import CommandSerializer
 from django.db.models import CharField
 from django.db.models.functions import Lower
-from .mainmodels.serializers import Jsonserializer
-from .mainmodels.json import Json_draft
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 # CharField.register_lookup(Lower)
 #
 # # from apscheduler.schedulers.background import BlockingScheduler, BackgroundScheduler
@@ -162,6 +165,7 @@ class UserProfileViewset(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
+
 class UserViewset(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -173,30 +177,37 @@ class JasonViewset(viewsets.ModelViewSet):
     queryset = Json_draft.objects.all()
     serializer_class = Jsonserializer
     permission_classes = (AllowAny,)
-    
-    @action(methods=['POST'], detail=True, serializer_class=Jsonserializer)
 
-    def send_json(self, request, pk, method='POST', headers=None):
-        json_request = Json_draft.objects.get(pk=pk)
-        data = Json_draft.objects.get(pk=pk).data
-        url = Jsonserializer(url=request.url)
-        serialized_data = Jsonserializer(cid=request.cid, code=request.code, adr=request.adr)
-        if data =='':
-            pass
-        else:
-            x = {'data': data}
-            serialized_data = json.loads(serialized_data).update(x)
+    @action(methods=['PUT'], detail=True, serializer_class=CommandSerializer)
+    def send_json(self, request, pk):
+        # serializer = CommandSerializer(data=request)
+        print(request)
 
-        headers = {}
-        headers['Content-Type'] = 'application/json'
-        
-        try:
-            response = requests.request(method, url, data=json.dumps(serialized_data), headers=headers)
-            response.raise_for_status()  # Raise an exception for HTTP errors (4xx, 5xx)
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            raise e
+@csrf_exempt
+def CommandViewset(request):
+    data = json.loads(request.body)
+    return JsonResponse(data)
 
+    # json_request = Json_draft.objects.get(pk=pk)
+    # data = Json_draft.objects.get(pk=pk).data
+    # url = Jsonserializer(url=request.url)
+    # serialized_data = Jsonserializer(cid=request.cid, code=request.code, adr=request.adr)
+    # print("ok")
+    # if data =='':
+    #     pass
+    # else:
+    #     x = {'data': data}
+    #     serialized_data = json.loads(serialized_data).update(x)
+    #
+    # headers = {}
+    # headers['Content-Type'] = 'application/json'
+    #
+    # # try:
+    # #     response = requests.request(method, url, data=json.dumps(serialized_data), headers=headers)
+    # #     response.raise_for_status()  # Raise an exception for HTTP errors (4xx, 5xx)
+    # #     return response.json()
+    # # except requests.exceptions.RequestException as e:
+    # #     raise e
 
     """
         Function to send a JSON request to the specified URL.
@@ -218,9 +229,10 @@ class JasonViewset(viewsets.ModelViewSet):
 class CabinetViewset(viewsets.ModelViewSet):
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
-    
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
+
     @action(methods=['POST'], detail=True)
     def checkTemp(self, request, qr):
         door = Door.objects.get(qr=qr)
@@ -228,21 +240,27 @@ class CabinetViewset(viewsets.ModelViewSet):
         iolink = Io_link.objects.get(cabinet=cabinet)
         value = Temperature_sensor.objects.get(iolink=iolink).value_temperature
         return Response({'temp': value}, status.HTTP_200_OK)
+
     @action(methods=['POST'], detail=True)
     def checkEnergy():
         pass
+
     @action(methods=['POST'], detail=True)
     def checkDoorSensor():
         pass
+
     @action(methods=['POST'], detail=True)
     def checkActuator():
         pass
+
     @action(methods=['POST'], detail=True)
     def checkLed():
         pass
+
     @action(methods=['POST'], detail=True)
     def checkButton():
         pass
+
     @action(methods=['POST'], detail=True)
     def checkLock():
         pass
