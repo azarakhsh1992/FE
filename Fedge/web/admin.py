@@ -32,5 +32,5 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Json_draft)
 class UserProfileAdmin(admin.ModelAdmin):
-    fields = ('name', 'code' , 'cid', 'adr', 'url', 'data')
-    list_display = ('name', 'code' , 'cid', 'adr', 'url', 'data')
+    fields = ('name', 'code' , 'cid', 'adr', 'url', 'data', 'sensor', 'command')
+    list_display = ('name', 'code' , 'cid', 'adr', 'url', 'data', 'sensor', 'command')

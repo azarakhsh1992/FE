@@ -186,7 +186,11 @@ class JasonViewset(viewsets.ModelViewSet):
 @csrf_exempt
 def CommandViewset(request):
     data = json.loads(request.body)
-    return JsonResponse(data)
+    mydata = Json_draft.objects.get(sensor=data.get('sensor'), command=data.get('command'))
+    respon = {
+        'data': mydata.name
+    }
+    return JsonResponse(respon)
 
     # json_request = Json_draft.objects.get(pk=pk)
     # data = Json_draft.objects.get(pk=pk).data
