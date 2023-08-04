@@ -20,7 +20,7 @@ class Json_draft(models.Model):
     cid = models.IntegerField(default=4711)
     adr =models.CharField(max_length=128,default='/iolinkmaster/port[2]/iolinkdevice/pdin/getdata')
     url = models.URLField(max_length=32, default="http://192.168.0.4")
-    data = models.TextField(max_length=256, blank=True)
+    data = models.JSONField(max_length=256, blank=True)
     # moethod = models.CharField(max_length=16, default='POST')
     # payload = models.JSONField(max_length=512, editable=False)
     # def save(self, *args, **kwargs):
