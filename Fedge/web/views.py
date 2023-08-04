@@ -188,7 +188,10 @@ def CommandViewset(request):
     data = json.loads(request.body)
     mydata = Json_draft.objects.get(sensor=data.get('sensor'), command=data.get('command'))
     respon = {
-        'data': mydata.name
+        'cid': mydata.cid,
+        'code': mydata.code,
+        'adr': mydata.adr,
+        'value': 245
     }
     return JsonResponse(respon)
 
