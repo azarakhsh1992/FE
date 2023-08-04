@@ -157,10 +157,6 @@ from .mainmodels.json import Json_draft
 # Json_draft.objects.get(id=3).send_json
 # Json_draft.objects.get(id=4).send_json
 
-print()
-Json_draft.objects.get(id=2).json_request
-print(Json_draft.objects.get(id=2).json_request)
-
 # ////////////////////////////////////////////////////////////////////////////////////////////////
 class UserProfileViewset(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
@@ -172,13 +168,51 @@ class UserViewset(viewsets.ModelViewSet):
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [AllowAny]
 
+
 class JasonViewset(viewsets.ModelViewSet):
     queryset = Json_draft.objects.all()
     serializer_class = Jsonserializer
+    permission_classes = (AllowAny,)
+    
+    @action(methods=['POST'], detail=True, serializer_class=Jsonserializer)
 
-class CabinetViewset(viewsets.ModelViewSet):
-    queryset = Cabinet.objects.all()
-    serializer_class = CabinetSerializer
+    def send_json(self, request, pk, method='POST', headers=None):
+        json_request = Json_draft.objects.get(pk=pk)
+        data = Json_draft.objects.get(pk=pk).data
+        url = Jsonserializer(url=request.url)
+        serialized_data = Jsonserializer(cid=request.cid, code=request.code, adr=request.adr)
+        if data =='':
+            pass
+        else:
+            serialized_data = json.loads(serialized_data).update(data)
+
+        headers = {}
+        headers['Content-Type'] = 'application/json'
+        
+        try:
+            response = requests.request(method, url, data=json.dumps(serialized_data), headers=headers)
+            response.raise_for_status()  # Raise an exception for HTTP errors (4xx, 5xx)
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            raise e
+
+
+    """
+        Function to send a JSON request to the specified URL.
+
+        Parameters:
+            url (str): The URL to which the JSON request will be sent.
+            data (dict): The JSON data to be included in the request body.
+            method (str, optional): The HTTP method to use for the request (e.g., 'GET', 'POST', 'PUT', 'DELETE'). Default is 'POST'.
+            headers (dict, optional): Additional headers to include in the request. Default is None.
+
+        Returns:
+            dict: The JSON response from the server.
+
+        Raises:
+            requests.exceptions.RequestException: If there is an error during the request.
+    """
+
 
 class CabinetViewset(viewsets.ModelViewSet):
     queryset = Cabinet.objects.all()

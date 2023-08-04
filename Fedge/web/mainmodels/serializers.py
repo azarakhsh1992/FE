@@ -57,4 +57,10 @@ class DoorSensorSerializer(serializers.ModelSerializer):
 class Jsonserializer(serializers.ModelSerializer):
     class Meta:
         model = Json_draft
-        fields = ('url', 'payload')
+        fields = ('name', 'code', 'cid', 'adr')
+        
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if 'request' in self.context and self.context['request'].method == 'POST':
+            ret.pop('name', None)
+        return ret
