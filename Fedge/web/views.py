@@ -184,7 +184,8 @@ class JasonViewset(viewsets.ModelViewSet):
         if data =='':
             pass
         else:
-            serialized_data = json.loads(serialized_data).update(data)
+            x = {'data': data}
+            serialized_data = json.loads(serialized_data).update(x)
 
         headers = {}
         headers['Content-Type'] = 'application/json'
