@@ -1,15 +1,15 @@
 from . import views
 from django.conf.urls import include
 from rest_framework import routers
-from django.urls import path,re_path
+from django.urls import path, re_path
 
 router = routers.DefaultRouter()
-router.register(r'userprofile',views.UserProfileViewset)
-router.register(r'users',views.UserViewset)
+router.register(r'userprofile', views.UserProfileViewset)
+router.register(r'users', views.UserViewset)
 # router.register(r'button',views.ButtonViewset)
-router.register(r'cabinet',views.CabinetViewset)
-router.register(r'doorsensor',views.CabinetViewset)
-router.register(r'json',views.JasonViewset)
+router.register(r'cabinet', views.CabinetViewset)
+router.register(r'doorsensor', views.CabinetViewset)
+router.register(r'json', views.JasonViewset)
 
 urlpatterns = [
     # path('', views.home, name='web-home'),
@@ -18,5 +18,6 @@ urlpatterns = [
     # path ('door_status/', views.door_status, name='door_status'),
     # path ('unlocking/', views.unlocking, name='unlocking'),
     re_path(r'^', include(router.urls)),
-    path('print_request/', views.CommandViewset, name='print_request')
+    path('print_request/', views.CommandViewset, name='print_request'),
+    path('authenticate/', views.CustomObtainAuthToken.as_view())
 ]

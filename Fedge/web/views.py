@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
-from rest_framework.response import Response
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
@@ -251,7 +253,7 @@ class CabinetViewset(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [AllowAny]
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=['POST'], detail=False)
     def checkTemp(self, request, qr):
         door = Door.objects.get(qr=qr)
         cabinet = Cabinet.objects.get(door=door)
@@ -259,27 +261,27 @@ class CabinetViewset(viewsets.ModelViewSet):
         value = Temperature_sensor.objects.get(iolink=iolink).value_temperature
         return Response({'temp': value}, status.HTTP_200_OK)
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=['POST'], detail=False)
     def checkEnergy():
         pass
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=['POST'], detail=False)
     def checkDoorSensor():
         pass
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=['POST'], detail=False)
     def checkActuator():
         pass
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=['POST'], detail=False)
     def checkLed():
         pass
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=['POST'], detail=False)
     def checkButton():
         pass
 
-    @action(methods=['POST'], detail=True)
+    @action(methods=['POST'], detail=False)
     def checkLock():
         pass
 
@@ -287,3 +289,13 @@ class CabinetViewset(viewsets.ModelViewSet):
 class DoorSensorViewset(viewsets.ModelViewSet):
     queryset = Door_sensor.objects.all()
     serializer_class = DoorSensorSerializer
+
+
+# Token Custom Authorization
+class CustomObtainAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
+        token = Token.objects.get(key=response.data['token'])
+        user = User.objects.get(id=token.user_id)
+        userSerilizer = UserSerializer(user, many=False)
+        return Response({'token': token.key, 'user': userSerilizer.data})
