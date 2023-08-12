@@ -73,7 +73,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Fedge.wsgi.application'
-
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    ]
 CORS_ALLOW_HEADERS=[
     'Content-Type',
     'Authorization'

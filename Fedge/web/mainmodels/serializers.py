@@ -10,7 +10,7 @@ from .json import Json_draft
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ('id', 'accessable_cabinets', 'role', 'bereich', 'telephone', 'shift')
+        fields = ('id','firstname', 'lastname','accessable_cabinets', 'role', 'bereich', 'telephone', 'shift')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'password', 'profile')
+
 
     def create(self, validated_data):
         profile_data = validated_data.pop('profile')
@@ -33,7 +34,8 @@ class UserSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         ret = super().to_representation(instance)
         if 'request' in self.context and self.context['request'].method == 'POST':
-            ret.pop('password', None)
+            ret.pop('password','')
+            ret.pop
         return ret
 # ///////////// Button Serializer ////////////////
 

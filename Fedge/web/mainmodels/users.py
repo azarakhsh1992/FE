@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):  # on_delete = CASCADE
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     accessable_cabinets = models.CharField(max_length=500, null=True)
+    firstname = models.CharField(max_length=250,blank=True,null=True)
+    lastname= models.CharField(max_length=250,blank=True,null=True)
 
     class Role(models.TextChoices):
         TECHNICIAN = "TECHNICIAN", "Technician"
