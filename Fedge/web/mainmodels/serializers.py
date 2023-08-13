@@ -6,11 +6,12 @@ from .button import Button
 from .cabinets import Cabinet
 from .door_sensor import Door_sensor
 from .json import Json_draft
+from .groupofshifts import GroupShift,ShiftOfGroup
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ('id','firstname', 'lastname','accessable_cabinets', 'role', 'bereich', 'telephone', 'shift')
+        fields = ('id','firstname', 'lastname','accessable_cabinets', 'role', 'bereich', 'telephone', 'group')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -70,3 +71,14 @@ class Jsonserializer(serializers.ModelSerializer):
 class CommandSerializer(serializers.ModelSerializer):
     sensor = serializers.CharField(required=True)
     command = serializers.CharField(required=True)
+
+class ShiftOfGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShiftOfGroup
+        fields = ('group','shift','date')
+
+class FullGroupShiftSerializer(serializers.ModelSerializer):
+    groupshift = ShiftOfGroupSerializer(many=True)
+    class Meta:
+        model = GroupShift
+        fields = ('group','groupshift')

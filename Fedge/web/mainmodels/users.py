@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from .groupofshifts import GroupShift
 
 
 class UserProfile(models.Model):  # on_delete = CASCADE
@@ -29,13 +30,14 @@ class UserProfile(models.Model):  # on_delete = CASCADE
 
     telephone = models.CharField(max_length=15)
 
-    class Shift(models.TextChoices):
-        FRUEH = "FRUEH", "FRUEH"
-        SPAET = "SPAET", "SPAET"
-        NACHT = "NACHT", "NACHT"
-
-    shift = models.CharField(max_length=10, choices=Shift.choices, default=None)
-
+    # class Shift(models.TextChoices):
+    #     GROUP1 = "group1", "Group 1"
+    #     GROUP2 = "group2", "Group 2"
+    #     GROUP3 = "group3", "Group 3"
+    #
+    # shift = models.CharField(max_length=10, choices=Shift.choices, default=None)
+    #
+    group = models.ForeignKey(to=GroupShift, related_name='usergroup', on_delete=models.CASCADE)
     #
     # def save (self, *args, **kwargs):
     #     if self.role == "TECHNICIAN":
