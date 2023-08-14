@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from .mainmodels.users import UserProfile
 from .mainmodels.serializers import UserProfileSerializer, UserSerializer, ButtonSerializer, CabinetSerializer
-from .mainmodels.serializers import DoorSensorSerializer, FullGroupShiftSerializer
+from .mainmodels.serializers import DoorSensorSerializer, FullGroupShiftSerializer,ShiftOfGroupSerializer
 from .mainmodels.door_sensor import Door_sensor
 from .mainmodels.doors import Door
 from .mainmodels.iolink import Io_link
@@ -20,7 +20,7 @@ import json
 import requests
 from .mainmodels.serializers import CommandSerializer
 from django.views.decorators.csrf import csrf_exempt
-from .mainmodels.groupofshifts import GroupShift
+from .mainmodels.groupofshifts import GroupShift,ShiftOfGroup
 
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,3 +128,6 @@ class CustomObtainAuthToken(ObtainAuthToken):
 class ShiftOfGroupViewset(viewsets.ModelViewSet):
     queryset = GroupShift.objects.all()
     serializer_class = FullGroupShiftSerializer
+class ShiftsViewset(viewsets.ModelViewSet):
+    queryset = ShiftOfGroup.objects.all()
+    serializer_class = ShiftOfGroupSerializer

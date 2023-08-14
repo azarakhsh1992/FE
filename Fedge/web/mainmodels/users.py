@@ -37,7 +37,7 @@ class UserProfile(models.Model):  # on_delete = CASCADE
     #
     # shift = models.CharField(max_length=10, choices=Shift.choices, default=None)
     #
-    group = models.ForeignKey(to=GroupShift, related_name='usergroup', on_delete=models.CASCADE)
+    group = models.ForeignKey(to=GroupShift, related_name='usergroup', on_delete=models.CASCADE, blank=True, null=True)
     #
     # def save (self, *args, **kwargs):
     #     if self.role == "TECHNICIAN":

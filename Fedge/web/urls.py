@@ -11,6 +11,7 @@ router.register(r'cabinet', views.CabinetViewset)
 router.register(r'doorsensor', views.CabinetViewset)
 router.register(r'json', views.JasonViewset)
 router.register(r'groupshift', views.ShiftOfGroupViewset)
+router.register(r'shifts', views.ShiftsViewset)
 
 urlpatterns = [
     # path('', views.home, name='web-home'),
