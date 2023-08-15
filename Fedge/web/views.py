@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from .mainmodels.users import UserProfile
 from .mainmodels.serializers import UserProfileSerializer, UserSerializer, ButtonSerializer, CabinetSerializer
-from .mainmodels.serializers import DoorSensorSerializer, FullGroupShiftSerializer,ShiftOfGroupSerializer
+from .mainmodels.serializers import DoorSensorSerializer, FullGroupShiftSerializer, ShiftOfGroupSerializer
 from .mainmodels.door_sensor import Door_sensor
 from .mainmodels.doors import Door
 from .mainmodels.iolink import Io_link
@@ -20,7 +20,7 @@ import json
 import requests
 from .mainmodels.serializers import CommandSerializer
 from django.views.decorators.csrf import csrf_exempt
-from .mainmodels.groupofshifts import GroupShift,ShiftOfGroup
+from .mainmodels.groupofshifts import GroupShift, ShiftOfGroup
 
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,6 +128,24 @@ class CustomObtainAuthToken(ObtainAuthToken):
 class ShiftOfGroupViewset(viewsets.ModelViewSet):
     queryset = GroupShift.objects.all()
     serializer_class = FullGroupShiftSerializer
+
+
 class ShiftsViewset(viewsets.ModelViewSet):
     queryset = ShiftOfGroup.objects.all()
     serializer_class = ShiftOfGroupSerializer
+
+    @action(methods=['POST'], detail=False)
+    def CustomFunc(self, request):
+        try:
+            data = request.data
+            storeddata = ShiftOfGroup.objects.all()
+            serialized = ShiftOfGroupSerializer(storeddata,many=True)
+            response = {'message': 'data recieved', 'data recieved':data, 'somethin':serialized.data}
+            return Response(response, status=status.HTTP_200_OK)
+        except:
+            response = {'message': 'Error Happened'}
+            return Response('not Ok', status=status.HTTP_400_BAD_REQUEST)
+
+    # def create(self, request, *args, **kwargs):
+    #     data = request.data
+    #     print(data)
