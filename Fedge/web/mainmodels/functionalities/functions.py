@@ -1,18 +1,17 @@
 from django.db import models
-from .cabinets import Cabinet
-from .iolink import Io_link
-from .doors import Door
-from .lock import Lock_actuator
-from .led import Led
-from .temperature_sensor import Temperature_sensor
-from .users import User
+from ..cabinetlevel.cabinets import Cabinet
+from ..modules.iolink import Io_link
+from ..cabinetlevel.doors import Door
+from ..iolmodules.lock import Lock_actuator
+from ..iolmodules.led import Led
+from ..iolmodules.temperature_sensor import Temperature_sensor
+from ..userrelated.users import User
 from datetime import datetime, date, time, timezone
-from rest_framework import viewsets, status
 
 
 
-class Access_Checker(viewsets.ModelViewSet):
-
+class Access_Checker(models.Model):
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE, default= None)
     cabinet = models.ForeignKey(Cabinet, on_delete=models.CASCADE, default=None)
     door = models.ForeignKey(Door, on_delete=models.CASCADE, default=None)
@@ -52,3 +51,6 @@ class Access_Checker(viewsets.ModelViewSet):
         else:
             print("access granted")
             return True
+        
+        
+        

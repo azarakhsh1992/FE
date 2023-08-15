@@ -1,5 +1,7 @@
 from typing import Any
 from django.db import models
+
+
 class Cabinet(models.Model):
     
     class Bereich (models.TextChoices):

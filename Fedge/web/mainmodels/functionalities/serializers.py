@@ -1,12 +1,16 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from .users import UserProfile
-from .button import Button
-from .cabinets import Cabinet
-from .door_sensor import Door_sensor
+from ..userrelated.users import User, UserProfile
+from ..modules.iolink import Io_link
+from ..cabinetlevel.cabinets import Cabinet
+from ..cabinetlevel.doors import Door
+from ..modules.energy_module import Energy_sensor
+from ..iolmodules.led import Led
+from ..iolmodules.temperature_sensor import Temperature_sensor
+from ..iolmodules.button import Button
+from ..iolmodules.door_sensor import Door_sensor
 from .json import Json_draft
-from .groupofshifts import GroupShift,ShiftOfGroup
+from ..userrelated.groupofshifts import GroupShift,ShiftOfGroup
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:

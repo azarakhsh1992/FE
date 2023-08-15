@@ -1,8 +1,7 @@
 from django.db import models
-from .cabinets import Cabinet
+from ..cabinetlevel.cabinets import Cabinet
 from .iolink import Io_link
-from .doors import Door
-from .Ports import Ports
+from ..cabinetlevel.doors import Door
 
 class Energy_sensor (models.Model):
     

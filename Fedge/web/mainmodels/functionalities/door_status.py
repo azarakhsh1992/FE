@@ -1,12 +1,12 @@
 from django.db import models
-from .cabinets import Cabinet
-from .iolink import Io_link
-from .doors import Door
-from .lock import Lock_actuator
-from .led import Led
-from .temperature_sensor import Temperature_sensor
-from .users import User
-from .door_sensor import Door_sensor
+from ..cabinetlevel.cabinets import Cabinet
+from ..modules.iolink import Io_link
+from ..cabinetlevel.doors import Door
+from ..iolmodules.lock import Lock_actuator
+from ..iolmodules.led import Led
+from ..iolmodules.temperature_sensor import Temperature_sensor
+from ..userrelated.users import User
+from ..iolmodules.door_sensor import Door_sensor
 
 def is_safe(this_cabinet):
     return True

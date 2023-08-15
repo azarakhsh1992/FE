@@ -6,21 +6,21 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
-from .mainmodels.users import UserProfile
-from .mainmodels.serializers import UserProfileSerializer, UserSerializer, ButtonSerializer, CabinetSerializer
-from .mainmodels.serializers import DoorSensorSerializer, FullGroupShiftSerializer, ShiftOfGroupSerializer
-from .mainmodels.door_sensor import Door_sensor
-from .mainmodels.doors import Door
-from .mainmodels.iolink import Io_link
-from .mainmodels.temperature_sensor import Temperature_sensor
-from .mainmodels.serializers import Jsonserializer
-from .mainmodels.cabinets import Cabinet
-from .mainmodels.json import Json_draft
+from .mainmodels.userrelated.users import UserProfile
+from .mainmodels.functionalities.serializers import UserProfileSerializer, UserSerializer, ButtonSerializer, CabinetSerializer
+from .mainmodels.functionalities.serializers import DoorSensorSerializer, FullGroupShiftSerializer, ShiftOfGroupSerializer
+from .mainmodels.iolmodules.door_sensor import Door_sensor
+from .mainmodels.cabinetlevel.doors import Door
+from .mainmodels.modules.iolink import Io_link
+from .mainmodels.iolmodules.temperature_sensor import Temperature_sensor
+from .mainmodels.functionalities.serializers import Jsonserializer
+from .mainmodels.cabinetlevel.cabinets import Cabinet
+from .mainmodels.functionalities.json import Json_draft
 import json
 import requests
-from .mainmodels.serializers import CommandSerializer
+from .mainmodels.functionalities.serializers import CommandSerializer
 from django.views.decorators.csrf import csrf_exempt
-from .mainmodels.groupofshifts import GroupShift, ShiftOfGroup
+from .mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
 
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,6 @@ class UserViewset(viewsets.ModelViewSet):
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [AllowAny]
 
-
 class JasonViewset(viewsets.ModelViewSet):
     queryset = Json_draft.objects.all()
     serializer_class = Jsonserializer
@@ -45,7 +44,6 @@ class JasonViewset(viewsets.ModelViewSet):
     def send_json(self, request, pk):
         # serializer = CommandSerializer(data=request)
         print(request)
-
 
 @csrf_exempt
 def CommandViewset(request):
@@ -109,11 +107,9 @@ class CabinetViewset(viewsets.ModelViewSet):
     def checkLock():
         pass
 
-
 class DoorSensorViewset(viewsets.ModelViewSet):
     queryset = Door_sensor.objects.all()
     serializer_class = DoorSensorSerializer
-
 
 # Token Custom Authorization
 class CustomObtainAuthToken(ObtainAuthToken):
@@ -124,11 +120,9 @@ class CustomObtainAuthToken(ObtainAuthToken):
         userSerilizer = UserSerializer(user, many=False)
         return Response({'token': token.key, 'user': userSerilizer.data})
 
-
 class ShiftOfGroupViewset(viewsets.ModelViewSet):
     queryset = GroupShift.objects.all()
     serializer_class = FullGroupShiftSerializer
-
 
 class ShiftsViewset(viewsets.ModelViewSet):
     queryset = ShiftOfGroup.objects.all()

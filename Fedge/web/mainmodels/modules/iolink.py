@@ -1,8 +1,6 @@
 from typing import Any
 from django.db import models
-from .cabinets import Cabinet
-from .Ports import Ports
-
+from ..cabinetlevel.cabinets import Cabinet
 
 
 class Io_link (models.Model):

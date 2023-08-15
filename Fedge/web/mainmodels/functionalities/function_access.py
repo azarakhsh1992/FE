@@ -1,18 +1,16 @@
 from django.db import models
-from .cabinets import Cabinet
-from .iolink import Io_link
-from .doors import Door
-from .lock import Lock_actuator
-from .led import Led
-from .temperature_sensor import Temperature_sensor
-from .users import User
+from ..cabinetlevel.cabinets import Cabinet
+from ..modules.iolink import Io_link
+from ..cabinetlevel.doors import Door
+from ..iolmodules.lock import Lock_actuator
+from ..iolmodules.led import Led
+from ..iolmodules.temperature_sensor import Temperature_sensor
+from ..userrelated.users import User
 from datetime import datetime, date, time, timezone
 
 
 
 def access_checker(user, door):
-
-    message = ''
 
     this_user = user
     this_door = door
@@ -39,23 +37,19 @@ def access_checker(user, door):
     print(datetime.now())
     print(current_shift)
     if this_user.bereich != this_door.cabinet.bereich:
-        message = "access denied because wrong location/n" + " your accessible cabinets are in:"+ this_user.bereich
         print ("access denied because wrong location")
         print("your accessible cabinets are in:",this_user.bereich )
-        return [False, message]
+        return False
     elif current_shift != this_user.shift:
-        message = "access denied because worng shift time"
         print("access denied because worng shift time")
-        return [False, message]
+        return False
     elif this_door.section not in this_user.accessible_cabinets:
-        message = "access denied because you don't have access to this section/n" + "your accessible sections are" + this_user.accessible_cabinets
         print ("access denied because you don't have access to this section")
         print ("your accessible sections are", this_user.accessible_cabinets)
-        return [False, message]
+        return False
     #TODO: check the last elif. it shoudl be changed. Also a function of logging the event should be added to the end of this function
     
     else:
-        message = "access granted"
         print("access granted")
-        return [True, message]
+        return True
 

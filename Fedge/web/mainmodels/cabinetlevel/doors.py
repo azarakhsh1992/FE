@@ -1,6 +1,6 @@
 from typing import Any
 from django.db import models
-from .cabinets import Cabinet
+from ..cabinetlevel.cabinets import Cabinet
 
 
 class Door(models.Model):

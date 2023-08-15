@@ -1,20 +1,17 @@
 from django.db import models
-from .cabinets import Cabinet
-from .iolink import Io_link
-from .doors import Door
-    
-        
-        
-        
-class Door_sensor (models.Model):
-    class Module_type (models.TextChoices):
-        Door_Sensor = 'Door_Sensor', 'Door Sensor'
-    module_type = models.CharField (choices= Module_type.choices, max_length=20)
-    bmk = models.CharField(max_length =4, default=None)
+from ..modules.iolink import Io_link
+from ..cabinetlevel.doors import Door
+
+
+
+class Iol_Module (models.Model):
+
+    bmk = models.CharField(max_length =3, default=None)
     serial_number = models.CharField(max_length=50, unique=True)
     manufacturer = models.CharField(max_length = 50)
-    value = models.BooleanField(default=False)
-    # module_type = models.CharField(max_length=22, editable=False, default=None)
+    profinet_address = models.GenericIPAddressField(default=None, unique=False, editable=False)
+    profinet_name = models.CharField(max_length=22, editable=False, default=None)
+
     class Bereich (models.TextChoices):
         K = 'K', 'Karosseriebau'
         F = 'F', 'Fördertechnik'
@@ -24,8 +21,6 @@ class Door_sensor (models.Model):
         L = 'L', 'Lackiererei'
         B = 'B', 'Batteriefertigung'
         C = 'C', 'Komponente'
-
-    # ///////////////////////////////////////////////////////////
     bereich = models.CharField(choices= Bereich.choices, max_length=1, editable=False)
     segment = models.CharField(max_length=1, editable=False)
     anlage = models.CharField(max_length=4, editable=False)
@@ -34,10 +29,17 @@ class Door_sensor (models.Model):
     station = models.CharField(max_length=4, editable=False)
     funktionseinheit = models.CharField(max_length=3, editable=False)
     geraet = models.CharField(max_length=3, editable=False)
-    profinet_name = models.CharField(max_length=22, editable=False, default=None)
-    profinet_address = models.GenericIPAddressField(default=None, unique=False, editable=False)
 
-    # port = (models.OneToOneField(Io_link, on_delete=models.CASCADE)).port
+    class Port_addresses (models.TextChoices):
+        X1 = 'X1', 'X1'
+        X2 = 'X2', 'X2'
+        X3 = 'X3', 'X3'
+        X4 = 'X4', 'X4'
+        X5 = 'X5', 'X5'
+        X6 = 'X6', 'X6'
+        X7 = 'X7', 'X7'
+        X8 = 'X8', 'X8'
+    port = models.CharField(choices= Port_addresses.choices, default =None, max_length=5)
 
     iolink = models.ForeignKey(Io_link, on_delete= models.CASCADE)
     def save(self, *args, **kwargs):
@@ -49,9 +51,9 @@ class Door_sensor (models.Model):
         self.station = self.iolink.station
         self.funktionseinheit = self.iolink.funktionseinheit
         self.geraet = self.iolink.geraet
-        self.profinet_name = str(self.iolink.profinet_name) + str(self.bmk)
+        self.profinet_name = str(self.iolink.profinet_name) + str(self.geraet)
         self.profinet_address = self.iolink.profinet_address
-        super(Door_sensor, self).save(*args, **kwargs)
+        super(Iol_Module, self).save(*args, **kwargs)
 
     class Meta:
-        pass
+        unique_together = ('port', 'iolink')
