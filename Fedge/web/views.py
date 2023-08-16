@@ -46,31 +46,30 @@ class UserViewset(viewsets.ModelViewSet):
                 id = storeduser.id
                 datas = request.data['profile']
                 datas['user'] = id
-                userprofile = UserProfile.objects.get(user_id=id)
-                print(userprofile.user)
-                # if(UserProfile.objects.get(user_id=id)):
-                #     profileobj = UserProfile.objects.get(user_id=id)
-                #     profileobj.firstname=datas['firstname']
-                #     profileobj.lastname = datas['lastname']
-                #     profileobj.accessable_cabinets = datas['accessable_cabinets']
-                #     profileobj.role = datas['role']
-                #     profileobj.bereich = datas['bereich']
-                #     profileobj.telephone = datas['telephone']
-                #     profileobj.group_id = datas['group']
-                #     profileobj.save()
-                #     serializer = UserProfileSerializer(profileobj)
-                #     response = {'message': 'updated'}
-                #     return Response(response, status=status.HTTP_200_OK)
-                # else:
-                #     profileobj = UserProfile.objects.create(user=storeduser, firstname=datas['firstname'],
-                #                                             lastname=datas['lastname'],
-                #                                             accessable_cabinets=datas['accessable_cabinets'],
-                #                                             role=datas['role'], bereich=datas['bereich'],
-                #                                             telephone=datas['telephone'], group_id=datas['group'])
-                #     # profileobj = UserProfile.objects.create()
-                response = {'message': 'created'}
-                return Response(response, status=status.HTTP_200_OK)
+                # userprofile = UserProfile.objects.get(user_id=id)
+                # print(userprofile.user)
 
+                try:
+                    profileobj = UserProfile.objects.get(user_id=id)
+                    profileobj.firstname = datas['firstname']
+                    profileobj.lastname = datas['lastname']
+                    profileobj.accessable_cabinets = datas['accessable_cabinets']
+                    profileobj.role = datas['role']
+                    profileobj.bereich = datas['bereich']
+                    profileobj.telephone = datas['telephone']
+                    profileobj.group_id = datas['group']
+                    profileobj.save()
+                    serializer = UserProfileSerializer(profileobj)
+                    response = {'message': 'updated'}
+                    return Response(response, status=status.HTTP_200_OK)
+                except:
+                    profileobj = UserProfile.objects.create(user=storeduser, firstname=datas['firstname'],
+                                                            lastname=datas['lastname'],
+                                                            accessable_cabinets=datas['accessable_cabinets'],
+                                                            role=datas['role'], bereich=datas['bereich'],
+                                                            telephone=datas['telephone'], group_id=datas['group'])
+                    response = {'message': 'created'}
+                    return Response(response, status=status.HTTP_200_OK)
             except:
                 response = {'message': 'Error Happened'}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
