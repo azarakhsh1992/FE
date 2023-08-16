@@ -7,8 +7,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from .mainmodels.userrelated.users import UserProfile
-from .mainmodels.functionalities.serializers import UserProfileSerializer, UserSerializer, ButtonSerializer, CabinetSerializer
-from .mainmodels.functionalities.serializers import DoorSensorSerializer, FullGroupShiftSerializer, ShiftOfGroupSerializer
+from .mainmodels.functionalities.serializers import UserProfileSerializer, UserSerializer, ButtonSerializer, \
+    CabinetSerializer
+from .mainmodels.functionalities.serializers import DoorSensorSerializer, FullGroupShiftSerializer, \
+    ShiftOfGroupSerializer
 from .mainmodels.iolmodules.door_sensor import Door_sensor
 from .mainmodels.cabinetlevel.doors import Door
 from .mainmodels.modules.iolink import Io_link
@@ -32,9 +34,10 @@ class UserProfileViewset(viewsets.ModelViewSet):
 class UserViewset(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
     # authentication_classes = [TokenAuthentication]
     # permission_classes = [AllowAny]
-    @action(methods=['POST'],detail=False)
+    @action(methods=['POST'], detail=False)
     def profiles(self, request):
         if 'profile' in request.data:
             try:
@@ -42,29 +45,31 @@ class UserViewset(viewsets.ModelViewSet):
                 storeduser = User.objects.get(username=user)
                 id = storeduser.id
                 datas = request.data['profile']
-                datas['user']=id
-                print(type(datas))
-                if(UserProfile.objects.get(user_id=id)):
-                    profileobj = UserProfile.objects.get(user_id=id)
-                    profileobj.firstname=datas['firstname']
-                    profileobj.lastname = datas['lastname']
-                    profileobj.accessable_cabinets = datas['accessable_cabinets']
-                    profileobj.role = datas['role']
-                    profileobj.bereich = datas['bereich']
-                    profileobj.telephone = datas['telephone']
-                    profileobj.group_id = datas['group']
-                    profileobj.save()
-                    serializer = UserProfileSerializer(profileobj)
-                    response = {'message': 'updated'}
-                    return Response(response, status=status.HTTP_200_OK)
-                else:
-                    profileobj = UserProfile.objects.create(user_id=id, firstname=datas['firstname'],
-                                                            lastname=datas['lastname'],
-                                                            accessable_cabinets=datas['accessable_cabinets'],
-                                                            role=datas['role'], bereich=datas['bereich'],
-                                                            telephone=datas['telephone'], group_id=datas['group'])
-                    response = {'message': 'created'}
-                    return Response(response, status=status.HTTP_200_OK)
+                datas['user'] = id
+                userprofile = UserProfile.objects.get(user_id=id)
+                print(userprofile.user)
+                # if(UserProfile.objects.get(user_id=id)):
+                #     profileobj = UserProfile.objects.get(user_id=id)
+                #     profileobj.firstname=datas['firstname']
+                #     profileobj.lastname = datas['lastname']
+                #     profileobj.accessable_cabinets = datas['accessable_cabinets']
+                #     profileobj.role = datas['role']
+                #     profileobj.bereich = datas['bereich']
+                #     profileobj.telephone = datas['telephone']
+                #     profileobj.group_id = datas['group']
+                #     profileobj.save()
+                #     serializer = UserProfileSerializer(profileobj)
+                #     response = {'message': 'updated'}
+                #     return Response(response, status=status.HTTP_200_OK)
+                # else:
+                #     profileobj = UserProfile.objects.create(user=storeduser, firstname=datas['firstname'],
+                #                                             lastname=datas['lastname'],
+                #                                             accessable_cabinets=datas['accessable_cabinets'],
+                #                                             role=datas['role'], bereich=datas['bereich'],
+                #                                             telephone=datas['telephone'], group_id=datas['group'])
+                #     # profileobj = UserProfile.objects.create()
+                response = {'message': 'created'}
+                return Response(response, status=status.HTTP_200_OK)
 
             except:
                 response = {'message': 'Error Happened'}
@@ -72,6 +77,7 @@ class UserViewset(viewsets.ModelViewSet):
         else:
             response = {'message': 'Missing profile data'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
 
 class JasonViewset(viewsets.ModelViewSet):
     queryset = Json_draft.objects.all()
@@ -82,6 +88,7 @@ class JasonViewset(viewsets.ModelViewSet):
     def send_json(self, request, pk):
         # serializer = CommandSerializer(data=request)
         print(request)
+
 
 @csrf_exempt
 def CommandViewset(request):
@@ -145,9 +152,11 @@ class CabinetViewset(viewsets.ModelViewSet):
     def checkLock():
         pass
 
+
 class DoorSensorViewset(viewsets.ModelViewSet):
     queryset = Door_sensor.objects.all()
     serializer_class = DoorSensorSerializer
+
 
 # Token Custom Authorization
 class CustomObtainAuthToken(ObtainAuthToken):
@@ -158,9 +167,11 @@ class CustomObtainAuthToken(ObtainAuthToken):
         userSerilizer = UserSerializer(user, many=False)
         return Response({'token': token.key, 'user': userSerilizer.data})
 
+
 class ShiftOfGroupViewset(viewsets.ModelViewSet):
     queryset = GroupShift.objects.all()
     serializer_class = FullGroupShiftSerializer
+
 
 class ShiftsViewset(viewsets.ModelViewSet):
     queryset = ShiftOfGroup.objects.all()
@@ -171,8 +182,8 @@ class ShiftsViewset(viewsets.ModelViewSet):
         try:
             data = request.data
             storeddata = ShiftOfGroup.objects.all()
-            serialized = ShiftOfGroupSerializer(storeddata,many=True)
-            response = {'message': 'data recieved', 'data recieved':data, 'somethin':serialized.data}
+            serialized = ShiftOfGroupSerializer(storeddata, many=True)
+            response = {'message': 'data recieved', 'data recieved': data, 'somethin': serialized.data}
             return Response(response, status=status.HTTP_200_OK)
         except:
             response = {'message': 'Error Happened'}
