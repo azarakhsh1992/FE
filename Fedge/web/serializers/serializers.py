@@ -1,16 +1,12 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
-from ..userrelated.users import User, UserProfile
-from ..modules.iolink import Io_link
-from ..cabinetlevel.cabinets import Cabinet
-from ..cabinetlevel.doors import Door
-from ..modules.energy_module import Energy_sensor
-from ..iolmodules.led import Led
-from ..iolmodules.temperature_sensor import Temperature_sensor
-from ..iolmodules.button import Button
-from ..iolmodules.door_sensor import Door_sensor
-from .json import Json_draft
-from ..userrelated.groupofshifts import GroupShift, ShiftOfGroup
+
+from web.mainmodels.cabinetlevel.cabinets import Cabinet
+from web.mainmodels.functionalities.json import Json_draft
+from web.mainmodels.iolmodules.button import ButtonDevice
+from web.mainmodels.iolmodules.doorsensor import DoorsensorDevice
+from web.mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
+from web.mainmodels.userrelated.users import User, UserProfile
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -50,7 +46,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ButtonSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Button
+        model = ButtonDevice
         fields = ('port', 'module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'iolink')
 
 
@@ -64,7 +60,7 @@ class CabinetSerializer(serializers.ModelSerializer):
 # ///////// Door_Sensor Serializer /////////////
 class DoorSensorSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Door_sensor
+        model = DoorsensorDevice
         fields = ('module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'iolink')
 
 

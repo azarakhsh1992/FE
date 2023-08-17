@@ -3,6 +3,8 @@ from django.conf.urls import include
 from rest_framework import routers
 from django.urls import path, re_path
 
+from .viewsets.moduleviewsets import ContainerViewset
+
 router = routers.DefaultRouter()
 router.register(r'userprofile', views.UserProfileViewset)
 router.register(r'users', views.UserViewset)
@@ -12,6 +14,7 @@ router.register(r'doorsensor', views.CabinetViewset)
 router.register(r'json', views.JasonViewset)
 router.register(r'groupshift', views.ShiftOfGroupViewset)
 router.register(r'shifts', views.ShiftsViewset)
+router.register(r'containers', ContainerViewset)
 
 urlpatterns = [
     # path('', views.home, name='web-home'),

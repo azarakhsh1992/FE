@@ -3,16 +3,17 @@ from django.db import models
 from ..cabinetlevel.cabinets import Cabinet
 
 
-class Io_link (models.Model):
-    
+class Iolink (models.Model):
+
+    cabinet = models.ForeignKey(Cabinet, on_delete=models.CASCADE)
+
     geraet = models.CharField(max_length=3)
     class Module_type (models.TextChoices):
         IO_LINK = 'IO_LINK', 'IO_Link Master'
     module_type = models.CharField (choices= Module_type.choices, max_length=10)
     profinet_address = models.GenericIPAddressField(default=None, unique=True)
     serial_number = models.CharField(max_length=50, unique=True)
-    cabinet = models.ForeignKey(Cabinet, on_delete=models.CASCADE)
-    
+
     def save(self, *args, **kwargs):
         self.bereich = self.cabinet.bereich
         self.segment = self.cabinet.segment
@@ -22,8 +23,8 @@ class Io_link (models.Model):
         self.station = self.cabinet.station
         self.funktionseinheit = self.cabinet.funktionseinheit
         self.profinet_name = str(self.cabinet.profinet_name) + str(self.geraet)
-        super(Io_link, self).save(*args, **kwargs)
-    
+        super(Iolink, self).save(*args, **kwargs)
+
     profinet_name = models.CharField(max_length=18, editable=False, default=None)
     class Bereich (models.TextChoices):
         K = 'K', 'Karosseriebau'

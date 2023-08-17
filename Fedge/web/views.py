@@ -3,24 +3,23 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from .mainmodels.userrelated.users import UserProfile
-from .mainmodels.functionalities.serializers import UserProfileSerializer, UserSerializer, ButtonSerializer, \
-    CabinetSerializer
-from .mainmodels.functionalities.serializers import DoorSensorSerializer, FullGroupShiftSerializer, \
+from web.serializers.serializers import UserProfileSerializer, UserSerializer, CabinetSerializer
+from web.serializers.serializers import DoorSensorSerializer, FullGroupShiftSerializer, \
     ShiftOfGroupSerializer
-from .mainmodels.iolmodules.door_sensor import Door_sensor
+from .mainmodels.iolmodules.doorsensor import DoorsensorDevice
 from .mainmodels.cabinetlevel.doors import Door
-from .mainmodels.modules.iolink import Io_link
-from .mainmodels.iolmodules.temperature_sensor import Temperature_sensor
-from .mainmodels.functionalities.serializers import Jsonserializer
+from .mainmodels.modules.iolink import Iolink
+from .mainmodels.iolmodules.temperaturesensordevice import TemperaturesensorDevice
+from web.serializers.serializers import Jsonserializer
 from .mainmodels.cabinetlevel.cabinets import Cabinet
 from .mainmodels.functionalities.json import Json_draft
 import json
 import requests
-from .mainmodels.functionalities.serializers import CommandSerializer
+from web.serializers.serializers import CommandSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
 
@@ -123,8 +122,8 @@ class CabinetViewset(viewsets.ModelViewSet):
     def checkTemp(self, request, qr):
         door = Door.objects.get(qr=qr)
         cabinet = Cabinet.objects.get(door=door)
-        iolink = Io_link.objects.get(cabinet=cabinet)
-        value = Temperature_sensor.objects.get(iolink=iolink).value_temperature
+        iolink = Iolink.objects.get(cabinet=cabinet)
+        value = TemperaturesensorDevice.objects.get(iolink=iolink).value_temperature
         return Response({'temp': value}, status.HTTP_200_OK)
 
     @action(methods=['POST'], detail=False)
@@ -153,7 +152,7 @@ class CabinetViewset(viewsets.ModelViewSet):
 
 
 class DoorSensorViewset(viewsets.ModelViewSet):
-    queryset = Door_sensor.objects.all()
+    queryset = DoorsensorDevice.objects.all()
     serializer_class = DoorSensorSerializer
 
 
