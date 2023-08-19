@@ -5,7 +5,8 @@ from ..cabinetlevel.doors import Door
 from ..iolmodules.lock import Lockactuator
 from ..iolmodules.led import Led
 from ..iolmodules.temperaturesensordevice import TemperaturesensorDevice
-from ..userrelated.users import User
+from ..userrelated.groupofshifts import ShiftOfGroup
+from ..userrelated.users import User, UserProfile
 from datetime import datetime, date, time, timezone
 
 
@@ -15,7 +16,8 @@ def access_checker(user, door):
     this_user = user
     this_door = door
     current_shift = 0
-
+    response = ''
+    access = False
     shift_time1_start =100 # time in integer = hour*60 + minute
     shift_time1_end =870 # Früh schift definer
 
@@ -33,23 +35,32 @@ def access_checker(user, door):
     elif int(shift_time3_start) <= int(current_time) <= int(shift_time3_end):
         current_shift = "NACHT"
     else:
-        print ("current time is not defined as any of the shifts")
-    print(datetime.now())
-    print(current_shift)
+        response = "current time is not defined as any of the shifts"
+        access = False
+        return access, response
+
+    profile = UserProfile.objects.get(user=this_user)
+    usergroup = profile.group
+    shifofuser = ShiftOfGroup.objects.get(group=usergroup, date=datetime.now().date())
+    shiftnow = shifofuser.shift
+
     if this_user.bereich != this_door.cabinet.bereich:
-        print ("access denied because wrong location")
-        print("your accessible cabinets are in:",this_user.bereich )
-        return False
-    elif current_shift != this_user.shift:
-        print("access denied because worng shift time")
-        return False
+        response = "You do not have access to this Door"
+        access = False
+        return access, response
+    elif current_shift != shiftnow:
+        response = "You do not have access to this door in this time"
+        access = False
+        return access, response
     elif this_door.section not in this_user.accessible_cabinets:
-        print ("access denied because you don't have access to this section")
-        print ("your accessible sections are", this_user.accessible_cabinets)
-        return False
+        response = "access denied because you don't have access to this section"
+        access = False
+        return access, response
+        # print ("your accessible sections are", this_user.accessible_cabinets)
     #TODO: check the last elif. it shoudl be changed. Also a function of logging the event should be added to the end of this function
     
     else:
-        print("access granted")
-        return True
+        response = "access granted"
+        access = True
+        return access, response
 

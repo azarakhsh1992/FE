@@ -3,14 +3,15 @@ from django.conf.urls import include
 from rest_framework import routers
 from django.urls import path, re_path
 
+from .viewsets.cabinetanddoor import CabinetViewset, DoorViewset
 from .viewsets.moduleviewsets import ContainerViewset
 
 router = routers.DefaultRouter()
 router.register(r'userprofile', views.UserProfileViewset)
 router.register(r'users', views.UserViewset)
 # router.register(r'button',views.ButtonViewset)
-router.register(r'cabinet', views.CabinetViewset)
-router.register(r'doorsensor', views.CabinetViewset)
+router.register(r'cabinet', CabinetViewset)
+router.register(r'doors', DoorViewset)
 router.register(r'json', views.JasonViewset)
 router.register(r'groupshift', views.ShiftOfGroupViewset)
 router.register(r'shifts', views.ShiftsViewset)

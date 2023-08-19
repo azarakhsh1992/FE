@@ -51,11 +51,6 @@ class ButtonSerializer(serializers.ModelSerializer):
 
 
 # ///////// Cabinet Serializer /////////////////////
-class CabinetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Cabinet
-        fields = ('bereich', 'segment', 'anlage', 'arg_sps', 'pultbereich_sk', 'station', 'funktionseinheit')
-
 
 # ///////// Door_Sensor Serializer /////////////
 class DoorSensorSerializer(serializers.ModelSerializer):

@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from .mainmodels.userrelated.users import UserProfile
-from web.serializers.serializers import UserProfileSerializer, UserSerializer, CabinetSerializer
+from web.serializers.serializers import UserProfileSerializer, UserSerializer
 from web.serializers.serializers import DoorSensorSerializer, FullGroupShiftSerializer, \
     ShiftOfGroupSerializer
 from .mainmodels.iolmodules.doorsensor import DoorsensorDevice
@@ -22,6 +22,7 @@ import requests
 from web.serializers.serializers import CommandSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
+from .serializers.cabinetanddoor import CabinetSerializer
 
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,49 +112,8 @@ def CommandViewset(request):
         raise e
 
 
-class CabinetViewset(viewsets.ModelViewSet):
-    queryset = Cabinet.objects.all()
-    serializer_class = CabinetSerializer
-
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowAny]
-
-    @action(methods=['POST'], detail=False)
-    def checkTemp(self, request, qr):
-        door = Door.objects.get(qr=qr)
-        cabinet = Cabinet.objects.get(door=door)
-        iolink = Iolink.objects.get(cabinet=cabinet)
-        value = TemperaturesensorDevice.objects.get(iolink=iolink).value_temperature
-        return Response({'temp': value}, status.HTTP_200_OK)
-
-    @action(methods=['POST'], detail=False)
-    def checkEnergy():
-        pass
-
-    @action(methods=['POST'], detail=False)
-    def checkDoorSensor():
-        pass
-
-    @action(methods=['POST'], detail=False)
-    def checkActuator():
-        pass
-
-    @action(methods=['POST'], detail=False)
-    def checkLed():
-        pass
-
-    @action(methods=['POST'], detail=False)
-    def checkButton():
-        pass
-
-    @action(methods=['POST'], detail=False)
-    def checkLock():
-        pass
 
 
-class DoorSensorViewset(viewsets.ModelViewSet):
-    queryset = DoorsensorDevice.objects.all()
-    serializer_class = DoorSensorSerializer
 
 
 # Token Custom Authorization
