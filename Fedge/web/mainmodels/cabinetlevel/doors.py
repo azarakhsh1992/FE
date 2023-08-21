@@ -28,9 +28,17 @@ class Door(models.Model):
 
     def save(self, *args, **kwargs):
         self.profinet_name = str(self.cabinet.profinet_name) + str(self.name)
+        doors = Door.objects.all()
+        condition = True
+        generatedqr = uuid.uuid4().hex[:20]
+        while(condition):
+            for door in doors:
+                if generatedqr == door.qr:
+                    generatedqr = uuid.uuid4().hex[:20]
+                    condition = True
+                else:
+                    self.qr = generatedqr
+                    condition = False
+        print(generatedqr)
         self.qr = uuid.uuid4().hex[:20]
         super(Door, self).save(*args, **kwargs)
-
-# class QR_code(models.Model):
-#     door =models.OneToOneField(Door, on_delete=models.CASCADE)
-#     qr = models.CharField(max_length=20)

@@ -9,6 +9,7 @@ class Request(models.Model):
     cabinet = models.ForeignKey(Cabinet, related_name='requests')
     door = models.ForeignKey(Door, related_name='requests')
     description = models.CharField(max_length=255, blank=False, null=False)
+    servicelog = models.BooleanField(default=False)
     datetime = models.DateTimeField()
 
 
@@ -17,8 +18,8 @@ class Servicelog(models.Model):
     description = models.TextField(blank=False)
     datetime = models.DateTimeField()
 
-class Permission(models.Model):
-    request = models.OneToOneField(Request, related_name='permission', on_delete=models.CASCADE)
-    accessable = models.BooleanField(default=False)
-    datetime = models.DateTimeField()
-    rejectionlog = models.CharField(max_length=255, blank=True, null=True)
+# class Permission(models.Model):
+#     request = models.OneToOneField(Request, related_name='permission', on_delete=models.CASCADE)
+#     accessable = models.BooleanField(default=False)
+#     datetime = models.DateTimeField()
+#     rejectionlog = models.CharField(max_length=255, blank=True, null=True)

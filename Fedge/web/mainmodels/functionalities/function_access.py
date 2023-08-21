@@ -44,23 +44,25 @@ def access_checker(user, door):
     shifofuser = ShiftOfGroup.objects.get(group=usergroup, date=datetime.now().date())
     shiftnow = shifofuser.shift
 
-    if this_user.bereich != this_door.cabinet.bereich:
-        response = "You do not have access to this Door"
-        access = False
-        return access, response
-    elif current_shift != shiftnow:
-        response = "You do not have access to this door in this time"
-        access = False
-        return access, response
-    elif this_door.section not in this_user.accessible_cabinets:
-        response = "access denied because you don't have access to this section"
-        access = False
-        return access, response
-        # print ("your accessible sections are", this_user.accessible_cabinets)
-    #TODO: check the last elif. it shoudl be changed. Also a function of logging the event should be added to the end of this function
-    
+    if shiftnow == current_shift:
+        if this_user.bereich == this_door.cabinet.bereich:
+            if this_door.section == this_user.accessible_cabinets:
+                response = "access granted"
+                access = True
+                return access, response
+            else:
+                response = "access denied because you don't have access to this section"
+                access = False
+                return access, response
+        else:
+            response = "You do not have access to this Door"
+            access = False
+            return access, response
     else:
-        response = "access granted"
-        access = True
+        response = "You do not have access to this door in this shift"
+        access = False
         return access, response
+
+    #TODO: check the last elif. it shoudl be changed. Also a function of logging the event should be added to the end of this function
+
 
