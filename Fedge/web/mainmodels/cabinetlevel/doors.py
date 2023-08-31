@@ -33,14 +33,14 @@ class Door(models.Model):
         # self.qr = uuid.uuid4().hex[:20]
         generatedqr = uuid.uuid4().hex[:20]
         if doors:
-            while (condition):
-                for door in doors:
+            for door in doors:
+                while condition:
                     if generatedqr == door.qr:
                         generatedqr = uuid.uuid4().hex[:20]
                         condition = True
                     else:
                         condition = False
-        else:
-            self.qr = generatedqr
+
+        self.qr = generatedqr
         # print(generatedqr)
         super(Door, self).save(*args, **kwargs)
