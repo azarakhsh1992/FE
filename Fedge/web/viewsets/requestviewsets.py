@@ -12,8 +12,8 @@ from web.serializers.serializers import UserSerializer
 
 
 class RequestViewset(viewsets.ModelViewSet):
-    # queryset = Request.objects.all()
-    # serializer_class = RequestSerializer
+    queryset = Request.objects.all()
+    serializer_class = RequestSerializer
 
     @action(methods=['POST'], detail=False)
     def userrequest(self, request):

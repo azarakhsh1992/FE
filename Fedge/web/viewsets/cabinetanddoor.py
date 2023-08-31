@@ -10,16 +10,8 @@ class CabinetViewset(viewsets.ModelViewSet):
     queryset = Cabinet.objects.all()
     serializer_class = CabinetSerializer
 
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes = [AllowAny]
-    # @action(methods=['POST'], detail=False)
-    # def checkTemp(self, request, qr):
-    #     door = Door.objects.get(qr=qr)
-    #     cabinet = Cabinet.objects.get(door=door)
-    #     iolink = Iolink.objects.get(cabinet=cabinet)
-    #     value = TemperaturesensorDevice.objects.get(iolink=iolink).value_temperature
-    #     return Response({'temp': value}, status.HTTP_200_OK)
-
+    # @action(methods=['POST'],detail=False)
+    # def
     @action(methods=['POST'], detail=False)
     def checkEnergy():
         pass

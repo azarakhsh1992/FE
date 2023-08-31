@@ -5,9 +5,9 @@ from ..cabinetlevel.doors import Door
 
 
 class Request(models.Model):
-    user = models.ForeignKey(User, related_name='requests')
-    cabinet = models.ForeignKey(Cabinet, related_name='requests')
-    door = models.ForeignKey(Door, related_name='requests')
+    user = models.ForeignKey(User, related_name='requests', on_delete=models.CASCADE)
+    cabinet = models.ForeignKey(Cabinet, related_name='requests', on_delete=models.CASCADE)
+    door = models.ForeignKey(Door, related_name='requests', on_delete=models.CASCADE)
     description = models.CharField(max_length=255, blank=False, null=False)
     servicelog = models.BooleanField(default=False)
     datetime = models.DateTimeField()
@@ -17,9 +17,3 @@ class Servicelog(models.Model):
     request = models.OneToOneField(Request, related_name='servicelog', on_delete=models.CASCADE)
     description = models.TextField(blank=False)
     datetime = models.DateTimeField()
-
-# class Permission(models.Model):
-#     request = models.OneToOneField(Request, related_name='permission', on_delete=models.CASCADE)
-#     accessable = models.BooleanField(default=False)
-#     datetime = models.DateTimeField()
-#     rejectionlog = models.CharField(max_length=255, blank=True, null=True)

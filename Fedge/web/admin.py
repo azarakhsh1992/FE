@@ -16,8 +16,6 @@ from .mainmodels.iolmodules.iolmodule import Iol_Module
 # Register your models here.
 
 # admin.site.register(User)
-admin.site.register(Cabinet)
-admin.site.register(Door)
 admin.site.register(Iolink)
 
 admin.site.register(TemperaturesensorDevice)
@@ -54,3 +52,13 @@ class UserProfileAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ('temperaturesensordevice', 'tempvalue','humidvalue','timestamp')
     list_display = ('temperaturesensordevice', 'tempvalue','humidvalue','timestamp')
+
+@admin.register(Cabinet)
+class UserProfileAdmin(admin.ModelAdmin):
+    fields =('bereich','segment','anlage','arg_sps','pultbereich_sk','station','funktionseinheit')
+    list_display = ('id','bereich','segment','anlage','arg_sps','pultbereich_sk','station','funktionseinheit')
+
+@admin.register(Door)
+class UserProfileAdmin(admin.ModelAdmin):
+    fields = ('cabinet', 'name', 'direction', 'section')
+    list_display = ('id', 'cabinet', 'name', 'profinet_name', 'direction', 'section', 'qr' )

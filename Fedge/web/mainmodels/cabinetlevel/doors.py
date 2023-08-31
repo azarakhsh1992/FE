@@ -23,22 +23,24 @@ class Door(models.Model):
 
     section = models.CharField(choices=Section.choices, default=None, max_length=20)
 
-    class Meta:
-        unique_together = ('name', 'cabinet')
+    # class Meta:
+    #     unique_together = ('name', 'cabinet')
 
     def save(self, *args, **kwargs):
         self.profinet_name = str(self.cabinet.profinet_name) + str(self.name)
         doors = Door.objects.all()
         condition = True
+        # self.qr = uuid.uuid4().hex[:20]
         generatedqr = uuid.uuid4().hex[:20]
-        while(condition):
-            for door in doors:
-                if generatedqr == door.qr:
-                    generatedqr = uuid.uuid4().hex[:20]
-                    condition = True
-                else:
-                    self.qr = generatedqr
-                    condition = False
-        print(generatedqr)
-        self.qr = uuid.uuid4().hex[:20]
+        if doors:
+            while (condition):
+                for door in doors:
+                    if generatedqr == door.qr:
+                        generatedqr = uuid.uuid4().hex[:20]
+                        condition = True
+                    else:
+                        condition = False
+        else:
+            self.qr = generatedqr
+        # print(generatedqr)
         super(Door, self).save(*args, **kwargs)
