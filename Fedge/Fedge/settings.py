@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-3ao8j^=pbx#9k11i^ief0za2c7tw8(ze5-n^)@a98-#22ic4&b
 DEBUG = True
 
 ALLOWED_HOSTS = ['home',
-                 '127.0.0.1',]
+                 '127.0.0.1',
+                 '192.168.253.54',]
 
 # Application definition
 
@@ -73,10 +74,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Fedge.wsgi.application'
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    'https://localhost:3000'
-    ]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     'https://localhost:3000',
+#     ]
+CORS_ORIGIN_ALLOW_ALL = True
+
 CORS_ALLOW_HEADERS=[
     'Content-Type',
     'Authorization'
