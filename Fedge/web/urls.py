@@ -6,17 +6,18 @@ from .views import Test_json
 
 from .viewsets.cabinetanddoor import CabinetViewset, DoorViewset
 from .viewsets.moduleviewsets import ContainerViewset
+from .viewsets.requestviewsets import RequestViewset
 
 router = routers.DefaultRouter()
 router.register(r'userprofile', views.UserProfileViewset)
 router.register(r'users', views.UserViewset)
-# router.register(r'button',views.ButtonViewset)
 router.register(r'cabinet', CabinetViewset)
 router.register(r'doors', DoorViewset)
 router.register(r'json', views.JasonViewset)
 router.register(r'groupshift', views.ShiftOfGroupViewset)
 router.register(r'shifts', views.ShiftsViewset)
 router.register(r'containers', ContainerViewset)
+router.register(r'requests', RequestViewset)
 
 urlpatterns = [
     # path('', views.home, name='web-home'),

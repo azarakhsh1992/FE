@@ -15,11 +15,18 @@ class TempSensorValSerializer(serializers.ModelSerializer):
 
 
 class ContainerSerializer(serializers.Serializer):
-    tempvalue= serializers.FloatField(required=True)
-    humidvalue= serializers.FloatField(required=True)
-    # btnval= serializers.BooleanField(required=True)
-    # doorsenval= serializers.BooleanField(required=True)
-    # ledval= serializers.BooleanField(required=True)
-    # lockval= serializers.BooleanField(required=True)
-    timestamp = serializers.DateTimeField(required=True)
+    cabinet = serializers.CharField()
+    temp = serializers.DictField(child=serializers.CharField())
+    doorbutton = serializers.DictField(child=serializers.CharField())
+    doorsensor = serializers.DictField(child=serializers.CharField())
+    led = serializers.DictField(child=serializers.CharField())
+    lockactuator = serializers.DictField(child=serializers.CharField())
+    locksensor = serializers.DictField(child=serializers.CharField())
+    aircondition = serializers.DictField(child=serializers.CharField())
+    energy = serializers.DictField(child=serializers.CharField())
+    time = serializers.DateTimeField()
+    def create(self, validated_data):
+        pass
+    def update(self, instance, validated_data):
+        pass
 

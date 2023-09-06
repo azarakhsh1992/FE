@@ -23,14 +23,24 @@ class Door(models.Model):
 
     section = models.CharField(choices=Section.choices, default=None, max_length=20)
 
-    class Meta:
-        unique_together = ('name', 'cabinet')
+    # class Meta:
+    #     unique_together = ('name', 'cabinet')
 
     def save(self, *args, **kwargs):
         self.profinet_name = str(self.cabinet.profinet_name) + str(self.name)
-        self.qr = uuid.uuid4().hex[:20]
-        super(Door, self).save(*args, **kwargs)
+        doors = Door.objects.all()
+        condition = True
+        # self.qr = uuid.uuid4().hex[:20]
+        generatedqr = uuid.uuid4().hex[:20]
+        if doors:
+            for door in doors:
+                while condition:
+                    if generatedqr == door.qr:
+                        generatedqr = uuid.uuid4().hex[:20]
+                        condition = True
+                    else:
+                        condition = False
 
-# class QR_code(models.Model):
-#     door =models.OneToOneField(Door, on_delete=models.CASCADE)
-#     qr = models.CharField(max_length=20)
+        self.qr = generatedqr
+        # print(generatedqr)
+        super(Door, self).save(*args, **kwargs)
