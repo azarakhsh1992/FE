@@ -113,7 +113,10 @@ def CommandViewset(request):
 
 
 
-
+@csrf_exempt
+def Test_json(request):
+    if request.method == 'POST' :
+        print("you are here , STATUS : OK")
 
 
 # Token Custom Authorization

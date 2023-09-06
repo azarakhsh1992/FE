@@ -22,5 +22,6 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'^web/',include('web.urls'))
+    # re_path(r'^web/',include('web.urls')),
+    path('updatejson/', include('web.urls')),
 ]
