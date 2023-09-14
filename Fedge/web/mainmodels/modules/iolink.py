@@ -5,7 +5,7 @@ from ..cabinetlevel.cabinets import Cabinet
 
 class Iolink (models.Model):
 
-    cabinet = models.ForeignKey(Cabinet, on_delete=models.CASCADE)
+    cabinet = models.ForeignKey(Cabinet, related_name='iolink', on_delete=models.CASCADE)
 
     geraet = models.CharField(max_length=3)
     class Module_type (models.TextChoices):

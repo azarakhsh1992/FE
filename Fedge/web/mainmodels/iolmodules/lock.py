@@ -6,6 +6,7 @@ from ..iolmodules.iolmodule import Iol_Module
 
 class LockactuatorDevice(Iol_Module):
     module_type = "Lock actuator"
+    # door = models.OneToOneField(Door, related_name='parent door', on_delete=models.CASCADE)
 
     class Meta:
         pass

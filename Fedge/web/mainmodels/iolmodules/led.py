@@ -8,6 +8,7 @@ from ..iolmodules.iolmodule import Iol_Module
 
 class LedDevice (Iol_Module):
     module_type = "LED"
+    # door = models.OneToOneField(Door, related_name='parent door', on_delete=models.CASCADE)
     class Meta:
         pass
 

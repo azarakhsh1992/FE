@@ -4,7 +4,7 @@ from ..cabinetlevel.doors import Door
 
 
 class Iol_Module(models.Model):
-    iolink = models.ForeignKey(Iolink, on_delete=models.CASCADE)
+    iolink = models.ForeignKey(Iolink, related_name='iolmodules', on_delete=models.CASCADE)
 
     bmk = models.CharField(max_length=3, default=None)
     serial_number = models.CharField(max_length=50, unique=True)

@@ -1,11 +1,14 @@
 from django.db import models
+
+from ..cabinetlevel.doors import Door
 from ..modules.iolink import Iolink
 from ..iolmodules.iolmodule import Iol_Module
 
 
 
 class ButtonDevice(Iol_Module):
-    module_type = "Door Sensor"
+    module_type = "Door Button"
+    # door = models.OneToOneField(Door, related_name='parentdoor', on_delete=models.CASCADE)
     class Meta:
         pass
 

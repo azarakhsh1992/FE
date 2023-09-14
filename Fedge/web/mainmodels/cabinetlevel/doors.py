@@ -23,8 +23,8 @@ class Door(models.Model):
 
     section = models.CharField(choices=Section.choices, default=None, max_length=20)
 
-    # class Meta:
-    #     unique_together = ('name', 'cabinet')
+    class Meta:
+        unique_together = ('name', 'cabinet')
 
     def save(self, *args, **kwargs):
         self.profinet_name = str(self.cabinet.profinet_name) + str(self.name)

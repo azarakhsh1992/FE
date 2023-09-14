@@ -6,6 +6,7 @@ from ..iolmodules.iolmodule import Iol_Module
 
 class DoorsensorDevice(Iol_Module):
     module_type = "Door Sensor"
+    # door = models.OneToOneField(Door, related_name='parentdoor', on_delete=models.CASCADE)
     class Meta:
         pass
 

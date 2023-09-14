@@ -29,6 +29,7 @@ class RequestViewset(viewsets.ModelViewSet):
                 eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, \
                                                   description=request.data['description'],
                                                   datetime=request.data['time'], servicelog=False)
+                # TODO: send to container to open the door
                 response = {'message': accessresponse}
                 return Response(response, status=status.HTTP_200_OK)
             else:
@@ -47,6 +48,7 @@ class RequestViewset(viewsets.ModelViewSet):
             userservice = request.data['service']
             try:
                 existreq = Request.objects.get(id=userrequest['id'])
+                # TODO: if that door is closed
                 if existreq.servicelog == False:
                     newservicelog = Servicelog.objects.create(request=existreq, description=userservice['description'], datetime=userservice['datetime'])
                     existreq.servicelog = True
