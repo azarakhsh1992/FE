@@ -4,17 +4,18 @@
       "id1":{
           "port": "x1",
           "serialnumber": "2214456",
-          "value": "23",
+          "value": "23"
       },
       "id2":{
           "port": "x2",
           "serialnumber": "21114547",
           "value": "25",
-      },
+        "fault": "True or False"
+      }
   },
   "led": {},
   "doorbutton": {},
   "doorsensor": {},
   "energy": {},
-  "humidity": {},
+  "humidity": {}
 }
