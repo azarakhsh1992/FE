@@ -65,3 +65,7 @@ def access_checker(user, door):
     #TODO: check the last elif. it shoudl be changed. Also a function of logging the event should be added to the end of this function
 
 
+def access_checker2(user, door):
+    response = "Access granted for test"
+    access = True
+    return access, response
