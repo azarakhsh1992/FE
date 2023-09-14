@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from web.mainmodels.iolmodules.temperaturesensordevice import TemperaturesensorValue,TemperaturesensorDevice
+from ..mainmodels.iolmodules.temperaturesensordevice import TemperaturesensorValue,TemperaturesensorDevice
 
 class TempSensorDevSerializer(serializers.ModelSerializer):
     class Meta:

@@ -2,8 +2,6 @@ from django.db import models
 from ..cabinetlevel.cabinets import Cabinet
 from ..modules.iolink import Iolink
 from ..cabinetlevel.doors import Door
-from ..iolmodules.lock import Lockactuator
-from ..iolmodules.led import Led
 from ..iolmodules.temperaturesensordevice import TemperaturesensorDevice
 from ..userrelated.users import User
 from datetime import datetime, date, time, timezone

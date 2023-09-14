@@ -7,22 +7,19 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from .mainmodels.userrelated.users import UserProfile
-from web.serializers.serializers import UserProfileSerializer, UserSerializer
-from web.serializers.serializers import DoorSensorSerializer, FullGroupShiftSerializer, \
-    ShiftOfGroupSerializer
 from .mainmodels.iolmodules.doorsensor import DoorsensorDevice
 from .mainmodels.cabinetlevel.doors import Door
 from .mainmodels.modules.iolink import Iolink
 from .mainmodels.iolmodules.temperaturesensordevice import TemperaturesensorDevice
-from web.serializers.serializers import Jsonserializer
 from .mainmodels.cabinetlevel.cabinets import Cabinet
 from .mainmodels.functionalities.json import Json_draft
 import json
 import requests
-from web.serializers.serializers import CommandSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
 from .serializers.cabinetanddoor import CabinetSerializer
+from .serializers.serializers import UserProfileSerializer, UserSerializer, Jsonserializer, CommandSerializer, \
+    FullGroupShiftSerializer, ShiftOfGroupSerializer
 
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////

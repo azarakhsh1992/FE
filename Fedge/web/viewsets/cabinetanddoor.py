@@ -1,9 +1,9 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from web.mainmodels.cabinetlevel.cabinets import Cabinet
-from web.mainmodels.cabinetlevel.doors import Door
-from web.serializers.cabinetanddoor import CabinetSerializer, DoorSerializer
+from ..mainmodels.cabinetlevel.cabinets import Cabinet
+from ..mainmodels.cabinetlevel.doors import Door
+from ..serializers.cabinetanddoor import CabinetSerializer, DoorSerializer
 
 
 class CabinetViewset(viewsets.ModelViewSet):

@@ -3,12 +3,12 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from web.mainmodels.cabinetlevel.cabinets import Cabinet
-from web.mainmodels.cabinetlevel.doors import Door
-from web.mainmodels.requests.requests import Request, Servicelog
-from web.serializers.requestserializers import RequestSerializer
-from web.mainmodels.functionalities.function_access import access_checker
-from web.serializers.serializers import UserSerializer
+from ..mainmodels.cabinetlevel.cabinets import Cabinet
+from ..mainmodels.cabinetlevel.doors import Door
+from ..mainmodels.requests.requests import Request, Servicelog
+from ..serializers.requestserializers import RequestSerializer
+from ..mainmodels.functionalities.function_access import access_checker
+from ..serializers.serializers import UserSerializer
 
 
 class RequestViewset(viewsets.ModelViewSet):

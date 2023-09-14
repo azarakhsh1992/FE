@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from web.mainmodels.requests.requests import Request
+from ..mainmodels.requests.requests import Request
 
 
 class RequestSerializer(serializers.ModelSerializer):

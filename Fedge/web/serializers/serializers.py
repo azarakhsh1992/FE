@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
-from web.mainmodels.cabinetlevel.cabinets import Cabinet
-from web.mainmodels.functionalities.json import Json_draft
-from web.mainmodels.iolmodules.button import ButtonDevice
-from web.mainmodels.iolmodules.doorsensor import DoorsensorDevice
-from web.mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
-from web.mainmodels.userrelated.users import User, UserProfile
+from ..mainmodels.cabinetlevel.cabinets import Cabinet
+from ..mainmodels.functionalities.json import Json_draft
+from ..mainmodels.iolmodules.button import ButtonDevice
+from ..mainmodels.iolmodules.doorsensor import DoorsensorDevice
+from ..mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
+from ..mainmodels.userrelated.users import User, UserProfile
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

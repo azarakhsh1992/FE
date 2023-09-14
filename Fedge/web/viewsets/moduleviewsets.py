@@ -2,10 +2,10 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from web.mainmodels.iolmodules.doorsensor import DoorsensorDevice
-from web.mainmodels.iolmodules.temperaturesensordevice import TemperaturesensorValue,TemperaturesensorDevice
-from web.serializers.moduleserializers import TempSensorDevSerializer,ContainerSerializer,TempSensorValSerializer
-from web.serializers.serializers import DoorSensorSerializer
+from ..mainmodels.iolmodules.doorsensor import DoorsensorDevice
+from ..mainmodels.iolmodules.temperaturesensordevice import TemperaturesensorValue,TemperaturesensorDevice
+from ..serializers.moduleserializers import TempSensorDevSerializer,ContainerSerializer,TempSensorValSerializer
+from ..serializers.serializers import DoorSensorSerializer
 
 
 class ContainerViewset(viewsets.ModelViewSet):
