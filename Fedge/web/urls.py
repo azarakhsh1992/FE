@@ -25,7 +25,7 @@ urlpatterns = [
     # path ('access_check/', views.access_check, name='access_check'),
     # path ('door_status/', views.door_status, name='door_status'),
     # path ('unlocking/', views.unlocking, name='unlocking'),
-    # re_path(r'^', include(router.urls)),
+    re_path(r'^', include(router.urls)),
     path('print_request/', views.CommandViewset, name='print_request'),
     path('authenticate/', views.CustomObtainAuthToken.as_view()),
     path('updatejson/', views.Test_json, name='updatejson'),
