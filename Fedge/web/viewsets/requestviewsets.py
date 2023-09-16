@@ -75,17 +75,37 @@ class RequestViewset(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False)
     def middleware(self, request):
         req_iolink = request.data['profinet_name']
+        req_door = request.data['door']
         obj_iolink = Iolink.objects.get(profinet_name=req_iolink)
         obj_cabinet = obj_iolink.cabinet
         obj_request = Request.objects.get(cabinet=obj_cabinet, sendtomiddleware=False)
-        obj_door = [obj.door for obj in obj_request]
-        serializer = FullDoorSerializer(obj_door, many=True)
+        obj_doors = [obj.door for obj in obj_request]
+        serializer = FullDoorSerializer(obj_doors, many=True)
         customized_data = []
-        for item in serializer.data:
-            customized_data.append({
-                'name': item.get('name')
-            })
-        for obj in obj_request:
-            obj.sendtomiddleware = True
-            obj.save()
+        for reqdoor in req_door:
+            for door in serializer.data:
+                if reqdoor.name == door.get('name'):
+                    try:
+                        _door_obj = Door.objects.get(cabinet=obj_cabinet, name=door.get('name'))
+                        _onhandlereq = Request.objects.get(cabinet=obj_cabinet, door=_door_obj)
+                        _onhandlereq.sendtomiddleware = True
+                        _onhandlereq.save()
+                        customized_data.append({
+                            'name': door.get('name'),
+                            "opening": True,
+                            'request': 'exists'
+                        })
+                    except:
+                        customized_data.append({
+                            'name': door.get('name'),
+                            "opening": False,
+                            'request': 'some problem'
+                        })
+
+                else:
+                    customized_data.append({
+                        'name': door.get('name'),
+                        "opening": False,
+                        'request': 'not exists'
+                    })
         return Response(customized_data)
