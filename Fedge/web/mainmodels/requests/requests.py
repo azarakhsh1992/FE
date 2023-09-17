@@ -14,6 +14,7 @@ class Request(models.Model):
     cancelinghdw = models.BooleanField(default=False, blank=False, null=False)
     cancelingfrnt = models.BooleanField(default=False, blank=False, null=False)
     sendtomiddleware = models.BooleanField(default=False, blank=False, null=False)
+    sendtofrontend = models.BooleanField(default=False, blank=False, null=False)
     profinet_name = models.CharField(max_length=15, editable=False, default=None)
     datetime = models.DateTimeField()
     def save(self, *args, **kwargs):

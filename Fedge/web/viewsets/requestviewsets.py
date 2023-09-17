@@ -35,7 +35,10 @@ class RequestViewset(viewsets.ModelViewSet):
                                                   datetime=request.data['time'], servicelog=False, buttonstatus=False,
                                                   cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
                 # TODO: send to container to open the door
-                response = {'message': accessresponse}
+                serialized_data = RequestSerializer(eventreq)
+                req_id = serialized_data.data.get('id')
+                response = {'message': accessresponse,
+                            'id': req_id}
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'message': accessresponse}
@@ -109,3 +112,19 @@ class RequestViewset(viewsets.ModelViewSet):
                         'request': 'not exists'
                     })
         return Response(customized_data)
+
+    @action(methods=["POST"], detail=False)
+    def frontend(self, request):
+        req_frontend = request.data['request']
+        req_id = req_frontend.id
+        try:
+            obj_req = Request.objects.get(id=req_id)
+            if obj_req.sendtomiddleware == True and obj_req.sendtofrontend == False:
+                response = {'message': 'door is open, please confirm servicelog after maintanance'}
+                return Response(response, status=status.HTTP_200_OK)
+            else:
+                response = {'message': 'please wait'}
+                return Response(response, status=status.HTTP_200_OK)
+        except:
+            response = {'message': 'this request not exists'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
