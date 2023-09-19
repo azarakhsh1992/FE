@@ -34,7 +34,7 @@ class RequestViewset(viewsets.ModelViewSet):
                                                   description=request.data['description'],
                                                   datetime=request.data['time'], servicelog=False, buttonstatus=False,
                                                   cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
-                # TODO: send to container to open the door
+                # TODO: send to container to open the door : it will send event base on container
                 serialized_data = RequestSerializer(eventreq)
                 req_id = serialized_data.data.get('id')
                 response = {'message': accessresponse,
