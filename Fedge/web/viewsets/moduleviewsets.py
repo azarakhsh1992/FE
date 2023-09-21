@@ -22,6 +22,14 @@ class ContainerViewset(viewsets.ModelViewSet):
         else:
             response = {'message': 'data not correct'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['POST'], detail=False)
+    def gettemp(self, request):
+        num = request.data['num']
+        datas = TemperaturesensorValue.objects.order_by('-datetime')[:int(num)]
+        datas = TempSensorValSerializer(datas, many=True)
+        finaldata = datas.data
+        return Response(finaldata, status=status.HTTP_200_OK)
 class DoorSensorViewset(viewsets.ModelViewSet):
     queryset = DoorsensorDevice.objects.all()
     serializer_class = DoorSensorSerializer
