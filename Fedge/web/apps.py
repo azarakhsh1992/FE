@@ -12,6 +12,6 @@ class WebConfig(AppConfig):
             return
         os.environ['CMDLINERUNNER_RUN_ONCE'] = 'True'
 
-        from web import datamaker  # Import your jobs.py file
-        datamaker.scheduler.start()
-        print("Scheduler started!")
+        # from web import datamaker  # Import your jobs.py file
+        # datamaker.scheduler.start()
+        # print("Scheduler started!")
