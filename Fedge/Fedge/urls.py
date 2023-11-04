@@ -24,4 +24,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # re_path(r'^web/',include('web.urls')),
     path('web/', include('web.urls')),
+    path('temp_sensors_msg/', include('web.urls'))
 ]

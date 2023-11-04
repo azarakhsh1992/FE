@@ -20,7 +20,8 @@ from .mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
 from .serializers.cabinetanddoor import CabinetSerializer
 from .serializers.serializers import UserProfileSerializer, UserSerializer, Jsonserializer, CommandSerializer, \
     FullGroupShiftSerializer, ShiftOfGroupSerializer
-
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////
 class UserProfileViewset(viewsets.ModelViewSet):
@@ -150,3 +151,18 @@ class ShiftsViewset(viewsets.ModelViewSet):
     # def create(self, request, *args, **kwargs):
     #     data = request.data
     #     print(data)
+    
+@csrf_exempt
+@require_POST
+@action(methods=['POST'],detail=False)
+def temp_sensors_msg(request):
+    try:
+        data= request.data
+        response='message received'
+        print(data)
+        print(response)
+        return Response(response, status==status.HTTP_200_OK)
+    except:
+        response='message not received! ERROR'
+        print(response)
+        return Response('ERROR', status=status.HTTP_400_BAD_REQUEST)

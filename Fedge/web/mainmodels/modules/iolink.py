@@ -43,15 +43,3 @@ class Iolink (models.Model):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
