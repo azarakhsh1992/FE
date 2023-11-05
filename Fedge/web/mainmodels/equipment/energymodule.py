@@ -6,11 +6,11 @@ from .devices import Device
 
 
 class EnergysensorDevice(Device):
+    module_type = 'Energy Measurement Module'
     class MeasuringEnvironment(models.TextChoices):
         EM1 = 'EM1', 'EM1'
         EM2 = 'ME2', 'EM2'
     measuring_env = models.CharField(choices=MeasuringEnvironment.choices, default=None, max_length=4)
-    module_type = 'Energy Measurement Module'
     class Meta:
         pass
 

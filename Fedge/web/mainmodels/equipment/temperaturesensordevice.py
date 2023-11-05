@@ -6,7 +6,7 @@ from ..equipment.devices import Device
 
 
 class TemperatureSensor(Device):
-
+    module_type = "temperature and humidity sensor module"
     class MeasuringEnvironment(models.TextChoices):
         Edge_A_top = 'Edge_A_top', 'Edge_A_top'
         Edge_A_middle = 'Edge_A_middle', 'Edge_A_middle'
@@ -17,7 +17,8 @@ class TemperatureSensor(Device):
         Network = 'Network', 'Network'
         Energy = 'Energy', 'Energy'
     measuring_env = models.CharField(choices=MeasuringEnvironment.choices, default=None, max_length=16)
-    module_type = "temperature and humidity sensor module"
+    class Meta:
+        pass
 
 class TemperatureSensorValue(models.Model):
     temperaturesensordevice = models.ForeignKey(TemperatureSensor, on_delete=models.CASCADE, related_name='temperaturesensorvalue')

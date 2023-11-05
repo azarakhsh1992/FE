@@ -15,18 +15,24 @@ from .mainmodels.equipment.devices import Device
 
 # Register your models here.
 
-# admin.site.register(User)
+# admin.register(User)
+@admin.register(TemperatureSensor)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('id','profinet_name','plc')
 
-admin.site.register(TemperatureSensor)
-list_display = ('id','profinet_name','plc')
-
-admin.site.register(Latch)
-admin.site.register(LED)
-
-admin.site.register(DoorSensor)
-admin.site.register(DoorButton)
-admin.site.register(Device)
-# admin.site.register(QR_code)
+@admin.register(LED)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('id','profinet_name','plc')
+@admin.register(DoorSensor)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('id','profinet_name','plc')
+@admin.register(DoorButton)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('id','profinet_name','plc')
+@admin.register(Device)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('id','profinet_name','plc')
+# admin.register(QR_code)
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ('user', 'accessable_cabinets' , 'role', 'bereich', 'telephone', 'group')
@@ -56,8 +62,12 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Cabinet)
 class UserProfileAdmin(admin.ModelAdmin):
-    fields =('bereich','segment','anlage','arg_sps','pultbereich_sk','station','funktionseinheit')
-    list_display = ('id','bereich','segment','anlage','arg_sps','pultbereich_sk','station','funktionseinheit')
+    fields =('bereich','segment','anlage','arg_sps','pultbereich_sk','station')
+    list_display = ('id','bereich','segment','anlage','arg_sps','pultbereich_sk','station')
+    
+@admin.register(Latch)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('id','bereich','profinet_name')
 
 @admin.register(Door)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -70,4 +80,4 @@ class UserProfileAdmin(admin.ModelAdmin):
     
 @admin.register(PLC)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cabinet','profinet_name')
+    list_display = ('id', 'cabinet','profinet_name','funktionseinheit')

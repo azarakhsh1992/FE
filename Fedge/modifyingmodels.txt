@@ -1,0 +1,5 @@
+PLC OK
+Door OK
+Rack OK
+Cabinet OK
+devices : Cabinet must be determined through the PLC
