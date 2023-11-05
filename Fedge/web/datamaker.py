@@ -7,9 +7,9 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 from .mainmodels.cabinetlevel.cabinets import Cabinet
 from .mainmodels.equipment.doorsensor import DoorSensor, DoorsensorValue
-from .mainmodels.equipment.led import LedDevice, LedValue
-from .mainmodels.equipment.lock import Latch, LatchValue
-from .mainmodels.equipment.temperaturesensordevice import TemperaturesensorDevice, TemperaturesensorValue
+from .mainmodels.equipment.led import LED, LedValue
+from .mainmodels.equipment.latch import Latch, LatchValue
+from .mainmodels.equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
 from .mainmodels.equipment.plc import PLC
 
 scheduler = BackgroundScheduler()
@@ -30,13 +30,13 @@ def my_function():
     doorsensor = DoorSensor.objects.get(plc=plc)
     doorsensorvalue = DoorsensorValue.objects.create(doorsensordevice=doorsensor, value=True, timestamp=_datetime)
     # led device
-    leddevice = LedDevice.objects.get(plc=plc)
-    leddevicevalue = LedValue.objects.create(leddevice=leddevice, value=True, timestamp=_datetime)
-    # lock actuator
+    led = LED.objects.get(plc=plc)
+    leddevicevalue = LedValue.objects.create(led=led, value=True, timestamp=_datetime)
+    # latch actuator
     lockactuator = Latch.objects.get(plc=plc)
     latchvalue = LatchValue.objects.create(latch=lockactuator, value=True, timestamp=_datetime)
     # tempsensor
-    tempsensor = TemperaturesensorDevice.objects.get(plc=plc)
-    tempsensorvalue = TemperaturesensorValue.objects.create(temperaturesensordevice=tempsensor, tempvalue=generate_random_float(24.5, 55.5), humidvalue=generate_random_float(20, 50), timestamp=_datetime)
+    tempsensor = TemperatureSensor.objects.get(plc=plc)
+    tempsensorvalue = TemperatureSensorValue.objects.create(temperaturesensordevice=tempsensor, tempvalue=generate_random_float(24.5, 55.5), humidvalue=generate_random_float(20, 50), timestamp=_datetime)
     print(plc)
     # print('successfully created')

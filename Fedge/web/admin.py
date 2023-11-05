@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .mainmodels.cabinetlevel.cabinets import Cabinet
+from .mainmodels.cabinetlevel.cabinets import Cabinet, Rack
 from .mainmodels.userrelated.users import UserProfile
 from .mainmodels.cabinetlevel.doors import Door
-from .mainmodels.equipment.temperaturesensordevice import TemperaturesensorDevice, TemperaturesensorValue
-from .mainmodels.equipment.led import LedDevice
-from .mainmodels.equipment.lock import Latch
+from .mainmodels.equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
+from .mainmodels.equipment.led import LED
+from .mainmodels.equipment.latch import Latch
 from .mainmodels.equipment.plc import PLC
 from .mainmodels.equipment.doorsensor import DoorSensor
 from .mainmodels.equipment.button import DoorButton
@@ -16,11 +16,12 @@ from .mainmodels.equipment.devices import Device
 # Register your models here.
 
 # admin.site.register(User)
-admin.site.register(PLC)
 
-admin.site.register(TemperaturesensorDevice)
+admin.site.register(TemperatureSensor)
+list_display = ('id','profinet_name','plc')
+
 admin.site.register(Latch)
-admin.site.register(LedDevice)
+admin.site.register(LED)
 
 admin.site.register(DoorSensor)
 admin.site.register(DoorButton)
@@ -48,7 +49,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('group','shift','date')
 
 
-@admin.register(TemperaturesensorValue)
+@admin.register(TemperatureSensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ('temperaturesensordevice', 'tempvalue','humidvalue','timestamp')
     list_display = ('temperaturesensordevice', 'tempvalue','humidvalue','timestamp')
@@ -62,3 +63,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ('cabinet', 'rack', 'direction')
     list_display = ('id', 'cabinet', 'rack', 'direction', 'qr')
+    
+@admin.register(Rack)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('cabinet','name','id')
+    
+@admin.register(PLC)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('id', 'cabinet','profinet_name')

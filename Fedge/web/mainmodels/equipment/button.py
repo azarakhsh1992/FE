@@ -15,6 +15,6 @@ class DoorButton(Device):
 
 
 class ButtonValues(models.Model):
-    doorbutton = models.ForeignKey(DoorButton, on_delete=models.CASCADE, related_name='button_value')
+    doorbutton = models.ForeignKey(DoorButton, on_delete=models.CASCADE, related_name='buttonvalue')
     value = models.BooleanField(default=False)
-    timestamp = models.DateTimeField()
+    #timestamp = models.DateTimeField()

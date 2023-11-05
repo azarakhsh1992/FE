@@ -1,16 +1,16 @@
 from rest_framework import serializers
 
-from ..mainmodels.equipment.temperaturesensordevice import TemperaturesensorValue,TemperaturesensorDevice
+from ..mainmodels.equipment.temperaturesensordevice import TemperatureSensorValue,TemperatureSensor
 
 class TempSensorDevSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TemperaturesensorDevice
+        model = TemperatureSensor
         fields = '__all__'
 
 
 class TempSensorValSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TemperaturesensorValue
+        model = TemperatureSensorValue
         fields = ('temperaturesensordevice', 'tempvalue', 'humidvalue', 'timestamp')
 
 

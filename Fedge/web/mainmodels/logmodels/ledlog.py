@@ -1,6 +1,6 @@
 from django.db import models
-from ..equipment.led import LedDevice
+from ..equipment.led import LED
 
 
 class LedLog(models.Model):
-    leddevice = models.ForeignKey(LedDevice, on_delete=models.CASCADE, related_name='ledlog')
+    led = models.ForeignKey(LED, on_delete=models.CASCADE, related_name='ledlog')

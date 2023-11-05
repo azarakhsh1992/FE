@@ -6,14 +6,14 @@ from .plc import PLC
         
         
 
-class LedDevice (Device):
+class LED (Device):
     module_type = "LED"
-    # door = models.OneToOneField(Door, related_name='parent door', on_delete=models.CASCADE)
+    door = models.ForeignKey(Door, related_name='led', on_delete=models.CASCADE)
     class Meta:
         pass
 
 
 class LedValue(models.Model):
-    leddevice = models.ForeignKey(LedDevice, on_delete=models.CASCADE, related_name='ledvalue')
+    led = models.ForeignKey(LED, on_delete=models.CASCADE, related_name='ledvalue')
     value = models.BooleanField(default=False)
-    timestamp = models.DateTimeField()
+    #timestamp = models.DateTimeField()

@@ -26,7 +26,8 @@ class Cabinet(models.Model):
         super(Cabinet, self).save(*args, **kwargs)
     class Meta:
         pass
-
+    def __str__(self):
+        return self.profinet_name
 class Rack(models.Model):
     class Name(models.TextChoices):
         Edge_A = "Edge_A", "Edge_A"
@@ -36,7 +37,7 @@ class Rack(models.Model):
         Cooling = "Cooling", "Cooling"
     name = models.CharField(choices=Name.choices, default=None, max_length=16, null=False)
     cabinet = models.ForeignKey(Cabinet, on_delete=models.CASCADE, null=False)
-
-    def save (self, *args, **kwargs):
-        self.cabinet = self.cabinet.profinet_name
-        super(Rack, self).save(*args, **kwargs)
+    def __str__(self):
+        return self.name
+    class Meta:
+        unique_together = ('name', 'cabinet')

@@ -2,7 +2,7 @@ from django.db import models
 from ..cabinetlevel.cabinets import Cabinet
 from ..equipment.plc import PLC
 from ..cabinetlevel.doors import Door
-from ..equipment.temperaturesensordevice import TemperaturesensorDevice
+from ..equipment.temperaturesensordevice import TemperatureSensor
 from ..userrelated.users import User
 from datetime import datetime, date, time, timezone
 

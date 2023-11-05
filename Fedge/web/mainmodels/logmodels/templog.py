@@ -1,6 +1,6 @@
 from django.db import models
-from ..equipment.temperaturesensordevice import TemperaturesensorDevice
+from ..equipment.temperaturesensordevice import TemperatureSensor
 
 
 class TempLog(models.Model):
-    tempdevice = models.ForeignKey(TemperaturesensorDevice, on_delete=models.CASCADE, related_name='templog')
+    tempdevice = models.ForeignKey(TemperatureSensor, on_delete=models.CASCADE, related_name='templog')

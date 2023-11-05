@@ -1,5 +1,5 @@
 from django.db import models
-from ..equipment.lock import Latch
+from ..equipment.latch import Latch
 
 
 class LockLog(models.Model):

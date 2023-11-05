@@ -15,4 +15,4 @@ class Latch(Device):
 class LatchValue(models.Model):
     latch = models.ForeignKey(Latch, on_delete=models.CASCADE, related_name='latchvalue')
     value = models.BooleanField(default=False)
-    timestamp = models.DateTimeField()
+    #timestamp = models.DateTimeField()

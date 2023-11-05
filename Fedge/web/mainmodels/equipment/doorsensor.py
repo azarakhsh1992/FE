@@ -6,12 +6,11 @@ from ..equipment.devices import Device
 
 class DoorSensor(Device):
     module_type = "Door Sensor"
-    # door = models.OneToOneField(Door, related_name='parentdoor', on_delete=models.CASCADE)
+    door = models.OneToOneField(Door, related_name='parentdoor', on_delete=models.CASCADE)
     class Meta:
         pass
 
-
 class DoorsensorValue(models.Model):
-    doorsensordevice = models.ForeignKey(DoorSensor, on_delete=models.CASCADE, related_name='door_sensor_value')
+    doorsensordevice = models.ForeignKey(DoorSensor, on_delete=models.CASCADE, related_name='doorsensorvalue')
     value = models.BooleanField(default=False)
-    timestamp = models.DateTimeField()
+    #timestamp = models.DateTimeField()
