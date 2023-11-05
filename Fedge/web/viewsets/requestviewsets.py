@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from ..mainmodels.cabinetlevel.cabinets import Cabinet
 from ..mainmodels.cabinetlevel.doors import Door
-from ..mainmodels.modules.plc import PLC
+from ..mainmodels.equipment.plc import PLC
 from ..mainmodels.requests.requests import Request, Servicelog
 from ..serializers.cabinetanddoor import DoorSerializer, FullDoorSerializer
 from ..serializers.requestserializers import RequestSerializer

@@ -1,5 +1,5 @@
 from django.db import models
-from ..modules.energymodule import EnergysensorDevice
+from ..equipment.energymodule import EnergysensorDevice
 
 
 class EnergyLog(models.Model):

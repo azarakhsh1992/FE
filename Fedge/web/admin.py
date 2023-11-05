@@ -5,7 +5,7 @@ from .mainmodels.cabinetlevel.doors import Door
 from .mainmodels.equipment.temperaturesensordevice import TemperaturesensorDevice, TemperaturesensorValue
 from .mainmodels.equipment.led import LedDevice
 from .mainmodels.equipment.lock import Latch
-from .mainmodels.modules.plc import PLC
+from .mainmodels.equipment.plc import PLC
 from .mainmodels.equipment.doorsensor import DoorSensor
 from .mainmodels.equipment.button import DoorButton
 from .mainmodels.functionalities.json import Json_draft

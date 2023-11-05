@@ -10,7 +10,7 @@ from .mainmodels.equipment.doorsensor import DoorSensor, DoorsensorValue
 from .mainmodels.equipment.led import LedDevice, LedValue
 from .mainmodels.equipment.lock import Latch, LatchValue
 from .mainmodels.equipment.temperaturesensordevice import TemperaturesensorDevice, TemperaturesensorValue
-from .mainmodels.modules.plc import PLC
+from .mainmodels.equipment.plc import PLC
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), "default")

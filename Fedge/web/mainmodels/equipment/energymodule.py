@@ -53,7 +53,6 @@ class EnergysensorDevice(models.Model):
 
 
 class EnergysensorValue(models.Model):
-    energysensordevice = models.ForeignKey(EnergysensorDevice, on_delete=models.CASCADE,
-                                           related_name='energysensorvalue')
+    energysensordevice = models.ForeignKey(EnergysensorDevice, on_delete=models.CASCADE, related_name='energysensorvalue')
     value = models.FloatField(default=0)
     timestamp = models.DateTimeField()

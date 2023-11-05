@@ -1,7 +1,7 @@
 from django.db import models
-from ..modules.plc import PLC
 from ..cabinetlevel.doors import Door
 from ..equipment.devices import Device
+from .plc import PLC
     
         
         
