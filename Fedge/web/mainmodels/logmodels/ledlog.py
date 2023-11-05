@@ -1,5 +1,5 @@
 from django.db import models
-from ..iolmodules.led import LedDevice
+from ..equipment.led import LedDevice
 
 
 class LedLog(models.Model):

@@ -14,7 +14,7 @@ class EnergysensorDevice(models.Model):
         ENERGY_SENSOR = 'ENERGY_SENSOR', 'Energy Measurement Module'
 
     module_type = models.CharField(choices=Moduletype.choices, max_length=15)
-    profinet_address = models.GenericIPAddressField(default=None, unique=True)
+    ip_address = models.GenericIPAddressField(default=None, unique=True)
     serial_number = models.CharField(max_length=50, unique=True)
 
     def save(self, *args, **kwargs):

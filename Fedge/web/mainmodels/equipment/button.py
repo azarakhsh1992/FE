@@ -2,11 +2,11 @@ from django.db import models
 
 from ..cabinetlevel.doors import Door
 from ..modules.plc import PLC
-from ..iolmodules.iolmodule import Iol_Module
+from ..equipment.devices import Device
 
 
 
-class ButtonDevice(Iol_Module):
+class DoorButton(Device):
     module_type = "Door Button"
     # door = models.OneToOneField(Door, related_name='parentdoor', on_delete=models.CASCADE)
     class Meta:
@@ -15,6 +15,6 @@ class ButtonDevice(Iol_Module):
 
 
 class ButtonValues(models.Model):
-    btndevice = models.ForeignKey(ButtonDevice, on_delete=models.CASCADE, related_name='btnvalue')
+    doorbutton = models.ForeignKey(DoorButton, on_delete=models.CASCADE, related_name='button_value')
     value = models.BooleanField(default=False)
     timestamp = models.DateTimeField()

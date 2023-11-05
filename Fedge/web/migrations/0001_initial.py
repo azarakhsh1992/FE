@@ -51,13 +51,13 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Iol_Module',
+            name='Device',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('bmk', models.CharField(default=None, max_length=3)),
                 ('serial_number', models.CharField(max_length=50, unique=True)),
                 ('manufacturer', models.CharField(max_length=50)),
-                ('profinet_address', models.GenericIPAddressField(default=None, editable=False)),
+                ('ip_address', models.GenericIPAddressField(default=None, editable=False)),
                 ('profinet_name', models.CharField(default=None, editable=False, max_length=22)),
                 ('bereich', models.CharField(choices=[('K', 'Karosseriebau'), ('F', 'Fördertechnik'), ('M', 'Montage'), ('I', 'Inhouse Logistik'), ('P', 'Presswerk'), ('L', 'Lackiererei'), ('B', 'Batteriefertigung'), ('C', 'Komponente')], editable=False, max_length=1)),
                 ('segment', models.CharField(editable=False, max_length=1)),
@@ -103,14 +103,14 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='ButtonDevice',
+            name='DoorButton',
             fields=[
                 ('iol_module_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='web.iol_module')),
             ],
             bases=('web.iol_module',),
         ),
         migrations.CreateModel(
-            name='DoorsensorDevice',
+            name='DoorSensor',
             fields=[
                 ('iol_module_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='web.iol_module')),
             ],
@@ -124,7 +124,7 @@ class Migration(migrations.Migration):
             bases=('web.iol_module',),
         ),
         migrations.CreateModel(
-            name='LockactuatorDevice',
+            name='Latch',
             fields=[
                 ('iol_module_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='web.iol_module')),
             ],
@@ -176,7 +176,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('geraet', models.CharField(max_length=3)),
                 ('module_type', models.CharField(choices=[('IO_LINK', 'IO_Link Master')], max_length=10)),
-                ('profinet_address', models.GenericIPAddressField(default=None, unique=True)),
+                ('ip_address', models.GenericIPAddressField(default=None, unique=True)),
                 ('serial_number', models.CharField(max_length=50, unique=True)),
                 ('profinet_name', models.CharField(default=None, editable=False, max_length=18)),
                 ('bereich', models.CharField(choices=[('K', 'Karosseriebau'), ('F', 'Fördertechnik'), ('M', 'Montage'), ('I', 'Inhouse Logistik'), ('P', 'Presswerk'), ('L', 'Lackiererei'), ('B', 'Batteriefertigung'), ('C', 'Komponente')], editable=False, max_length=1)),
@@ -205,12 +205,12 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='LockactuatorValue',
+            name='LatchValue',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('value', models.BooleanField(default=False)),
                 ('timestamp', models.DateTimeField()),
-                ('lockactuatordevice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='lockactuatorvalue', to='web.lockactuatordevice')),
+                ('latch', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='latchvalue', to='web.latch')),
             ],
         ),
         migrations.CreateModel(
@@ -241,7 +241,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('value', models.BooleanField(default=False)),
                 ('timestamp', models.DateTimeField()),
-                ('btndevice', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='btnvalue', to='web.buttondevice')),
+                ('doorbutton', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='btnvalue', to='web.buttondevice')),
             ],
         ),
     ]

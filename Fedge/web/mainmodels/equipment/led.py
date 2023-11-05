@@ -1,12 +1,12 @@
 from django.db import models
 from ..modules.plc import PLC
 from ..cabinetlevel.doors import Door
-from ..iolmodules.iolmodule import Iol_Module
+from ..equipment.devices import Device
     
         
         
 
-class LedDevice (Iol_Module):
+class LedDevice (Device):
     module_type = "LED"
     # door = models.OneToOneField(Door, related_name='parent door', on_delete=models.CASCADE)
     class Meta:

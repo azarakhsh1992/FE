@@ -7,10 +7,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework import viewsets, status
 from .mainmodels.userrelated.users import UserProfile
-from .mainmodels.iolmodules.doorsensor import DoorsensorDevice
+from .mainmodels.equipment.doorsensor import DoorSensor
 from .mainmodels.cabinetlevel.doors import Door
 from .mainmodels.modules.plc import PLC
-from .mainmodels.iolmodules.temperaturesensordevice import TemperaturesensorDevice
+from .mainmodels.equipment.temperaturesensordevice import TemperaturesensorDevice
 from .mainmodels.cabinetlevel.cabinets import Cabinet
 from .mainmodels.functionalities.json import Json_draft
 import json

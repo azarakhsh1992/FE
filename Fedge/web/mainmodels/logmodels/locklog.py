@@ -1,6 +1,6 @@
 from django.db import models
-from ..iolmodules.lock import LockactuatorDevice
+from ..equipment.lock import Latch
 
 
 class LockLog(models.Model):
-    lockdevice = models.ForeignKey(LockactuatorDevice, on_delete=models.CASCADE, related_name='locklog')
+    lockdevice = models.ForeignKey(Latch, on_delete=models.CASCADE, related_name='locklog')

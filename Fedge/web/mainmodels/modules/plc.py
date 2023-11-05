@@ -8,12 +8,11 @@ class PLC (models.Model):
     cabinet = models.ForeignKey(Cabinet, related_name='plc', on_delete=models.CASCADE)
     
     geraet = models.CharField(max_length=3)
-    class Module_type (models.TextChoices):
-        IO_LINK = 'IO_LINK', 'IO_Link Master'
-    module_type = models.CharField (choices= Module_type.choices, max_length=10)
-    profinet_address = models.GenericIPAddressField(default=None, unique=True)
-    serial_number = models.CharField(max_length=50, unique=True)
-    profinet_name = models.CharField(max_length=18, editable=False, default=None)
+
+    module_type = 'PLC'
+    ip_address = models.GenericIPAddressField(default=None, unique=True)
+    serial_number = models.CharField(max_length=32, unique=True)
+    profinet_name = models.CharField(max_length=18, editable=False, default=None, unique=True)
     class Bereich (models.TextChoices):
         K = 'K', 'Karosseriebau'
         F = 'F', 'Fördertechnik'
@@ -40,6 +39,3 @@ class PLC (models.Model):
         self.funktionseinheit = self.cabinet.funktionseinheit
         self.profinet_name = str(self.cabinet.profinet_name) + str(self.geraet)
         super(PLC, self).save(*args, **kwargs)
-
-
-

@@ -2,15 +2,15 @@ from django.contrib import admin
 from .mainmodels.cabinetlevel.cabinets import Cabinet
 from .mainmodels.userrelated.users import UserProfile
 from .mainmodels.cabinetlevel.doors import Door
-from .mainmodels.iolmodules.temperaturesensordevice import TemperaturesensorDevice, TemperaturesensorValue
-from .mainmodels.iolmodules.led import LedDevice
-from .mainmodels.iolmodules.lock import LockactuatorDevice
+from .mainmodels.equipment.temperaturesensordevice import TemperaturesensorDevice, TemperaturesensorValue
+from .mainmodels.equipment.led import LedDevice
+from .mainmodels.equipment.lock import Latch
 from .mainmodels.modules.plc import PLC
-from .mainmodels.iolmodules.doorsensor import DoorsensorDevice
-from .mainmodels.iolmodules.button import ButtonDevice
+from .mainmodels.equipment.doorsensor import DoorSensor
+from .mainmodels.equipment.button import DoorButton
 from .mainmodels.functionalities.json import Json_draft
 from .mainmodels.userrelated.groupofshifts import GroupShift,ShiftOfGroup
-from .mainmodels.iolmodules.iolmodule import Iol_Module
+from .mainmodels.equipment.devices import Device
 
 
 # Register your models here.
@@ -19,12 +19,12 @@ from .mainmodels.iolmodules.iolmodule import Iol_Module
 admin.site.register(PLC)
 
 admin.site.register(TemperaturesensorDevice)
-admin.site.register(LockactuatorDevice)
+admin.site.register(Latch)
 admin.site.register(LedDevice)
 
-admin.site.register(DoorsensorDevice)
-admin.site.register(ButtonDevice)
-admin.site.register(Iol_Module)
+admin.site.register(DoorSensor)
+admin.site.register(DoorButton)
+admin.site.register(Device)
 # admin.site.register(QR_code)
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):

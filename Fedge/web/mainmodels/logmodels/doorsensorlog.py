@@ -1,6 +1,6 @@
 from django.db import models
-from ..iolmodules.doorsensor import DoorsensorDevice
+from ..equipment.doorsensor import DoorSensor
 
 
 class DoorsensorLog(models.Model):
-    doorsensordevice = models.ForeignKey(DoorsensorDevice, on_delete=models.CASCADE, related_name='doorsensorlog')
+    doorsensordevice = models.ForeignKey(DoorSensor, on_delete=models.CASCADE, related_name='doorsensorlog')

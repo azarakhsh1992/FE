@@ -1,10 +1,10 @@
 from django.db import models
 from ..modules.plc import PLC
 from ..cabinetlevel.doors import Door
-from ..iolmodules.iolmodule import Iol_Module
+from ..equipment.devices import Device
 
 
-class TemperaturesensorDevice(Iol_Module):
+class TemperaturesensorDevice(Device):
 
     class Measuringenv(models.TextChoices):
         IN = 'IN', 'inside'
@@ -18,8 +18,7 @@ class TemperaturesensorDevice(Iol_Module):
 
 
 class TemperaturesensorValue(models.Model):
-    temperaturesensordevice = models.ForeignKey(TemperaturesensorDevice, on_delete=models.CASCADE,
-                                                related_name='temperaturesensorvalue')
+    temperaturesensordevice = models.ForeignKey(TemperaturesensorDevice, on_delete=models.CASCADE, related_name='temperaturesensorvalue')
     tempvalue = models.FloatField(default=0)
     humidvalue = models.FloatField(default=0)
     timestamp = models.DateTimeField()

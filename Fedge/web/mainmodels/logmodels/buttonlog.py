@@ -1,6 +1,6 @@
 from django.db import models
-from ..iolmodules.button import ButtonDevice
+from ..equipment.button import DoorButton
 
 
 class ButtonLog(models.Model):
-    buttondevice = models.ForeignKey(ButtonDevice, on_delete=models.CASCADE, related_name='buttonlog')
+    buttondevice = models.ForeignKey(DoorButton, on_delete=models.CASCADE, related_name='buttonlog')

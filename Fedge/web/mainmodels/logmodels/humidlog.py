@@ -1,5 +1,5 @@
 from django.db import models
-from ..iolmodules.temperaturesensordevice import TemperaturesensorDevice
+from ..equipment.temperaturesensordevice import TemperaturesensorDevice
 
 
 class HumidLog(models.Model):
