@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from ..mainmodels.cabinetlevel.cabinets import Cabinet
 from ..mainmodels.cabinetlevel.doors import Door
-from ..mainmodels.modules.iolink import Iolink
+from ..mainmodels.modules.plc import PLC
 from ..mainmodels.requests.requests import Request, Servicelog
 from ..serializers.cabinetanddoor import DoorSerializer, FullDoorSerializer
 from ..serializers.requestserializers import RequestSerializer
@@ -77,10 +77,10 @@ class RequestViewset(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def middleware(self, request):
-        req_iolink = request.data['profinet_name']
+        req_plc = request.data['profinet_name']
         req_door = request.data['door']
-        obj_iolink = Iolink.objects.get(profinet_name=req_iolink)
-        obj_cabinet = obj_iolink.cabinet
+        obj_plc = PLC.objects.get(profinet_name=req_plc)
+        obj_cabinet = obj_plc.cabinet
         obj_request = Request.objects.get(cabinet=obj_cabinet, sendtomiddleware=False)
         obj_doors = [obj.door for obj in obj_request]
         serializer = FullDoorSerializer(obj_doors, many=True)

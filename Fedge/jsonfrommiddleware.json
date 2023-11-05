@@ -1,5 +1,5 @@
 {
-  "iolink_profinet_name": "plc1" ,
+  "plc_profinet_name": "plc1" ,
   "temp": {
       "id1":{
           "port": "x1",

@@ -9,7 +9,7 @@ from rest_framework import viewsets, status
 from .mainmodels.userrelated.users import UserProfile
 from .mainmodels.iolmodules.doorsensor import DoorsensorDevice
 from .mainmodels.cabinetlevel.doors import Door
-from .mainmodels.modules.iolink import Iolink
+from .mainmodels.modules.plc import PLC
 from .mainmodels.iolmodules.temperaturesensordevice import TemperaturesensorDevice
 from .mainmodels.cabinetlevel.cabinets import Cabinet
 from .mainmodels.functionalities.json import Json_draft

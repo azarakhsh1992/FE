@@ -1,33 +1,25 @@
 import uuid
 from typing import Any
 from django.db import models
-from ..cabinetlevel.cabinets import Cabinet
+from ..cabinetlevel.cabinets import Cabinet, Rack
 
 
 class Door(models.Model):
-    cabinet = models.ForeignKey(Cabinet, on_delete=models.CASCADE)
-    qr = models.CharField(max_length=20, unique=True, blank=True, editable=False)
-    name = models.CharField(max_length=50)
-    profinet_name = models.CharField(max_length=100)
 
     class Direction(models.TextChoices):
-        FRONT = "FRONT", "front"
-        BACK = "BACK", "back"
-
-    direction = models.CharField(choices=Direction.choices, default=None, max_length=20)
-
-    class Section(models.TextChoices):
-        NETWORK = "NETWORK", "IT Network"
-        PS = "PS", "Powe supply"
-        FE = "FE", "Factory Edge Server"
-
-    section = models.CharField(choices=Section.choices, default=None, max_length=20)
+        Front = 'Front', 'Front'
+        Rear = 'Rear', 'Rear'
+    direction = models.CharField(choices=Direction.choices,max_length=16, null=False)
+    rack = models.ForeignKey(Rack, related_name='rack', on_delete= models.CASCADE, null=False)
+    cabinet = models.ForeignKey(Cabinet, related_name='cabinet', on_delete=models.CASCADE, null=False)
+    qr = models.CharField(max_length=32, unique=True, blank=True, editable=False, null=False)
 
     class Meta:
-        unique_together = ('name', 'cabinet')
+        unique_together = ('direction', 'rack', 'cabinet')
 
     def save(self, *args, **kwargs):
-        self.profinet_name = str(self.cabinet.profinet_name) + str(self.name)
+        self.rack = self.rack.name
+        self.cabinet = self.cabinet.profinet_name
         doors = Door.objects.all()
         condition = True
         # self.qr = uuid.uuid4().hex[:20]
@@ -40,7 +32,6 @@ class Door(models.Model):
                         condition = True
                     else:
                         condition = False
-
         self.qr = generatedqr
         # print(generatedqr)
         super(Door, self).save(*args, **kwargs)

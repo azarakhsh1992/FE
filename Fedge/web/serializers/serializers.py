@@ -47,7 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ButtonSerializer(serializers.ModelSerializer):
     class Meta:
         model = ButtonDevice
-        fields = ('port', 'module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'iolink')
+        fields = ('port', 'module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'plc')
 
 
 # ///////// Cabinet Serializer /////////////////////
@@ -56,7 +56,7 @@ class ButtonSerializer(serializers.ModelSerializer):
 class DoorSensorSerializer(serializers.ModelSerializer):
     class Meta:
         model = DoorsensorDevice
-        fields = ('module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'iolink')
+        fields = ('module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'plc')
 
 
 class Jsonserializer(serializers.ModelSerializer):

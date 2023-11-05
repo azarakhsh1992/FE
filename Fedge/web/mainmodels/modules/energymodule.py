@@ -1,6 +1,6 @@
 from django.db import models
 from ..cabinetlevel.cabinets import Cabinet
-from .iolink import Iolink
+from .plc import PLC
 from ..cabinetlevel.doors import Door
 
 

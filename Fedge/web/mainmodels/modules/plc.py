@@ -3,10 +3,10 @@ from django.db import models
 from ..cabinetlevel.cabinets import Cabinet
 
 
-class Iolink (models.Model):
+class PLC (models.Model):
 
-    cabinet = models.ForeignKey(Cabinet, related_name='iolink', on_delete=models.CASCADE)
-
+    cabinet = models.ForeignKey(Cabinet, related_name='plc', on_delete=models.CASCADE)
+    
     geraet = models.CharField(max_length=3)
     class Module_type (models.TextChoices):
         IO_LINK = 'IO_LINK', 'IO_Link Master'
@@ -39,7 +39,7 @@ class Iolink (models.Model):
         self.station = self.cabinet.station
         self.funktionseinheit = self.cabinet.funktionseinheit
         self.profinet_name = str(self.cabinet.profinet_name) + str(self.geraet)
-        super(Iolink, self).save(*args, **kwargs)
+        super(PLC, self).save(*args, **kwargs)
 
 
 

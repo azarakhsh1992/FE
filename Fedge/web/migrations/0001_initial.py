@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=128)),
                 ('code', models.CharField(default='request', max_length=64)),
                 ('cid', models.IntegerField(default=4711)),
-                ('adr', models.CharField(default='/iolinkmaster/port[2]/iolinkdevice/pdin/getdata', max_length=128)),
+                ('adr', models.CharField(default='/plcmaster/port[2]/plcdevice/pdin/getdata', max_length=128)),
                 ('url', models.URLField(default='http://192.168.0.4', max_length=32)),
                 ('data', models.TextField(blank=True, max_length=256)),
                 ('sensor', models.CharField(max_length=256)),
@@ -171,7 +171,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Iolink',
+            name='PLC',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('geraet', models.CharField(max_length=3)),
@@ -186,13 +186,13 @@ class Migration(migrations.Migration):
                 ('pultbereich_sk', models.CharField(editable=False, max_length=1)),
                 ('station', models.CharField(editable=False, max_length=4)),
                 ('funktionseinheit', models.CharField(editable=False, max_length=3)),
-                ('cabinet', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='iolink', to='web.cabinet')),
+                ('cabinet', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='plc', to='web.cabinet')),
             ],
         ),
         migrations.AddField(
             model_name='iol_module',
-            name='iolink',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='iolmodules', to='web.iolink'),
+            name='plc',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='iolmodules', to='web.plc'),
         ),
         migrations.CreateModel(
             name='TemperaturesensorValue',
@@ -224,7 +224,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='iol_module',
-            unique_together={('port', 'iolink')},
+            unique_together={('port', 'plc')},
         ),
         migrations.CreateModel(
             name='DoorsensorValue',

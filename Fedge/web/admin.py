@@ -5,7 +5,7 @@ from .mainmodels.cabinetlevel.doors import Door
 from .mainmodels.iolmodules.temperaturesensordevice import TemperaturesensorDevice, TemperaturesensorValue
 from .mainmodels.iolmodules.led import LedDevice
 from .mainmodels.iolmodules.lock import LockactuatorDevice
-from .mainmodels.modules.iolink import Iolink
+from .mainmodels.modules.plc import PLC
 from .mainmodels.iolmodules.doorsensor import DoorsensorDevice
 from .mainmodels.iolmodules.button import ButtonDevice
 from .mainmodels.functionalities.json import Json_draft
@@ -16,7 +16,7 @@ from .mainmodels.iolmodules.iolmodule import Iol_Module
 # Register your models here.
 
 # admin.site.register(User)
-admin.site.register(Iolink)
+admin.site.register(PLC)
 
 admin.site.register(TemperaturesensorDevice)
 admin.site.register(LockactuatorDevice)
@@ -60,5 +60,5 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Door)
 class UserProfileAdmin(admin.ModelAdmin):
-    fields = ('cabinet', 'name', 'direction', 'section')
-    list_display = ('id', 'cabinet', 'name', 'profinet_name', 'direction', 'section', 'qr' )
+    fields = ('cabinet', 'rack', 'direction')
+    list_display = ('id', 'cabinet', 'rack', 'direction', 'qr')

@@ -1,10 +1,10 @@
 from django.db import models
-from ..modules.iolink import Iolink
+from ..modules.plc import PLC
 from ..cabinetlevel.doors import Door
 
 
 class Iol_Module(models.Model):
-    iolink = models.ForeignKey(Iolink, related_name='iolmodules', on_delete=models.CASCADE)
+    plc = models.ForeignKey(PLC, related_name='iolmodules', on_delete=models.CASCADE)
 
     bmk = models.CharField(max_length=3, default=None)
     serial_number = models.CharField(max_length=50, unique=True)
@@ -44,17 +44,17 @@ class Iol_Module(models.Model):
     port = models.CharField(choices=Port_addresses.choices, default=None, max_length=5)
 
     def save(self, *args, **kwargs):
-        self.bereich = self.iolink.bereich
-        self.segment = self.iolink.segment
-        self.anlage = self.iolink.anlage
-        self.arg_sps = self.iolink.arg_sps
-        self.pultbereich_sk = self.iolink.pultbereich_sk
-        self.station = self.iolink.station
-        self.funktionseinheit = self.iolink.funktionseinheit
-        self.geraet = self.iolink.geraet
-        self.profinet_name = str(self.iolink.profinet_name) + str(self.geraet)
-        self.profinet_address = self.iolink.profinet_address
+        self.bereich = self.plc.bereich
+        self.segment = self.plc.segment
+        self.anlage = self.plc.anlage
+        self.arg_sps = self.plc.arg_sps
+        self.pultbereich_sk = self.plc.pultbereich_sk
+        self.station = self.plc.station
+        self.funktionseinheit = self.plc.funktionseinheit
+        self.geraet = self.plc.geraet
+        self.profinet_name = str(self.plc.profinet_name) + str(self.geraet)
+        self.profinet_address = self.plc.profinet_address
         super(Iol_Module, self).save(*args, **kwargs)
 
     class Meta:
-        unique_together = ('port', 'iolink')
+        unique_together = ('port', 'plc')

@@ -1,6 +1,6 @@
 from django.db import models
 from ..cabinetlevel.cabinets import Cabinet
-from ..modules.iolink import Iolink
+from ..modules.plc import PLC
 from ..cabinetlevel.doors import Door
 from ..iolmodules.temperaturesensordevice import TemperaturesensorDevice
 from ..userrelated.groupofshifts import ShiftOfGroup

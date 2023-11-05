@@ -1,7 +1,7 @@
 from django.db import models
 
 from ..cabinetlevel.doors import Door
-from ..modules.iolink import Iolink
+from ..modules.plc import PLC
 from ..iolmodules.iolmodule import Iol_Module
 
 

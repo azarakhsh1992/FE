@@ -1,5 +1,5 @@
 from django.db import models
-from ..modules.iolink import Iolink
+from ..modules.plc import PLC
 from ..cabinetlevel.doors import Door
 from ..iolmodules.iolmodule import Iol_Module
     
