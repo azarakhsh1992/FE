@@ -7,7 +7,7 @@ from ..equipment.devices import Device
 
 
 class DoorButton(Device):
-    
+
     module_type = "Door Button"
     device_door=models.OneToOneField(Door, related_name='doorbutton', on_delete=models.CASCADE)
     def save(self, *args, **kwargs):

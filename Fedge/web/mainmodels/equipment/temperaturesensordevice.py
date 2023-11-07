@@ -6,7 +6,7 @@ from ..equipment.devices import Device
 
 
 class TemperatureSensor(Device):
-    module_type = "temperature and humidity sensor module"
+    module_type = "temperature_sensor"
     class MeasuringEnvironment(models.TextChoices):
         Edge_A_top = 'Edge_A_top', 'Edge_A_top'
         Edge_A_middle = 'Edge_A_middle', 'Edge_A_middle'
@@ -16,7 +16,7 @@ class TemperatureSensor(Device):
         Edge_B_bottom = 'Edge_B_bottom', 'Edge_B_bottom'
         Network = 'Network', 'Network'
         Energy = 'Energy', 'Energy'
-    measuring_env = models.CharField(choices=MeasuringEnvironment.choices, default=None, max_length=16)
+    measuring_env = models.CharField(choices=MeasuringEnvironment.choices, default=None, max_length=16, unique=True)
     def save(self, *args, **kwargs):
         self.this_module_type=self.module_type
         return super().save(*args, **kwargs)
@@ -28,7 +28,5 @@ class TemperatureSensorValue(models.Model):
     tempvalue = models.FloatField(default=0)
     tempvalue_min = models.FloatField(default=0)
     tempvalue_max = models.FloatField(default=0)
-    temp_unit = models.CharField(default='°C', max_length=4, editable=False)
     humidvalue = models.FloatField(default=0)
-    humid_unit = models.CharField(default='%', max_length=2, editable=False)
     timestamp = models.DateTimeField()
