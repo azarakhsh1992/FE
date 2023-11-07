@@ -20,11 +20,15 @@
   "humidity": {}
 }
 
-{
+params = {
   "T":"x",
   "Tmin":"y",
   "Tmax":"z",
   "RH":"w",
   "F":"False",
   "Time":"xxxx"
+}
+{
+  "profinet_name": "value",
+  "params": params
 }
