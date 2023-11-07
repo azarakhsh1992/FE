@@ -11,9 +11,11 @@ class EnergysensorDevice(Device):
         EM1 = 'EM1', 'EM1'
         EM2 = 'ME2', 'EM2'
     measuring_env = models.CharField(choices=MeasuringEnvironment.choices, default=None, max_length=4)
+    def save(self, *args, **kwargs):
+        self.this_module_type=self.module_type
+        return super().save(*args, **kwargs)
     class Meta:
         pass
-
 class EnergySensorValue(models.Model):
     energysensordevice = models.ForeignKey(EnergysensorDevice, on_delete=models.CASCADE, related_name='energysensorvalue')
     energy_value = models.FloatField(default=0)

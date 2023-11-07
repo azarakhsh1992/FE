@@ -19,3 +19,12 @@
   "energy": {},
   "humidity": {}
 }
+
+{
+  "T":"x",
+  "Tmin":"y",
+  "Tmax":"z",
+  "RH":"w",
+  "F":"False",
+  "Time":"xxxx"
+}

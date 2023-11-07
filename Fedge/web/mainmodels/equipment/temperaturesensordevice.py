@@ -17,9 +17,12 @@ class TemperatureSensor(Device):
         Network = 'Network', 'Network'
         Energy = 'Energy', 'Energy'
     measuring_env = models.CharField(choices=MeasuringEnvironment.choices, default=None, max_length=16)
+    def save(self, *args, **kwargs):
+        self.this_module_type=self.module_type
+        return super().save(*args, **kwargs)
     class Meta:
         pass
-
+    
 class TemperatureSensorValue(models.Model):
     temperaturesensordevice = models.ForeignKey(TemperatureSensor, on_delete=models.CASCADE, related_name='temperaturesensorvalue')
     tempvalue = models.FloatField(default=0)

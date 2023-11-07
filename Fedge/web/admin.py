@@ -11,6 +11,7 @@ from .mainmodels.equipment.button import DoorButton
 from .mainmodels.functionalities.json import Json_draft
 from .mainmodels.userrelated.groupofshifts import GroupShift,ShiftOfGroup
 from .mainmodels.equipment.devices import Device
+from .mainmodels.equipment.modeltest import Test, Child, TestP
 
 
 # Register your models here.
@@ -18,18 +19,19 @@ from .mainmodels.equipment.devices import Device
 # admin.register(User)
 @admin.register(TemperatureSensor)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('id','profinet_name','plc')
+    list_display = ('id','profinet_name','plc','module_type')
 
 @admin.register(DoorSensor)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('id','profinet_name','plc')
+    list_display = ('id','profinet_name','plc','module_type','device_door','door')
+
 @admin.register(DoorButton)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id','profinet_name','plc')
+    
 @admin.register(Device)
 class UserProfileAdmin(admin.ModelAdmin):
-    fields =('plc','bmk','geraet','serial_number','manufacturer','io_module','port')
-    list_display = ('id','profinet_name','plc')
+    list_display = ('id','profinet_name','plc','this_module_type','door')
 # admin.register(QR_code)
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -52,6 +54,16 @@ class UserProfileAdmin(admin.ModelAdmin):
     fields = ('group','shift','date')
     list_display = ('group','shift','date')
 
+@admin.register(TestP)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('id','attrp3')
+    
+@admin.register(Test)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('attr1','attr2','attr3','attr4')
+@admin.register(Child)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('attr1','attr2')
 
 @admin.register(TemperatureSensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -60,7 +72,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(LED)
 class UserProfileAdmin(admin.ModelAdmin):
-    fields =('door','plc','bmk','geraet','serial_number','manufacturer','io_module','port')
+
     list_display = ('id','profinet_name','plc')
 
 @admin.register(Cabinet)

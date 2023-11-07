@@ -3,10 +3,13 @@ from .plc import PLC
 from ..cabinetlevel.doors import Door
 
 
+
 class Device(models.Model):
     plc = models.ForeignKey(PLC, related_name='plcdevices', on_delete=models.CASCADE)
     cabinet = models.CharField(max_length=16, editable=False)
+    plc_name = models.CharField(max_length=18, editable=False)
     #TODO: profinet name of the PLC must be checked; if Gerät and BMK is for Device, it should be editted as PLC to be Funktionseinheit
+    #TODO: module inheritance works, Form class must be created for each module to implement uniqueness conditions
     bmk = models.CharField(max_length=3, default=None)
     geraet = models.CharField(max_length=3, default=None)
     serial_number = models.CharField(max_length=50, unique=True)
@@ -20,6 +23,9 @@ class Device(models.Model):
     pultbereich_sk = models.CharField(max_length=1, editable=False)
     station = models.CharField(max_length=4, editable=False)
     funktionseinheit = models.CharField(max_length=3, editable=False)
+    this_module_type = models.CharField(max_length=16, editable=False, default=None)
+    door= models.CharField(max_length=32,editable=False,default=None, null=True)
+
 
     class IO_Module(models.TextChoices):
         DI = 'DI', 'DI'
@@ -56,9 +62,10 @@ class Device(models.Model):
         self.station = self.plc.station
         self.funktionseinheit = self.plc.funktionseinheit
         self.ip_address = self.plc.ip_address
+        self.plc_name = self.plc.profinet_name
         self.profinet_name = str(self.plc.profinet_name) + str(self.geraet) + str(self.bmk)
         super(Device, self).save(*args, **kwargs)
     class Meta:
-        unique_together = ('port', 'io_module','plc')
+        unique_together = ('port', 'io_module','plc_name')
     def __str__(self):
         return self.profinet_name
