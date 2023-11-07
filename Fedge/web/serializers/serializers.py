@@ -3,8 +3,7 @@ from rest_framework.authtoken.models import Token
 
 from ..mainmodels.cabinetlevel.cabinets import Cabinet
 from ..mainmodels.functionalities.json import Json_draft
-from ..mainmodels.equipment.button import DoorButton
-from ..mainmodels.equipment.doorsensor import DoorSensor
+
 from ..mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
 from ..mainmodels.userrelated.users import User, UserProfile
 
@@ -42,21 +41,7 @@ class UserSerializer(serializers.ModelSerializer):
     #     return ret
 
 
-# ///////////// Button Serializer ////////////////
 
-class ButtonSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DoorButton
-        fields = ('port', 'module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'plc')
-
-
-# ///////// Cabinet Serializer /////////////////////
-
-# ///////// Door_Sensor Serializer /////////////
-class DoorSensorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DoorSensor
-        fields = ('module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'plc')
 
 
 class Jsonserializer(serializers.ModelSerializer):

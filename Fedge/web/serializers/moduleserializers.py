@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from ..mainmodels.equipment.temperaturesensordevice import TemperatureSensorValue,TemperatureSensor
-
+from ..mainmodels.equipment.button import DoorButton
+from ..mainmodels.equipment.doorsensor import DoorSensor
 class TempSensorDevSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemperatureSensor
@@ -11,7 +12,7 @@ class TempSensorDevSerializer(serializers.ModelSerializer):
 class TempSensorValSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemperatureSensorValue
-        fields = ('temperaturesensordevice', 'tempvalue', 'humidvalue', 'timestamp')
+        fields = "__all__"
 
 
 class ContainerSerializer(serializers.Serializer):
@@ -30,3 +31,18 @@ class ContainerSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         pass
 
+# ///////////// Button Serializer ////////////////
+
+class ButtonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DoorButton
+        fields = ('port', 'module_type', 'bmk', 'serial_number', 'manufacturer', 'value', 'plc')
+
+
+# ///////// Cabinet Serializer /////////////////////
+
+# ///////// Door_Sensor Serializer /////////////
+class DoorSensorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DoorSensor
+        fields = "__all__"

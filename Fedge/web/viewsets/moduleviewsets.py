@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from ..mainmodels.equipment.doorsensor import DoorSensor
 from ..mainmodels.equipment.temperaturesensordevice import TemperatureSensorValue,TemperatureSensor
 from ..serializers.moduleserializers import TempSensorDevSerializer,ContainerSerializer,TempSensorValSerializer
-from ..serializers.serializers import DoorSensorSerializer
+from ..serializers.moduleserializers import DoorSensorSerializer
 
 
 class ContainerViewset(viewsets.ModelViewSet):

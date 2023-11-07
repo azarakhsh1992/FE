@@ -7,7 +7,7 @@ from ..mainmodels.cabinetlevel.doors import Door
 class CabinetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cabinet
-        fields = ('id', 'profinet_name')
+        fields = "__all__"
 class FullCabinetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cabinet
@@ -17,7 +17,7 @@ class FullCabinetSerializer(serializers.ModelSerializer):
 class DoorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Door
-        fields = ('id', 'profinet_name', 'section')
+        fields = "__all__"
 
 class FullDoorSerializer(serializers.ModelSerializer):
     class Meta:
