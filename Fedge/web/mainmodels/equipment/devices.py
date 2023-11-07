@@ -12,7 +12,7 @@ class Device(models.Model):
     serial_number = models.CharField(max_length=50, unique=True)
     manufacturer = models.CharField(max_length=50)
     ip_address = models.GenericIPAddressField(default=None, unique=False, editable=False)
-    profinet_name = models.CharField(max_length=22, editable=False, default=None, unique=True)
+    profinet_name = models.CharField(max_length=22, editable=False, unique=True)
     bereich = models.CharField(max_length=1, editable=False)
     segment = models.CharField(max_length=1, editable=False)
     anlage = models.CharField(max_length=4, editable=False)
@@ -28,6 +28,7 @@ class Device(models.Model):
         EM = 'EM', 'EM'
     io_module = models.CharField(choices=IO_Module.choices, default=None, max_length=4)
     class Port(models.TextChoices):
+        P0 = 'P0', 'P0'
         P1 = 'P1', 'P1'
         P2 = 'P2', 'P2'
         P3 = 'P3', 'P3'
@@ -54,9 +55,10 @@ class Device(models.Model):
         self.pultbereich_sk = self.plc.pultbereich_sk
         self.station = self.plc.station
         self.funktionseinheit = self.plc.funktionseinheit
-        self.profinet_name = str(self.plc.profinet_name) + str(self.geraet)
         self.ip_address = self.plc.ip_address
+        self.profinet_name = str(self.plc.profinet_name) + str(self.geraet) + str(self.bmk)
         super(Device, self).save(*args, **kwargs)
-
     class Meta:
-        unique_together = ('port', 'plc', 'io_module')
+        unique_together = ('port', 'io_module','plc')
+    def __str__(self):
+        return self.profinet_name

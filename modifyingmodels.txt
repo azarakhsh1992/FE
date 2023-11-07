@@ -1,0 +1,6 @@
+PLC OK
+Door OK
+Rack OK
+Cabinet OK
+devices : (Integrity Error when saving similar objects regarding the profinet_name being unique.
+            It is similar to the Cabinet class but it works in Cabinet and not in here)

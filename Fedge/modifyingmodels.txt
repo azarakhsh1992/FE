@@ -1,5 +1,0 @@
-PLC OK
-Door OK
-Rack OK
-Cabinet OK
-devices : OK

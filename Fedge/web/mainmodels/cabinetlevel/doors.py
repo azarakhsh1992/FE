@@ -9,13 +9,11 @@ class Door(models.Model):
     class Direction(models.TextChoices):
         Front = 'Front', 'Front'
         Rear = 'Rear', 'Rear'
-    direction = models.CharField(choices=Direction.choices,max_length=16, null=False)
+        NE =    'NetworkOrEnergy', 'Network/Energy Door'
+    direction = models.CharField(choices=Direction.choices,max_length=32, null=False)
     rack = models.ForeignKey(Rack, related_name='racks', on_delete=models.CASCADE, null=False)
     cabinet = models.ForeignKey(Cabinet, related_name='cabinet', on_delete=models.CASCADE, null=False)
     qr = models.CharField(max_length=32, unique=True, blank=True, editable=False, null=False)
-
-    class Meta:
-        unique_together = ('direction', 'rack', 'cabinet')
     def __str__(self):
         return ('Cabinet: '+self.cabinet.profinet_name+' Rack: '+self.rack.name)
     def save(self, *args, **kwargs):
@@ -34,3 +32,6 @@ class Door(models.Model):
         self.qr = generatedqr
         # print(generatedqr)
         super(Door, self).save(*args, **kwargs)
+        
+    class Meta:
+        unique_together = ('direction', 'rack', 'cabinet')

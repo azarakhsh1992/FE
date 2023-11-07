@@ -24,9 +24,10 @@ class Cabinet(models.Model):
         self.profinet_name = str(self.bereich) + str(self.segment) + str(self.anlage) + str(self.arg_sps) + str(self.pultbereich_sk) + str(self.station)
         super(Cabinet, self).save(*args, **kwargs)
     class Meta:
-        pass
+        unique_together = ('segment', 'anlage', 'arg_sps', 'pultbereich_sk','station','bereich')
     def __str__(self):
         return self.profinet_name
+    
 class Rack(models.Model):
     class Name(models.TextChoices):
         Edge_A = "Edge_A", "Edge_A"

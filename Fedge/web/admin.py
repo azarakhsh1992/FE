@@ -20,9 +20,6 @@ from .mainmodels.equipment.devices import Device
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id','profinet_name','plc')
 
-@admin.register(LED)
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('id','profinet_name','plc')
 @admin.register(DoorSensor)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id','profinet_name','plc')
@@ -31,6 +28,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id','profinet_name','plc')
 @admin.register(Device)
 class UserProfileAdmin(admin.ModelAdmin):
+    fields =('plc','bmk','geraet','serial_number','manufacturer','io_module','port')
     list_display = ('id','profinet_name','plc')
 # admin.register(QR_code)
 @admin.register(UserProfile)
@@ -59,6 +57,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ('temperaturesensordevice', 'tempvalue','humidvalue','timestamp')
     list_display = ('temperaturesensordevice', 'tempvalue','humidvalue','timestamp')
+
+@admin.register(LED)
+class UserProfileAdmin(admin.ModelAdmin):
+    fields =('door','plc','bmk','geraet','serial_number','manufacturer','io_module','port')
+    list_display = ('id','profinet_name','plc')
 
 @admin.register(Cabinet)
 class UserProfileAdmin(admin.ModelAdmin):
