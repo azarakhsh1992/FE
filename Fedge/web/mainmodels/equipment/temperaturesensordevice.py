@@ -22,11 +22,11 @@ class TemperatureSensor(Device):
         return super().save(*args, **kwargs)
     class Meta:
         pass
-    
+
 class TemperatureSensorValue(models.Model):
     temperaturesensordevice = models.ForeignKey(TemperatureSensor, on_delete=models.CASCADE, related_name='temperaturesensorvalue')
+    time = models.DateTimeField(primary_key=True, auto_now=True)
     tempvalue = models.FloatField(default=0)
     tempvalue_min = models.FloatField(default=0)
     tempvalue_max = models.FloatField(default=0)
     humidvalue = models.FloatField(default=0)
-    timestamp = models.DateTimeField()

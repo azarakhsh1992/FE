@@ -7,7 +7,7 @@ from .views import Test_json
 
 from .viewsets.cabinetanddoor import CabinetViewset, DoorViewset
 from .viewsets.moduleviewsets import ContainerViewset
-from .viewsets.requestviewsets import RequestViewset
+from .viewsets.requestviewsets import RequestViewset, Pyhonapp
 
 router = routers.DefaultRouter()
 router.register(r'userprofile', views.UserProfileViewset)
@@ -19,6 +19,7 @@ router.register(r'groupshift', views.ShiftOfGroupViewset)
 router.register(r'shifts', views.ShiftsViewset)
 router.register(r'containers', ContainerViewset)
 router.register(r'requests', RequestViewset)
+#router.register(r'pythonapp', Pyhonapp)
 
 urlpatterns = [
     # path('', views.home, name='web-home'),

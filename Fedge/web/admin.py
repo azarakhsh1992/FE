@@ -23,7 +23,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(DoorSensor)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('id','profinet_name','plc','module_type','device_door','door')
+    list_display = ('id','profinet_name','plc','module_type','device_door')
 
 @admin.register(DoorButton)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -31,7 +31,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     
 @admin.register(Device)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('id','profinet_name','plc','this_module_type','door')
+    list_display = ('id','profinet_name','plc')
 # admin.register(QR_code)
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -57,7 +57,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(TestP)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id','attrp3')
-    
+
 @admin.register(Test)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('attr1','attr2','attr3','attr4')
@@ -67,8 +67,8 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(TemperatureSensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    fields = ('temperaturesensordevice', 'tempvalue','humidvalue','timestamp')
-    list_display = ('temperaturesensordevice', 'tempvalue','humidvalue','timestamp')
+    fields = ('temperaturesensordevice', 'tempvalue','humidvalue','time')
+    list_display = ('temperaturesensordevice', 'tempvalue','humidvalue','time')
 
 @admin.register(LED)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -79,10 +79,10 @@ class UserProfileAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     fields =('bereich','segment','anlage','arg_sps','pultbereich_sk','station')
     list_display = ('id','bereich','segment','anlage','arg_sps','pultbereich_sk','station')
-    
+
 @admin.register(Latch)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('id','bereich','profinet_name')
+    list_display = ('id','profinet_name')
 
 @admin.register(Door)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -95,4 +95,4 @@ class UserProfileAdmin(admin.ModelAdmin):
     
 @admin.register(PLC)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cabinet','profinet_name','funktionseinheit')
+    list_display = ('id', 'cabinet','profinet_name')

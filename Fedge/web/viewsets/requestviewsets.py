@@ -128,3 +128,17 @@ class RequestViewset(viewsets.ModelViewSet):
         except:
             response = {'message': 'this request not exists'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+class Pyhonapp(viewsets.ModelViewSet):
+    @action(methods=['POST'],detail=False)
+    def temp_sensors_msg(request):
+        try:
+            data= request.data
+            response='message received'
+            print(data)
+            print(response)
+            return Response(response, status==status.HTTP_200_OK)
+        except:
+            response='message not received! ERROR'
+            print(response)
+            return Response('ERROR', status=status.HTTP_400_BAD_REQUEST)

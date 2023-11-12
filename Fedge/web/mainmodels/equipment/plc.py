@@ -20,18 +20,6 @@ class PLC (models.Model):
         L = 'L', 'Lackiererei'
         B = 'B', 'Batteriefertigung'
         C = 'C', 'Komponente'
-    bereich = models.CharField(choices= Bereich.choices, max_length=1, editable=False)
-    segment = models.CharField(max_length=1, editable=False)
-    anlage = models.CharField(max_length=4, editable=False)
-    arg_sps = models.CharField(max_length=1, editable=False)
-    pultbereich_sk = models.CharField(max_length=1, editable=False)
-    station = models.CharField(max_length=4, editable=False)
     def save(self, *args, **kwargs):
-        self.bereich = self.cabinet.bereich
-        self.segment = self.cabinet.segment
-        self.anlage = self.cabinet.anlage
-        self.arg_sps = self.cabinet.arg_sps
-        self.pultbereich_sk = self.cabinet.pultbereich_sk
-        self.station = self.cabinet.station
         self.profinet_name = str(self.cabinet.profinet_name) + str(self.funktionseinheit)
         super(PLC, self).save(*args, **kwargs)

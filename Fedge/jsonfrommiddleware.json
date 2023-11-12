@@ -1,26 +1,6 @@
+#Temperature 8 modules (8 messages)
+params=
 {
-  "plc_profinet_name": "plc1" ,
-  "temp": {
-      "id1":{
-          "port": "x1",
-          "serialnumber": "2214456",
-          "value": "23"
-      },
-      "id2":{
-          "port": "x2",
-          "serialnumber": "21114547",
-          "value": "25",
-        "fault": "True or False"
-      }
-  },
-  "led": {},
-  "doorbutton": {},
-  "doorsensor": {},
-  "energy": {},
-  "humidity": {}
-}
-
-params = {
   "T":"x",
   "Tmin":"y",
   "Tmax":"z",
@@ -28,8 +8,30 @@ params = {
   "F":"False",
   "Time":"xxxx"
 }
+
+#DIDO  modules (2 messages)
+params=
+{
+  "value":"BOOL",
+  "F":"BOOL"
+}
+
+#Energy - 2 modules (2 messages)
+params=
+{
+  "E":"value",
+  "UnitE":"value",
+  "P":"value",
+  "UnitP":"value",
+  "F":"value",
+  "time":"value"
+}
+
+
+
+
+
 {
   "profinet_name": "value",
   "params": params
 }
-

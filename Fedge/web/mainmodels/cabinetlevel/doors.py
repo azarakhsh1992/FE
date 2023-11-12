@@ -9,7 +9,7 @@ class Door(models.Model):
     class Direction(models.TextChoices):
         Front = 'Front', 'Front'
         Rear = 'Rear', 'Rear'
-        NE =    'NetworkOrEnergy', 'Network/Energy Door'
+        NE = 'NetworkOrEnergy', 'Network/Energy Door'
     direction = models.CharField(choices=Direction.choices,max_length=32, null=False)
     rack = models.ForeignKey(Rack, related_name='racks', on_delete=models.CASCADE, null=False)
     cabinet = models.ForeignKey(Cabinet, related_name='cabinet', on_delete=models.CASCADE, null=False)
