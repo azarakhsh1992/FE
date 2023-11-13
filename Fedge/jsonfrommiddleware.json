@@ -1,6 +1,7 @@
 #Temperature 8 modules (8 messages)
-params=
+
 {
+  "profinet_name": "value",
   "T":"x",
   "Tmin":"y",
   "Tmax":"z",
@@ -10,28 +11,21 @@ params=
 }
 
 #DIDO  modules (2 messages)
-params=
+
 {
+  "profinet_name": "value",
   "value":"BOOL",
   "F":"BOOL"
 }
 
 #Energy - 2 modules (2 messages)
-params=
+
 {
+  "profinet_name": "value",
   "E":"value",
   "UnitE":"value",
   "P":"value",
   "UnitP":"value",
   "F":"value",
   "time":"value"
-}
-
-
-
-
-
-{
-  "profinet_name": "value",
-  "params": params
 }

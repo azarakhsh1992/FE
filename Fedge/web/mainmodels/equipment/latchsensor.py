@@ -16,6 +16,6 @@ class LatchSensor(Device):
 
 
 class LatchSensorValue(models.Model):
+    time = models.DateTimeField(primary_key=True, auto_now=True)
     latchsensor = models.ForeignKey(LatchSensor, on_delete=models.CASCADE, related_name='latchsensorvalue')
     value = models.BooleanField(default=False)
-    #timestamp = models.DateTimeField()
