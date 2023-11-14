@@ -12,6 +12,8 @@ from..mainmodels.equipment.devices import Device
 
 
 class MqttMiddleware(viewsets.ModelViewSet):
+    queryset = None
+    serializer_class = None
     @action(methods=['POST'], detail=False)
     def temp(self,request):
         data = request.data
