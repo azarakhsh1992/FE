@@ -10,7 +10,6 @@ from..mainmodels.equipment.led import LED,LedValue
 from..mainmodels.equipment.button import DoorButton,ButtonValue
 from..mainmodels.equipment.devices import Device
 
-#TODO: viewset class for (temp ,
 
 class MqttMiddleware(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False)
@@ -37,6 +36,7 @@ class MqttMiddleware(viewsets.ModelViewSet):
             response = {"message": "Data does not match"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 ################################################################
+################################################################
     @action(methods=['POST'], detail=False)
     def energy(self, request):
         data = request.data
@@ -61,11 +61,12 @@ class MqttMiddleware(viewsets.ModelViewSet):
             response = {"message": "Data does not match"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 ################################################################
+################################################################
     @action(methods=['POST'], detail=False)
     def dido(self, request):
         data = request.data
         try:
-            device_moduletype= Device.objects.get(profinet_name=data["profinet_name"]).module_type
+            device_moduletype= Device.objects.get(profinet_name=data["profinet_name"]).this_module_type
     ################################################################
             if device_moduletype == "Door Sensor":
                 try:
