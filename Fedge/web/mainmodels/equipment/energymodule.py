@@ -21,7 +21,7 @@ class EnergysensorDevice(Device):
 class EnergySensorValue(models.Model):
     time = models.DateTimeField(primary_key=True, auto_now=True)
     energysensordevice = models.ForeignKey(EnergysensorDevice, on_delete=models.CASCADE, related_name='energysensorvalue')
-    energy_value = models.FloatField(default=0)
+    energy_value = models.FloatField(null=True)
     energy_unit = models.CharField(default='KWh', max_length=4)
-    power_value = models.FloatField(default=0)
-    power_unit = models.FloatField(default='KW', max_length=4)
+    power_value = models.FloatField(null=True)
+    power_unit = models.CharField(default='KW', max_length=4)

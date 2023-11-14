@@ -16,5 +16,6 @@ class DoorSensor(Device):
 
 class DoorsensorValue(models.Model):
     time = models.DateTimeField(primary_key=True, auto_now=True)
-    doorsensordevice = models.ForeignKey(DoorSensor, on_delete=models.CASCADE, related_name='doorsensorvalue')
-    value = models.BooleanField(default=False)
+    doorsensordevice = models.ForeignKey(DoorSensor, on_delete=models.CASCADE, related_name='doorsensorvalue',)
+    value = models.BooleanField(null=True)
+    fault=models.BooleanField(default=False)

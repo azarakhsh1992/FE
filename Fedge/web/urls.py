@@ -8,7 +8,7 @@ from .views import Test_json
 from .viewsets.cabinetanddoor import CabinetViewset, DoorViewset
 from .viewsets.moduleviewsets import ContainerViewset
 from .viewsets.requestviewsets import RequestViewset, Pyhonapp
-from .viewsets.pythonapp import PApp
+from .viewsets.pythonapp import MqttMiddleware
 
 router = routers.DefaultRouter()
 router.register(r'userprofile', views.UserProfileViewset)
@@ -20,7 +20,7 @@ router.register(r'groupshift', views.ShiftOfGroupViewset)
 router.register(r'shifts', views.ShiftsViewset)
 router.register(r'containers', ContainerViewset)
 router.register(r'requests', RequestViewset)
-router.register(r'papp', PApp)
+router.register(r'MqttMiddleware', MqttMiddleware)
 
 urlpatterns = [
     # path('', views.home, name='web-home'),

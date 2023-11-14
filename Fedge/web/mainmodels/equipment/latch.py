@@ -5,7 +5,7 @@ from ..equipment.devices import Device
 
 
 class Latch(Device):
-    module_type = "Lock actuator"
+    module_type = "Latch"
     device_door=models.OneToOneField(Door, related_name='latch', on_delete=models.CASCADE)
     class Meta:
         pass
@@ -14,4 +14,5 @@ class Latch(Device):
 class LatchValue(models.Model):
     time = models.DateTimeField(primary_key=True, auto_now=True)
     latch = models.ForeignKey(Latch, on_delete=models.CASCADE, related_name='latchvalue')
-    value = models.BooleanField(default=False)
+    value = models.BooleanField(null=True)
+    fault = models.BooleanField(default=False)

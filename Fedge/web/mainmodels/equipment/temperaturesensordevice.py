@@ -6,7 +6,7 @@ from ..equipment.devices import Device
 
 
 class TemperatureSensor(Device):
-    module_type = "temperature_sensor"
+    module_type = "Temperature Sensor"
     class MeasuringEnvironment(models.TextChoices):
         Edge_A_top = 'Edge_A_top', 'Edge_A_top'
         Edge_A_middle = 'Edge_A_middle', 'Edge_A_middle'
@@ -26,7 +26,8 @@ class TemperatureSensor(Device):
 class TemperatureSensorValue(models.Model):
     time = models.DateTimeField(primary_key=True, auto_now=True)
     temperaturesensordevice = models.ForeignKey(TemperatureSensor, on_delete=models.CASCADE, related_name='temperaturesensorvalue')
-    tempvalue = models.FloatField(default=0)
-    tempvalue_min = models.FloatField(default=0)
-    tempvalue_max = models.FloatField(default=0)
-    humidvalue = models.FloatField(default=0)
+    tempvalue = models.FloatField(null=True)
+    tempvalue_min = models.FloatField(null=True)
+    tempvalue_max = models.FloatField(null=True)
+    humidvalue = models.FloatField(null=True)
+    fault = models.BooleanField(default=False)

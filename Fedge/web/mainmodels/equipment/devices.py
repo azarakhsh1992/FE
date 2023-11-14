@@ -13,7 +13,7 @@ class Device(models.Model):
     serial_number = models.CharField(max_length=50, unique=True)
     manufacturer = models.CharField(max_length=50)
     profinet_name = models.CharField(max_length=22, editable=False, unique=True)
-    
+    module_type = models.CharField(max_length=32, default="not defined")
     class IO_Module(models.TextChoices):
         DI = 'DI', 'DI'
         DO = 'DO', 'DO'
