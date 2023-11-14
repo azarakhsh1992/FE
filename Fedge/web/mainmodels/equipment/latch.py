@@ -16,6 +16,6 @@ class Latch(Device):
 
 class LatchValue(models.Model):
     time = models.DateTimeField(primary_key=True, auto_now=True)
-    latch = models.ForeignKey(Latch, on_delete=models.CASCADE, related_name='latchvalue')
+    latch = models.OneToOneField(Latch, on_delete=models.CASCADE, related_name='latchvalue')
     value = models.BooleanField(null=True)
     fault = models.BooleanField(default=False)

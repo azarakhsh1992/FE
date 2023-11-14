@@ -20,7 +20,7 @@ router.register(r'groupshift', views.ShiftOfGroupViewset)
 router.register(r'shifts', views.ShiftsViewset)
 router.register(r'containers', ContainerViewset)
 router.register(r'requests', RequestViewset)
-# router.register(r'MqttMiddleware', MqttMiddleware)
+router.register(r'mqttmiddleware', MqttMiddleware)
 
 urlpatterns = [
     # path('', views.home, name='web-home'),

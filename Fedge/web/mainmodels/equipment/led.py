@@ -18,6 +18,6 @@ class LED (Device):
 
 class LedValue(models.Model):
     time = models.DateTimeField(primary_key=True, auto_now=True)
-    led = models.ForeignKey(LED, on_delete=models.CASCADE, related_name='ledvalue')
+    led = models.OneToOneField(LED, on_delete=models.CASCADE, related_name='ledvalue')
     value = models.BooleanField(null=True)
     fault = models.BooleanField(default=False)
