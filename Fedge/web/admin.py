@@ -4,10 +4,10 @@ from .mainmodels.userrelated.users import UserProfile
 from .mainmodels.cabinetlevel.doors import Door
 from .mainmodels.equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
 from .mainmodels.equipment.led import LED
-from .mainmodels.equipment.latch import Latch
+from .mainmodels.equipment.latch import Latch, LatchValue
 from .mainmodels.equipment.plc import PLC
 from .mainmodels.equipment.doorsensor import DoorSensor
-from .mainmodels.equipment.button import DoorButton
+from .mainmodels.equipment.button import DoorButton, ButtonValue
 from .mainmodels.functionalities.json import Json_draft
 from .mainmodels.userrelated.groupofshifts import GroupShift,ShiftOfGroup
 from .mainmodels.equipment.devices import Device
@@ -18,6 +18,15 @@ from .mainmodels.equipment.energymodule import EnergysensorDevice, EnergySensorV
 # Register your models here.
 
 # admin.register(User)
+@admin.register(LatchValue)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('id','latch','value','fault','time')
+    
+    
+@admin.register(ButtonValue)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('doorbutton','value','fault','time')
+
 @admin.register(TemperatureSensor)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id','profinet_name','plc','module_type')
@@ -68,7 +77,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(LED)
 class UserProfileAdmin(admin.ModelAdmin):
-
+    
     list_display = ('id','profinet_name','plc')
 
 @admin.register(Cabinet)
@@ -79,7 +88,8 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(Latch)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id','profinet_name')
-
+    
+    
 @admin.register(Door)
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ('cabinet', 'rack', 'direction')
