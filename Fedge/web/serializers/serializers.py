@@ -2,7 +2,6 @@ from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
 from ..mainmodels.cabinetlevel.cabinets import Cabinet
-from ..mainmodels.functionalities.json import Json_draft
 
 from ..mainmodels.userrelated.groupofshifts import EmployeeGroup, Shifts
 from ..mainmodels.userrelated.users import User, UserProfile
@@ -43,17 +42,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
-
-class Jsonserializer(serializers.ModelSerializer):
-    class Meta:
-        model = Json_draft
-        fields = ('name', 'code', 'cid', 'adr')
-
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        if 'request' in self.context and self.context['request'].method == 'POST':
-            ret.pop('name', None)
-        return ret
 
 
 class CommandSerializer(serializers.ModelSerializer):

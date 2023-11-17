@@ -9,7 +9,6 @@ from .mainmodels.equipment.plc import PLC
 from .mainmodels.equipment.doorsensor import DoorSensor, DoorsensorValue
 from .mainmodels.equipment.latchsensor import LatchSensor, LatchSensorValue
 from .mainmodels.equipment.button import DoorButton, ButtonValue
-from .mainmodels.functionalities.json import Json_draft
 from .mainmodels.userrelated.groupofshifts import EmployeeGroup,Shifts
 from .mainmodels.equipment.devices import Device
 from .mainmodels.equipment.energymodule import EnergysensorDevice, EnergySensorValue

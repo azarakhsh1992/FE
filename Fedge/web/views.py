@@ -12,13 +12,12 @@ from .mainmodels.cabinetlevel.doors import Door
 from .mainmodels.equipment.plc import PLC
 from .mainmodels.equipment.temperaturesensordevice import TemperatureSensor
 from .mainmodels.cabinetlevel.cabinets import Cabinet
-from .mainmodels.functionalities.json import Json_draft
 import json
 import requests
 from django.views.decorators.csrf import csrf_exempt
 from .mainmodels.userrelated.groupofshifts import EmployeeGroup, Shifts
 from .serializers.cabinetanddoor import CabinetSerializer
-from .serializers.serializers import UserProfileSerializer, UserSerializer, Jsonserializer, CommandSerializer, \
+from .serializers.serializers import UserProfileSerializer, UserSerializer, CommandSerializer, \
     FullGroupShiftSerializer, ShiftSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
