@@ -29,3 +29,19 @@
   "F":"value",
   "time":"value"
 }
+
+
+
+MQTT topics PLC Topics: Profinet_name of the modules
+
+MQTT Messages:
+
+Temperature 8 modules (8 messages intervally): "T;Float;Tmin;Float;Tmax;Float;RH;Float;F;BOOL;time;DateTime"
+
+Energy - 2 modules (Event-based message): "E;Float;UnitE;String;P;Float;UnitP;String;F;BOOL;time;DateTime"
+
+DIDO  modules (Event-based messages): "value;BOOL;F;BOOL;time;DateTime"
+
+MQTT messages to publish for DOs:
+Topic: PLC.Profinet_name
+Message: "value;"

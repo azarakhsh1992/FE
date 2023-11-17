@@ -4,14 +4,14 @@ from rest_framework.authtoken.models import Token
 from ..mainmodels.cabinetlevel.cabinets import Cabinet
 from ..mainmodels.functionalities.json import Json_draft
 
-from ..mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
+from ..mainmodels.userrelated.groupofshifts import EmployeeGroup, Shifts
 from ..mainmodels.userrelated.users import User, UserProfile
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ('id', 'user', 'firstname', 'lastname', 'accessable_cabinets', 'role', 'bereich', 'telephone', 'group')
+        fields = ('id', 'user', 'firstname', 'lastname', 'accessible_racks', 'role', 'bereich', 'telephone', 'group')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -61,9 +61,9 @@ class CommandSerializer(serializers.ModelSerializer):
     command = serializers.CharField(required=True)
 
 
-class ShiftOfGroupSerializer(serializers.ModelSerializer):
+class ShiftSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ShiftOfGroup
+        model = Shifts
         fields = ('group', 'shift', 'date')
 
 
@@ -71,8 +71,8 @@ class FullGroupShiftSerializer(serializers.ModelSerializer):
     users = serializers.SerializerMethodField()
 
     class Meta:
-        model = GroupShift
-        fields = ('group', 'groupshift', 'usergroup', 'users')
+        model = EmployeeGroup
+        fields = ('group', 'employeegroup', 'usergroup', 'users')
 
     def get_users(self, obj):
         users = UserProfile.objects.filter(group=obj)
@@ -80,3 +80,4 @@ class FullGroupShiftSerializer(serializers.ModelSerializer):
         serialized_data = serializer.data
         firstnames = [user.get('firstname') for user in serialized_data]
         return firstnames
+#TODO: this serializers must be modified

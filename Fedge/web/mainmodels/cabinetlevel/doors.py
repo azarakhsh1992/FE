@@ -9,14 +9,15 @@ class Door(models.Model):
     class Direction(models.TextChoices):
         Front = 'Front', 'Front'
         Rear = 'Rear', 'Rear'
-        NE = 'NetworkOrEnergy', 'Network/Energy Door'
+        NE = 'NetworkOrEnergy', 'Network/Energy'
     direction = models.CharField(choices=Direction.choices,max_length=32, null=False)
-    rack = models.ForeignKey(Rack, related_name='racks', on_delete=models.CASCADE, null=False)
-    cabinet = models.ForeignKey(Cabinet, related_name='cabinet', on_delete=models.CASCADE, null=False)
+    rack = models.ForeignKey(Rack, related_name='doors', on_delete=models.CASCADE, null=False)
     qr = models.CharField(max_length=32, unique=True, blank=True, editable=False, null=False)
     def __str__(self):
-        return ('Cabinet: '+self.cabinet.profinet_name+' Rack: '+self.rack.name)
+        return ('Cabinet: '+self.rack.cabinet.profinet_name+' Rack: '+self.rack.name + self.direction)
+    
     def save(self, *args, **kwargs):
+        self.cabinet=self.rack.cabinet
         doors = Door.objects.all()
         condition = True
         # self.qr = uuid.uuid4().hex[:20]
@@ -31,7 +32,13 @@ class Door(models.Model):
                         condition = False
         self.qr = generatedqr
         # print(generatedqr)
+        if self.rack.name in ["Energy", "Network"] and self.direction in["Front", "Rear"]:
+            raise ValueError("Wrong selection: Select Network/Energy can be selected for this rack")
+        elif self.rack.name in ["Edge_A","Edge_B","Cooling"] and self.direction== "NetworkOrEnergy":
+            raise ValueError("Wrong selection: Select even Front or Rear as direction for this rack")
         super(Door, self).save(*args, **kwargs)
         
     class Meta:
-        unique_together = ('direction', 'rack', 'cabinet')
+        unique_together = ('direction', 'rack')
+        
+        

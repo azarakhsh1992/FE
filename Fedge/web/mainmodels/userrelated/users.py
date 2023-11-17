@@ -1,20 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .groupofshifts import GroupShift
+from .groupofshifts import EmployeeGroup
+from ..cabinetlevel.cabinets import Cabinet, Rack
+from ..cabinetlevel.doors import Door
 
 
-class UserProfile(models.Model):  # on_delete = CASCADE
+class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
-    accessable_cabinets = models.CharField(max_length=500, null=True)
     firstname = models.CharField(max_length=250, blank=True, null=True)
     lastname = models.CharField(max_length=250, blank=True, null=True)
 
     class Role(models.TextChoices):
-        TECHNICIAN = "TECHNICIAN", "Technician"
-        PLANT_OPERATOR = "PLANT_OPERATOR", "Plant Operator"
-        IT_SHOPFLOOR = "IT_SHOPFLOOR", "IT Shopfloor"
+        ELEKTR = "Elektriker", "Elektriker"
+        ANLAGEN  = "Anlagen", "Anlagenfuehrer"
+        IT = "IT", "IT Shopfloor"
+        NETZWERK = "Netzwerk", "Netzwerktechniker"
+        IH = "IH", "Instandhalter"
 
-    role = models.CharField(choices=Role.choices, default=None, max_length=100, blank=True, null=True)
+    role = models.CharField(choices=Role.choices, default=None, max_length=100)
 
     class Bereich(models.TextChoices):
         K = 'K', 'Karosseriebau'
@@ -26,6 +29,6 @@ class UserProfile(models.Model):  # on_delete = CASCADE
         B = 'B', 'Batteriefertigung'
         C = 'C', 'Komponente'
 
-    bereich = models.CharField(choices=Bereich.choices, default=None, max_length=1, blank=True, null=True)
+    bereich = models.CharField(choices=Bereich.choices, default=None, max_length=1)
     telephone = models.CharField(max_length=15, blank=True, null=True)
-    group = models.ForeignKey(to=GroupShift, related_name='usergroup', on_delete=models.CASCADE, blank=True, null=True)
+    employee_group = models.ForeignKey(EmployeeGroup, related_name='employee_group', on_delete=models.CASCADE)

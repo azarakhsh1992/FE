@@ -16,10 +16,10 @@ from .mainmodels.functionalities.json import Json_draft
 import json
 import requests
 from django.views.decorators.csrf import csrf_exempt
-from .mainmodels.userrelated.groupofshifts import GroupShift, ShiftOfGroup
+from .mainmodels.userrelated.groupofshifts import EmployeeGroup, Shifts
 from .serializers.cabinetanddoor import CabinetSerializer
 from .serializers.serializers import UserProfileSerializer, UserSerializer, Jsonserializer, CommandSerializer, \
-    FullGroupShiftSerializer, ShiftOfGroupSerializer
+    FullGroupShiftSerializer, ShiftSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
@@ -51,11 +51,10 @@ class UserViewset(viewsets.ModelViewSet):
                     profileobj = UserProfile.objects.get(user_id=id)
                     profileobj.firstname = datas['firstname']
                     profileobj.lastname = datas['lastname']
-                    profileobj.accessable_cabinets = datas['accessable_cabinets']
                     profileobj.role = datas['role']
                     profileobj.bereich = datas['bereich']
                     profileobj.telephone = datas['telephone']
-                    profileobj.group_id = datas['group']
+                    profileobj.employee_group = datas['group']
                     profileobj.save()
                     serializer = UserProfileSerializer(profileobj)
                     response = {'message': 'updated'}
@@ -63,9 +62,8 @@ class UserViewset(viewsets.ModelViewSet):
                 except:
                     profileobj = UserProfile.objects.create(user=storeduser, firstname=datas['firstname'],
                                                             lastname=datas['lastname'],
-                                                            accessable_cabinets=datas['accessable_cabinets'],
                                                             role=datas['role'], bereich=datas['bereich'],
-                                                            telephone=datas['telephone'], group_id=datas['group'])
+                                                            telephone=datas['telephone'], employee_group=datas['employee_group'])
                     response = {'message': 'created'}
                     return Response(response, status=status.HTTP_200_OK)
             except:
@@ -76,45 +74,6 @@ class UserViewset(viewsets.ModelViewSet):
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
-class JasonViewset(viewsets.ModelViewSet):
-    queryset = Json_draft.objects.all()
-    serializer_class = Jsonserializer
-    permission_classes = (AllowAny,)
-
-    @action(methods=['PUT'], detail=True, serializer_class=CommandSerializer)
-    def send_json(self, request, pk):
-        # serializer = CommandSerializer(data=request)
-        print(request)
-
-
-@csrf_exempt
-def CommandViewset(request):
-    data = json.loads(request.body)
-    mydata = Json_draft.objects.get(sensor=data.get('sensor'), command=data.get('command'))
-    respon = {
-        'cid': mydata.cid,
-        'code': mydata.code,
-        'adr': mydata.adr,
-        "data": {"newvalue": "00"}
-    }
-    method = 'POST'
-    url = "http://192.168.0.4"
-    headers = {}
-    headers['Content-Type'] = 'application/json'
-
-    try:
-        response = requests.request(method, url, data=json.dumps(respon), headers=headers)
-        response.raise_for_status()  # Raise an exception for HTTP errors (4xx, 5xx)
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        raise e
-
-
-
-@csrf_exempt
-def Test_json(request):
-    if request.method == 'POST' :
-        print("you are here , STATUS : OK")
 
 
 # Token Custom Authorization
@@ -127,42 +86,23 @@ class CustomObtainAuthToken(ObtainAuthToken):
         return Response({'token': token.key, 'user': userSerilizer.data})
 
 
-class ShiftOfGroupViewset(viewsets.ModelViewSet):
-    queryset = GroupShift.objects.all()
+class EmployeeGroupViewset(viewsets.ModelViewSet):
+    queryset = EmployeeGroup.objects.all()
     serializer_class = FullGroupShiftSerializer
 
 
 class ShiftsViewset(viewsets.ModelViewSet):
-    queryset = ShiftOfGroup.objects.all()
-    serializer_class = ShiftOfGroupSerializer
+    queryset = Shifts.objects.all()
+    serializer_class = ShiftSerializer
 
     @action(methods=['POST'], detail=False)
     def CustomFunc(self, request):
         try:
             data = request.data
-            storeddata = ShiftOfGroup.objects.all()
-            serialized = ShiftOfGroupSerializer(storeddata, many=True)
+            storeddata = Shifts.objects.all()
+            serialized = ShiftSerializer(storeddata, many=True)
             response = {'message': 'data recieved', 'data recieved': data, 'somethin': serialized.data}
             return Response(response, status=status.HTTP_200_OK)
         except:
             response = {'message': 'Error Happened'}
             return Response('not Ok', status=status.HTTP_400_BAD_REQUEST)
-
-    # def create(self, request, *args, **kwargs):
-    #     data = request.data
-    #     print(data)
-    
-@csrf_exempt
-@require_POST
-@action(methods=['POST'],detail=False)
-def temp_sensors_msg(request):
-    try:
-        data= request.data
-        response='message received'
-        print(data)
-        print(response)
-        return Response(response, status==status.HTTP_200_OK)
-    except:
-        response='message not received! ERROR'
-        print(response)
-        return Response('ERROR', status=status.HTTP_400_BAD_REQUEST)

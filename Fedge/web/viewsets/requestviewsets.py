@@ -9,7 +9,7 @@ from ..mainmodels.equipment.plc import PLC
 from ..mainmodels.requests.requests import Request, Servicelog
 from ..serializers.cabinetanddoor import DoorSerializer, FullDoorSerializer
 from ..serializers.requestserializers import RequestSerializer
-from ..mainmodels.functionalities.function_access import access_checker, access_checker2
+from ..mainmodels.functionalities.function_access import access_checker
 from ..serializers.serializers import UserSerializer
 
 
@@ -25,15 +25,16 @@ class RequestViewset(viewsets.ModelViewSet):
             userobj = User.objects.get(**userserserializer.validated_data)
             qrcode = request.data['qrcode']
             door = Door.objects.get(qr=qrcode)
-            cabinet = door.cabinet
+            cabinet = door.rack.cabinet
+            rack = door.rack
             # for functionality un-comment below
             # access, accessresponse = access_checker(user=userobj, door=door)
-            access, accessresponse = access_checker2(user=userobj, door=door)
+            access, accessresponse = access_checker(user=userobj, door=door)
             if access:
-                eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, \
-                                                  description=request.data['description'],
-                                                  datetime=request.data['time'], servicelog=False, buttonstatus=False,
-                                                  cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
+                eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
+                    description=request.data['description'],\
+                        datetime=request.data['time'], servicelog=False, buttonstatus=False,\
+                            cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
                 # TODO: send to container to light an LED : it will send event base on container
                 serialized_data = RequestSerializer(eventreq)
                 req_id = serialized_data.data.get('id')
@@ -104,7 +105,6 @@ class RequestViewset(viewsets.ModelViewSet):
                             "opening": False,
                             'request': 'some problem'
                         })
-
                 else:
                     customized_data.append({
                         'name': door.get('name'),
@@ -128,17 +128,3 @@ class RequestViewset(viewsets.ModelViewSet):
         except:
             response = {'message': 'this request not exists'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
-
-class Pyhonapp(viewsets.ModelViewSet):
-    @action(methods=['POST'],detail=False)
-    def temp_sensors_msg(request):
-        try:
-            data= request.data
-            response='message received'
-            print(data)
-            print(response)
-            return Response(response, status==status.HTTP_200_OK)
-        except:
-            response='message not received! ERROR'
-            print(response)
-            return Response('ERROR', status=status.HTTP_400_BAD_REQUEST)

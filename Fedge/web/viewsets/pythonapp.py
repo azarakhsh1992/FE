@@ -21,8 +21,9 @@ class MqttMiddleware(viewsets.ModelViewSet):
         data = request.data
         try:
             data_profinet = data['profinet_name']
+            # response_data={data["T"],data["Tmin"],data["Tmax"],data["RH"],data["F"],data["Time"]}
+            tsensor = TemperatureSensor.objects.get(profinet_name=data_profinet)
             try:
-                tsensor = TemperatureSensor.objects.get(profinet_name=data_profinet)
                 if data["F"] == "False":
                     TemperatureSensorValue.objects.create(temperaturesensordevice=tsensor,\
                         tempvalue=data["T"],tempvalue_min=data["Tmin"],tempvalue_max=data["Tmax"],humidvalue=data["RH"],time=data["Time"])
@@ -35,9 +36,11 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 return Response(response, status=status.HTTP_200_OK)
             except:
                 response = {"message": "Data does not match"}
+                # response = {{"message": "Data does not match"},response_data}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
         except:
             response = {"message": "Profinet_name for temperature sensor does not exist"}
+            # response = {data_profinet:response_data}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 ################################################################
 ################################################################
@@ -78,10 +81,10 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 try:
                     doorsensor = DoorSensor.objects.get(profinet_name=data["profinet_name"])
                     if data ["F"] == "False":
-                        DoorsensorValue.objects.create(doorsensordevice=doorsensor,value=data["value"], time=data["time"])
+                        DoorsensorValue.objects.create(doorsensordevice=doorsensor,value=data["value"])
                         response = {"message": "success"}
                     elif data ["F"] == "True":
-                        DoorsensorValue.objects.create(doorsensordevice=doorsensor,fault=True, time=data["time"])
+                        DoorsensorValue.objects.create(doorsensordevice=doorsensor,fault=True)
                         response = {"message": "success: Fault:True"}
                     else:
                         response = {"message": "'F' as Fault not defined, data not recoreded"}
@@ -95,26 +98,27 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 try:
                     this_latch = Latch.objects.get(profinet_name=data["profinet_name"])
                     if data["F"] == "False":
-                        LatchValue.objects.create(latch=this_latch, value=data["value"], time=data["time"])
+                        response="here"
+                        LatchValue.objects.create(latch=this_latch, value=data["value"])
                         response = {"message": "success"}
                     elif data["F"] == "True":
-                        LatchValue.objects.create(latch=this_latch,fault=True, time=data["time"])
+                        LatchValue.objects.create(latch=this_latch,fault=True)
                         response = {"message": "success, Fault:True"}
                     else:
                         response = {"message": "'F' as Fault not defined, data not recoreded"}
                     return Response(response, status=status.HTTP_200_OK)
                 except:
-                    response = {"message": "Data does not match"}
+                    # response = {"message": "Data does not match"}
                     return Response(response, status=status.HTTP_400_BAD_REQUEST)
     ########################################################################
             elif device_moduletype == "Latch Sensor":
                 try:
                     latchsensor = LatchSensor.objects.get(profinet_name=data["profinet_name"])
                     if data ["F"] == "False":
-                        LatchSensorValue.objects.create(latchsensor=latchsensor,value=data["value"], time=data["time"])
+                        LatchSensorValue.objects.create(latchsensor=latchsensor,value=data["value"])
                         response = {"message": "success"}
                     elif data["F"] == "True":
-                        LatchSensorValue.objects.create(latchsensor=latchsensor,fault=True, time=data["time"])
+                        LatchSensorValue.objects.create(latchsensor=latchsensor,fault=True)
                         response = {"message": "success, Fault:True"}
                     else:
                         response = {"message": "'F' as Fault not defined, data not recoreded"}
@@ -127,10 +131,10 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 try:
                     this_led = LED.objects.get(profinet_name=data["profinet_name"])
                     if data ["F"] == "False":
-                        LedValue.objects.create(led=this_led,value=data["value"], time=data["time"])
+                        LedValue.objects.create(led=this_led,value=data["value"])
                         response = {"message": "success"}
                     elif data ["F"] == "True":
-                        LedValue.objects.create(led=this_led,fault =True, time=data["time"])
+                        LedValue.objects.create(led=this_led,fault =True)
                         response = {"message": "success, Fault:True"}
                     else:
                         response = {"message": "'F' as Fault not defined, data not recoreded"}
@@ -143,10 +147,10 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 try:
                     doorbtn = DoorButton.objects.get(profinet_name=data["profinet_name"])
                     if data ["F"] == "False":
-                        ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"], time=data["time"])
+                        ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"])
                         response = {"message": "success"}
                     elif data ["F"] == "True":
-                        ButtonValue.objects.create(doorbutton=doorbtn, fault=True, time=data["time"])
+                        ButtonValue.objects.create(doorbutton=doorbtn, fault=True)
                         response = {"message": "success, Fault:True"}
                     else:
                         response = {"message": "'F' as Fault not defined, data not recoreded"}
