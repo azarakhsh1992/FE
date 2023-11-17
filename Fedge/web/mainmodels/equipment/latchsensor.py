@@ -33,4 +33,4 @@ class LatchSensorValue(models.Model):
     time = models.DateTimeField(primary_key=True, auto_now=True)
     latchsensor = models.ForeignKey(LatchSensor, on_delete=models.CASCADE, related_name='latchsensorvalue')
     value = models.BooleanField(null=True)
-    fault=models.BooleanField(default=False)
+    valid=models.BooleanField(default=True)

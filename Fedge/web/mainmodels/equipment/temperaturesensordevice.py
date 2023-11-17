@@ -30,4 +30,4 @@ class TemperatureSensorValue(models.Model):
     tempvalue_min = models.FloatField(null=True)
     tempvalue_max = models.FloatField(null=True)
     humidvalue = models.FloatField(null=True)
-    fault = models.BooleanField(default=False)
+    valid = models.BooleanField(default=True)

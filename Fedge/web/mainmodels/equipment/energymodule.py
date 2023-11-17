@@ -25,4 +25,4 @@ class EnergySensorValue(models.Model):
     energy_unit = models.CharField(default='KWh', max_length=4)
     power_value = models.FloatField(null=True)
     power_unit = models.CharField(default='KW', max_length=4)
-    fault = models.BooleanField(default=False)
+    valid = models.BooleanField(default=True)

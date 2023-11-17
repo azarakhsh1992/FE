@@ -36,4 +36,4 @@ class ButtonValue(models.Model):
     time = models.DateTimeField(primary_key=True, auto_now=True)
     doorbutton = models.ForeignKey(DoorButton, on_delete=models.CASCADE, related_name='buttonvalue')
     value = models.BooleanField(null=True)
-    fault = models.BooleanField(default=False)
+    valid = models.BooleanField(default=True)
