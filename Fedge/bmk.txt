@@ -1,0 +1,3 @@
+BT Temperatur
+PG    Messinstrument (Strom, Spannung, Leistung), Uhr, Zählwerk (z.B. Betriebsstundenzähler)
+PF Meldeleuchte allgemein
