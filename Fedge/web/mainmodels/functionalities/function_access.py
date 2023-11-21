@@ -11,16 +11,17 @@ def user_door_checker(user, qrcode):
     profile = UserProfile.objects.get(user=user)
     this_door = Door.objects.get(qr=qrcode)
     rack_name = this_door.rack.name
+    cabinet = this_door.rack.cabinet.profinet_name
     if profile.role== "Elektriker":
         if rack_name == "Energy":
             door_access = True
-            door_response = " You have access to the Energy rack door"
+            door_response = " You have access to the Energy rack door of the {cabinet}"
         elif rack_name == "Cooling" and this_door.direction == "Rear":
             door_access = True
-            door_response = f" You have access to the {this_door.direction} door of the {rack_name} rack"
+            door_response = f" You have access to the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet"
         else:
             door_access = False
-            door_response = "The scanned door is: %s, on this rack: %s, and you do not have access to this door." %this_door.direction %rack_name
+            door_response = f"The scanned door is the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet, and you do not have access to this door."
     elif profile.role == "Anlagen":
         door_access = False
         door_response="The employee accessible doors not defined."
@@ -181,13 +182,14 @@ def access_checker(user, qrcode):
     
     if profile.bereich.capitalize() == this_door.rack.cabinet.bereich.capitalize():
         bereich_access = True
-        response_bereich="You have access on this area (Bereich). "
+        response_bereich=f"You have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
     else:
-        response_bereich = "You do not have access on this area (Bereich). "
+        response_bereich = f"You do not have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
     if shift_access and bereich_access and door_access:
         access = True
     else:
         access = False
+        #TODO: a log that gets the data of cabinet, rack, door, user, response, datetime that saves into another model
     response = response_shift+response_bereich+door_response
     return access, response
 

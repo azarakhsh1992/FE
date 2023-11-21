@@ -6,14 +6,14 @@ from django.core.exceptions import ValidationError
 class Cabinet(models.Model):
 
     class Bereich (models.TextChoices):
-        K = 'k', 'Karosseriebau'
-        F = 'f', 'Fördertechnik'
-        M = 'm', 'Montage'
-        I = 'i', 'Inhouse Logistik'
-        P = 'p', 'Presswerk'
-        L = 'l', 'Lackiererei'
-        B = 'b', 'Batteriefertigung'
-        C = 'c', 'Komponente'
+        K = 'K', 'Karosseriebau'
+        F = 'F', 'Fördertechnik'
+        M = 'M', 'Montage'
+        I = 'I', 'Inhouse Logistik'
+        P = 'P', 'Presswerk'
+        L = 'L', 'Lackiererei'
+        B = 'B', 'Batteriefertigung'
+        C = 'C', 'Komponente'
     bereich = models.CharField(choices= Bereich.choices, max_length=1, help_text="it must have at least one character")
     segment = models.CharField(max_length=1, help_text="it must have at least one character")
     anlage = models.CharField(max_length=4, help_text="it must have at least four character")
