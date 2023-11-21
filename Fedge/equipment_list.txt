@@ -1,0 +1,133 @@
+PLC has 2 IOLink modules, 
+
+PLC : 1
+Temperature sensors: 8
+Energy Sensors : 2
+Door sensors : 8
+Latch sensors : 8
+Door buttons : 8
+Latches : 8
+LEDs : 32 (4*8)
+
+parent profinet name for devices: 
+self.plc.cabinet.bereich+self.plc.cabinet.segment+self.plc.cabinet.anlage+self.plc.cabinet.arg_sps+self.plc.cabinet.station+self.plc.funktionseinheit
+
+in the middleware python app= plc.profinet_name[0:15]
+
+added part to the parent profinet_name:
+Gerät+BMK
+
+
+Temperature sensors:
+
+1. Rack_Edge_A_top:
+2. Rack_Edge_A_middle:
+3. Rack_Edge_A_bottom:
+4. Rack_Edge_B_top:
+5. Rack_Edge_B_middle:
+6. Rack_Edge_B_bottom:
+7. Rack_Network:
+8. Rack_Energy:
+
+Energy sensors:
+
+1. Energy_module1:
+2. Energy_module2:
+
+
+Door sensors:
+
+1. Rack_Edge_A_Front:
+2. Rack_Edge_A_Rear:
+3. Rack_Edge_B_Front:
+4. Rack_Edge_B_Rear:
+5. Rack_AC_Front:
+6. Rack_AC_Rear:
+7. Rack_Network:
+8. Rack_Energy:
+
+
+
+Latch sensors:
+
+1. Rack_Edge_A_Front:
+2. Rack_Edge_A_Rear:
+3. Rack_Edge_B_Front:
+4. Rack_Edge_B_Rear:
+5. Rack_AC_Front:
+6. Rack_AC_Rear:
+7. Rack_Network:
+8. Rack_Energy:
+
+
+
+Door buttons:
+
+1. Rack_Edge_A_Front:
+2. Rack_Edge_A_Rear:
+3. Rack_Edge_B_Front:
+4. Rack_Edge_B_Rear:
+5. Rack_AC_Front:
+6. Rack_AC_Rear:
+7. Rack_Network:
+8. Rack_Energy:
+
+
+Latches:
+
+1. Rack_Edge_A_Front:
+2. Rack_Edge_A_Rear:
+3. Rack_Edge_B_Front:
+4. Rack_Edge_B_Rear:
+5. Rack_AC_Front:
+6. Rack_AC_Rear:
+7. Rack_Network:
+8. Rack_Energy:
+
+
+LEDs:
+
+1. Rack_Edge_A_Front_1:
+2. Rack_Edge_A_Front_2
+3. Rack_Edge_A_Front_3:
+4. Rack_Edge_A_Front_4
+
+5. Rack_Edge_A_Rear_1:
+6. Rack_Edge_A_Rear_2:
+7. Rack_Edge_A_Rear_3:
+8. Rack_Edge_A_Rear_4:
+
+9. Rack_Edge_B_Front_1:
+10. Rack_Edge_B_Front_2:
+11. Rack_Edge_B_Front_3:
+12. Rack_Edge_B_Front_4:
+
+
+13. Rack_Edge_B_Rear_1:
+14. Rack_Edge_B_Rear_2:
+15. Rack_Edge_B_Rear_3:
+16. Rack_Edge_B_Rear_4:
+
+
+
+17. Rack_AC_Front_1:
+18. Rack_AC_Front_2:
+19. Rack_AC_Front_3:
+20. Rack_AC_Front_4:
+
+21. Rack_AC_Rear_1:
+22. Rack_AC_Rear_2:
+23. Rack_AC_Rear_3:
+24. Rack_AC_Rear_4:
+
+25. Rack_Network_1:
+26. Rack_Network_2:
+27. Rack_Network_3:
+28. Rack_Network_4:
+
+29. Rack_Energy_1:
+30. Rack_Energy_2:
+31. Rack_Energy_3:
+32. Rack_Energy_4:
+
+

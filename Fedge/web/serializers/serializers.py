@@ -10,7 +10,7 @@ from ..mainmodels.userrelated.users import User, UserProfile
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ('id', 'user', 'firstname', 'lastname', 'accessible_racks', 'role', 'bereich', 'telephone', 'group')
+        fields = ('id', 'user', 'firstname', 'lastname', 'role', 'bereich', 'telephone', 'employee_group')
 
 
 class UserSerializer(serializers.ModelSerializer):

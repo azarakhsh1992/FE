@@ -2,6 +2,8 @@ import uuid
 from typing import Any
 from django.db import models
 from ..cabinetlevel.cabinets import Cabinet, Rack
+from django.core.exceptions import ValidationError
+
 
 
 class Door(models.Model):
@@ -15,7 +17,13 @@ class Door(models.Model):
     qr = models.CharField(max_length=32, unique=True, blank=True, editable=False, null=False)
     def __str__(self):
         return ('Cabinet: '+self.rack.cabinet.profinet_name+' Rack: '+self.rack.name + self.direction)
-    
+    def clean(self):
+        if self.rack.name in ["Energy", "Network"] and self.direction in["Front", "Rear"]:
+            raise ValidationError("Wrong selection: Select Network/Energy can be selected for this rack")
+        elif self.rack.name in ["Edge_A","Edge_B","Cooling"] and self.direction== "NetworkOrEnergy":
+            raise ValidationError("Wrong selection: Select either Front or Rear as direction for this rack")
+        else:
+            pass
     def save(self, *args, **kwargs):
         self.cabinet=self.rack.cabinet
         doors = Door.objects.all()
@@ -32,10 +40,6 @@ class Door(models.Model):
                         condition = False
         self.qr = generatedqr
         # print(generatedqr)
-        if self.rack.name in ["Energy", "Network"] and self.direction in["Front", "Rear"]:
-            raise ValueError("Wrong selection: Select Network/Energy can be selected for this rack")
-        elif self.rack.name in ["Edge_A","Edge_B","Cooling"] and self.direction== "NetworkOrEnergy":
-            raise ValueError("Wrong selection: Select even Front or Rear as direction for this rack")
         super(Door, self).save(*args, **kwargs)
         
     class Meta:

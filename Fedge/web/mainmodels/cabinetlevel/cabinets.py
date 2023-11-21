@@ -1,5 +1,6 @@
 from typing import Any
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Cabinet(models.Model):
@@ -25,7 +26,7 @@ class Cabinet(models.Model):
     def save(self, *args, **kwargs):
         self.profinet_name = self.bereich + self.segment + self.anlage + self.arg_sps + self.pultbereich_sk + self.station
         if len(self.profinet_name) != 12:
-            raise ValueError("Please check your inputs, the Profinet name must be 12 characters long")
+            raise ValidationError("Please check your inputs, the Profinet name must be 12 characters long")
         super(Cabinet, self).save(*args, **kwargs)
     def __str__(self):
         return ("Cabinet: "+self.profinet_name + " Bereich: " + self.bereich)

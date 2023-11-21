@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .groupofshifts import EmployeeGroup
+from .groupofshifts import EmployeeGroup,Shifts
 from ..cabinetlevel.cabinets import Cabinet, Rack
 from ..cabinetlevel.doors import Door
 
@@ -31,4 +31,4 @@ class UserProfile(models.Model):
 
     bereich = models.CharField(choices=Bereich.choices, default=None, max_length=1)
     telephone = models.CharField(max_length=15, blank=True, null=True)
-    employee_group = models.ForeignKey(EmployeeGroup, related_name='employee_group', on_delete=models.CASCADE)
+    employee_group = models.ForeignKey(EmployeeGroup, related_name="employees",on_delete=models.SET_NULL, null=True)

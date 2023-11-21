@@ -1,5 +1,5 @@
 from django.db import models
-from ..cabinetlevel.cabinets import Cabinet
+from ..cabinetlevel.cabinets import Cabinet, Rack
 from .plc import PLC
 from ..cabinetlevel.doors import Door
 from .devices import Device
@@ -13,6 +13,7 @@ class EnergysensorDevice(Device):
     measuring_env = models.CharField(choices=MeasuringEnvironment.choices, default=None, max_length=4, unique=True)
     def save(self, *args, **kwargs):
         self.this_module_type=self.module_type
+        self.rack=Rack.objects.get(cabinet=self.plc.cabinet, name="Energy")
         return super().save(*args, **kwargs)
     class Meta:
         pass

@@ -9,7 +9,7 @@ from .mainmodels.equipment.plc import PLC
 from .mainmodels.equipment.doorsensor import DoorSensor, DoorsensorValue
 from .mainmodels.equipment.latchsensor import LatchSensor, LatchSensorValue
 from .mainmodels.equipment.button import DoorButton, ButtonValue
-from .mainmodels.userrelated.groupofshifts import EmployeeGroup,Shifts
+from .mainmodels.userrelated.groupofshifts import EmployeeGroup,Shifts,ShiftAssignment
 from .mainmodels.equipment.devices import Device
 from .mainmodels.equipment.energymodule import EnergysensorDevice, EnergySensorValue
 
@@ -23,25 +23,26 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Rack)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Rack._meta.get_fields()] 
+    list_display = ["name","cabinet"] 
 
 @admin.register(Door)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Door._meta.get_fields()] 
+    list_display = ["rack", "direction","qr"] 
 ########################PLC and Device Model########################
 @admin.register(PLC)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in PLC._meta.get_fields()] 
+    list_display = ['module_type','profinet_name','cabinet','funktionseinheit', 'geraet', 'bmk','ip_address','serial_number','mac_address',"manufacturer"]
     
 @admin.register(Device)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Device._meta.get_fields()]
+    list_display = ["this_module_type","profinet_name","plc","io_module","port","geraet","bmk","serial_number","manufacturer"]
     
 #################Devices#######################
 @admin.register(TemperatureSensor)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in TemperatureSensor._meta.get_fields()] 
-
+    list_display =  ["profinet_name","plc","module_type","measuring_env","geraet","bmk","serial_number","manufacturer","io_module","port","rack"]
+    # list_display =  [field.name for field in Device._meta.get_fields()]
+    
 @admin.register(EnergysensorDevice)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = [field.name for field in EnergysensorDevice._meta.get_fields()] 
@@ -60,7 +61,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Latch)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Latch._meta.get_fields()] 
+    list_display = ["profinet_name","plc","rack_name","door_direction","module_type","device_door","geraet","bmk","serial_number","manufacturer","io_module","port","rack"] 
     
 @admin.register(LatchSensor)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -70,7 +71,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 #######################Values#######################
 @admin.register(LatchValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in LatchValue._meta.get_fields()] 
+    list_display = ["latch","time","value","valid"] 
     
 @admin.register(LatchSensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -100,14 +101,18 @@ class UserProfileAdmin(admin.ModelAdmin):
 ################################################################
 @admin.register(EmployeeGroup)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in EmployeeGroup._meta.get_fields()] 
+    list_display = ["group"] 
 
 @admin.register(Shifts)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Shifts._meta.get_fields()] 
+    list_display = ["shift","shift_start","shift_end","shift_start_int","shift_end_int","extra_time_int","type"] 
 
 
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = [field.name for field in UserProfile._meta.get_fields()]
+    
+@admin.register(ShiftAssignment)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ["group","shift","starting_date","ending_date"] 

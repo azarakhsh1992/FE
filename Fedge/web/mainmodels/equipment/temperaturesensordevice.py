@@ -19,7 +19,17 @@ class TemperatureSensor(Device):
     measuring_env = models.CharField(choices=MeasuringEnvironment.choices, default=None, max_length=16, unique=True)
     def save(self, *args, **kwargs):
         self.this_module_type=self.module_type
-        return super().save(*args, **kwargs)
+        if self.measuring_env in['Edge_A_top','Edge_A_middle','Edge_A_bottom']:
+            self.rack=Rack.objects.get(cabinet=self.plc.cabinet, name="Edge_A")
+        elif self.measuring_env in ['Edge_B_top','Edge_B_middle','Edge_B_bottom']:
+            self.rack=Rack.objects.get(cabinet=self.plc.cabinet, name="Edge_B")
+        elif self.measuring_env == "Network":
+            self.rack=Rack.objects.get(cabinet=self.plc.cabinet, name="Network")
+        elif self.measuring_env == "Energy":
+            self.rack=Rack.objects.get(cabinet=self.plc.cabinet, name="Energy")
+        else:
+            pass
+        super().save(*args, **kwargs)
     class Meta:
         pass
 

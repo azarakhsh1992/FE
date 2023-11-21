@@ -27,6 +27,16 @@ class DoorButton(Device):
         # self.device_door= Door.objects.get(direction=self.door_direction)
         self.device_door=Door.objects.get(direction=self.door_direction, rack=Rack.objects.get(cabinet=self.plc.cabinet, name = self.rack_name))
         self.this_module_type=self.module_type
+        if self.rack_name =='Edge_A':
+            self.rack=Rack.objects.get(cabinet=self.plc.cabinet, name="Edge_A")
+        elif self.rack_name == 'Edge_B':
+            self.rack=Rack.objects.get(cabinet=self.plc.cabinet, name="Edge_B")
+        elif self.rack_name == "Network":
+            self.rack=Rack.objects.get(cabinet=self.plc.cabinet, name="Network")
+        elif self.rack_name == "Energy":
+            self.rack=Rack.objects.get(cabinet=self.plc.cabinet, name="Energy")
+        elif self.rack_name=="Cooling":
+            self.rack=Rack.objects.get(cabinet=self.plc.cabinet, name ="Cooling")
         return super().save(*args, **kwargs)
     class Meta:
         pass

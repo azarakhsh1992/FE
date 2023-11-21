@@ -1,3 +1,20 @@
-BT Temperatur
+
+
+Betriebsmittelkennzeichnen Unterklasse:
+EA      Lampe für Beleuchtung (Schaltschrank, Anlage)
+PF      Meldeleuchte allgemein
+KF U    Speicherprogrammierbare Steuerung
+BC      Stromwandler, Messwandler (Strom)
 PG    Messinstrument (Strom, Spannung, Leistung), Uhr, Zählwerk (z.B. Betriebsstundenzähler)
-PF Meldeleuchte allgemein
+
+BG E    Positionssensor, Spaltkontrolle, Grenztaster (mechanisch)
+BT      Temperatur
+EC Klimagerät zum Kühlen, Luft-Luft-Wärmetauscher
+
+X Sensor-/Aktoranschlüsse M12 A-Codiert
+Gerätbezeichnung:
+
+K   Klemmen-/ Modulkasten
+KI  Klima
+AM  Ampel (oder BL Beleuchtung)
+EU  Energieübertragung
