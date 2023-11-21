@@ -101,7 +101,8 @@ WSGI_APPLICATION = 'Fedge.wsgi.application'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://localhost:7005",
-    "https://localhost"
+    "https://localhost",
+    "https://192.168.88.251:3000"
 ]
 CORS_ALLOW_HEADERS = [
     'Content-Type'
@@ -111,24 +112,24 @@ CORS_ALLOW_HEADERS = [
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 # Sqlite
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    },
-}
-
-# postgres
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'fedge',
-#         'USER': 'fedge',
-#         'PASSWORD': '75401614',
-#         'HOST': 'localhost',  # Set to the address of your database
-#         'PORT': '5432',  # Leave as an empty string to use the default port
-#     }
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     },
 # }
+
+# postgres
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'fedge',
+        'USER': 'fedge',
+        'PASSWORD': '75401614',
+        'HOST': 'localhost',  # Set to the address of your database
+        'PORT': '5432',  # Leave as an empty string to use the default port
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
