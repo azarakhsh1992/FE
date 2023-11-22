@@ -121,29 +121,37 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(DoorsensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("time", "doorsensordevice", "value", "valid")
-    fields = ("doorbutton", "value", "valid")
+    fields = ("doorsensordevice", "value", "valid")
 
 @admin.register(LedValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in LedValue._meta.get_fields()] 
-
+    list_display = ("time", "led", "value", "valid")
+    fields = ("led", "value", "valid")
 
 @admin.register(TemperatureSensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in TemperatureSensorValue._meta.get_fields()]  
+    list_display = ("time","temperaturesensordevice","tempvalue","tempvalue_min","tempvalue_max"
+                    ,"humidvalue","valid")
+    fields = ("temperaturesensordevice", "tempvalue", "tempvalue_min", "tempvalue_max"
+                    , "humidvalue", "valid")
 
 @admin.register(EnergySensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in EnergySensorValue._meta.get_fields()]  
+    list_display = ("time","energysensordevice","energy_value","energy_unit","power_value",
+                    "power_unit","valid")
+    fields = ("energysensordevice", "energy_value", "energy_unit", "power_value",
+                    "power_unit", "valid")
 
 ################################################################
 @admin.register(EmployeeGroup)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in EmployeeGroup._meta.get_fields()] 
+    list_display = ("id","group")
+    fields = ("group",)
 
 @admin.register(Shifts)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in Shifts._meta.get_fields()] 
+    list_display = ("id","group","shift","date")
+    fields = ("group", "shift", "date")
 
 
 
@@ -153,5 +161,5 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    fields = ("user","firstname","lastname","role","bereich","telephone","employee_group")
     list_display = ("id","user","firstname","lastname","role","bereich","telephone","employee_group")
+    fields = ("user","firstname","lastname","role","bereich","telephone","employee_group")
