@@ -18,101 +18,148 @@ from .mainmodels.equipment.energymodule import EnergysensorDevice, EnergySensorV
 ######################Cabinet level########################
 @admin.register(Cabinet)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display=["bereich","segment","anlage","arg_sps","pultbereich_sk","station","profinet_name"]
-    # list_display = [field.name for field in Cabinet._meta.get_fields()] 
+    list_display = ("id","bereich","segment","anlage","arg_sps","pultbereich_sk","station","profinet_name")
+    fields = ("bereich","segment","anlage","arg_sps","pultbereich_sk","station")
 
 @admin.register(Rack)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["name","cabinet"] 
+    list_display = ("id","name","cabinet")
+    fields = ("name", "cabinet")
 
 @admin.register(Door)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["rack", "direction","qr"] 
+    list_display = ("id","direction","rack","qr")
+    fields = ("direction", "rack")
 ########################PLC and Device Model########################
 @admin.register(PLC)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['module_type','profinet_name','cabinet','funktionseinheit', 'geraet', 'bmk','ip_address','serial_number','mac_address',"manufacturer"]
-    
+    list_display = ("id","cabinet","module_type","funktionseinheit","ip_address","serial_number"
+                    ,"mac_address","profinet_name")
+    fields = ("cabinet", "funktionseinheit", "ip_address", "serial_number"
+                    ,"mac_address")
 @admin.register(Device)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["this_module_type","profinet_name","plc","io_module","port","geraet","bmk","serial_number","manufacturer"]
+    list_display = ("id","plc","bmk","geraet","serial_number","manufacturer","profinet_name"
+                    ,"this_module_type","io_module","port")
+    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer"
+                    , "io_module", "port")
     
 #################Devices#######################
 @admin.register(TemperatureSensor)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display =  ["profinet_name","plc","module_type","measuring_env","geraet","bmk","serial_number","manufacturer","io_module","port","rack"]
-    # list_display =  [field.name for field in Device._meta.get_fields()]
-    
+    list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
+                    , "this_module_type", "io_module", "port" , "module_type",
+                    "measuring_env")
+    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer",
+              "io_module", "port" ,"measuring_env")
+
 @admin.register(EnergysensorDevice)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in EnergysensorDevice._meta.get_fields()] 
+    list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
+                    , "this_module_type", "io_module", "port" , "module_type" , "measuring_env")
+    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer"
+                    , "io_module", "port","measuring_env")
+
 
 @admin.register(DoorSensor)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in DoorSensor._meta.get_fields()] 
+    list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
+                    , "this_module_type", "io_module", "port", "module_type","door_direction",
+                    "rack_name","device_door")
+    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer",
+                    "io_module", "port", "door_direction","rack_name")
 
 @admin.register(DoorButton)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in DoorButton._meta.get_fields()] 
+    list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
+                    , "this_module_type", "io_module", "port", "module_type","door_direction",
+                    "rack_name","device_door")
+    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer",
+              "io_module", "port","door_direction","rack_name")
     
 @admin.register(LED)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in LED._meta.get_fields()] 
+    list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
+                    , "this_module_type", "io_module", "port", "module_type", "door_direction",
+                    "rack_name", "device_door")
+    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer",
+              "io_module", "port", "door_direction", "rack_name")
 
 @admin.register(Latch)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["profinet_name","plc","rack_name","door_direction","module_type","device_door","geraet","bmk","serial_number","manufacturer","io_module","port","rack"] 
+    list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
+                    , "this_module_type", "io_module", "port", "module_type", "door_direction",
+                    "rack_name", "device_door")
+    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer",
+              "io_module", "port", "door_direction", "rack_name")
     
 @admin.register(LatchSensor)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in LatchSensor._meta.get_fields()] 
+    list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
+                    , "this_module_type", "io_module", "port", "module_type", "door_direction",
+                    "rack_name", "device_door")
+    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer",
+              "io_module", "port", "door_direction", "rack_name")
     
     
 #######################Values#######################
 @admin.register(LatchValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["latch","time","value","valid"] 
+    list_display = ("time","latch","value","valid")
+    fields = ("latch", "value", "valid")
     
 @admin.register(LatchSensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in LatchSensorValue._meta.get_fields()] 
+    list_display = ("time","latchsensor","value","valid")
+    fields = ("latchsensor", "value", "valid")
     
 @admin.register(ButtonValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in ButtonValue._meta.get_fields()] 
+    list_display = ("time","doorbutton","value","valid")
+    fields = ("doorbutton", "value", "valid")
 
 @admin.register(DoorsensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in DoorsensorValue._meta.get_fields()] 
+    list_display = ("time", "doorsensordevice", "value", "valid")
+    fields = ("doorsensordevice", "value", "valid")
 
 @admin.register(LedValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in LedValue._meta.get_fields()] 
-
+    list_display = ("time", "led", "value", "valid")
+    fields = ("led", "value", "valid")
 
 @admin.register(TemperatureSensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in TemperatureSensorValue._meta.get_fields()]  
+    list_display = ("time","temperaturesensordevice","tempvalue","tempvalue_min","tempvalue_max"
+                    ,"humidvalue","valid")
+    fields = ("temperaturesensordevice", "tempvalue", "tempvalue_min", "tempvalue_max"
+                    , "humidvalue", "valid")
 
 @admin.register(EnergySensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in EnergySensorValue._meta.get_fields()]  
+    list_display = ("time","energysensordevice","energy_value","energy_unit","power_value",
+                    "power_unit","valid")
+    fields = ("energysensordevice", "energy_value", "energy_unit", "power_value",
+                    "power_unit", "valid")
 
 ################################################################
 @admin.register(EmployeeGroup)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["group"] 
+    list_display = ("id","group")
+    fields = ("group",)
 
 @admin.register(Shifts)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["shift","shift_start","shift_end","shift_start_int","shift_end_int","extra_time_int","type"] 
+    list_display = ("id","group","shift","date")
+    fields = ("group", "shift", "date")
 
 
+
+# @admin.register(UserProfile)
+# class UserProfileAdmin(admin.ModelAdmin):
+#     list_display = [field.name for field in UserProfile._meta.get_fields()]
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = [field.name for field in UserProfile._meta.get_fields()]
-    
-@admin.register(ShiftAssignment)
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["group","shift","starting_date","ending_date"] 
+    list_display = ("id","user","firstname","lastname","role","bereich","telephone","employee_group")
+    fields = ("user","firstname","lastname","role","bereich","telephone","employee_group")
