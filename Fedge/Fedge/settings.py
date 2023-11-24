@@ -116,7 +116,7 @@ CORS_ALLOW_HEADERS = [
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': BASE_DIR / 'db.sqlite3',
-#     },
+#     }
 # }
 
 # postgres
@@ -130,6 +130,7 @@ DATABASES = {
         'PORT': '5432',  # Leave as an empty string to use the default port
     }
 }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

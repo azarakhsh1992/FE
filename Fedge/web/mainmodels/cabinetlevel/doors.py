@@ -11,16 +11,19 @@ class Door(models.Model):
     class Direction(models.TextChoices):
         Front = 'Front', 'Front'
         Rear = 'Rear', 'Rear'
-        NE = 'NetworkOrEnergy', 'Network/Energy'
+        NETWORK = 'Network', 'Network rack'
+        ENERGY = 'Energy', 'Energy rack'
     direction = models.CharField(choices=Direction.choices,max_length=32, null=False)
     rack = models.ForeignKey(Rack, related_name='doors', on_delete=models.CASCADE, null=False)
     qr = models.CharField(max_length=32, unique=True, blank=True, editable=False, null=False)
     def __str__(self):
-        return ('Cabinet: '+self.rack.cabinet.profinet_name+' Rack: '+self.rack.name + self.direction)
+        return ('Cabinet: '+self.rack.cabinet.profinet_name+' Rack: '+self.rack.name + ' ,'+ self.direction)
     def clean(self):
-        if self.rack.name in ["Energy", "Network"] and self.direction in["Front", "Rear"]:
-            raise ValidationError("Wrong selection: Select Network/Energy can be selected for this rack")
-        elif self.rack.name in ["Edge_A","Edge_B","Cooling"] and self.direction== "NetworkOrEnergy":
+        if self.rack.name =="Network" and self.direction != "Network":
+            raise ValidationError("Wrong selection: The door must be 'Network rack' since you have chosen the Network for the rack.")
+        if self.rack.name =="Energy" and self.direction != "Energy":
+            raise ValidationError("Wrong selection: The door must be 'Energy rack' since you have chosen the Energy for the rack.")
+        elif self.rack.name in ["Edge_A","Edge_B","Cooling"] and self.direction in ["Network", "Energy"]:
             raise ValidationError("Wrong selection: Select either Front or Rear as direction for this rack")
         else:
             pass

@@ -19,38 +19,38 @@ def is_safe(this_door):
     
     if rack == "Edge_A":
         try:
-            temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_env='Edge_A_top')
-            temperaturesensor2= TemperatureSensor.objects.get(plc=plc, measuring_env='Edge_A_middle')
-            temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_env='Edge_A_bottom')
+            temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_A_top')
+            temperaturesensor2= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_A_middle')
+            temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_A_bottom')
         except:
             response = 'error: Temperature sensor not found'
     elif rack == "Edge_B":
         try:
-            temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_env='Edge_B_top')
-            temperaturesensor2= TemperatureSensor.objects.get(plc=plc, measuring_env='Edge_B_middle')
-            temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_env='Edge_B_bottom')
+            temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_B_top')
+            temperaturesensor2= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_B_middle')
+            temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_B_bottom')
         except:
             response = 'error: Temperature sensor not found'
     elif rack == "Network":
         try:
-            temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_env='Network')
-            temperaturesensor2= TemperatureSensor.objects.get(plc=plc, measuring_env='Network')
-            temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_env='Network')
+            temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_environment='Network')
+            temperaturesensor2= TemperatureSensor.objects.get(plc=plc, measuring_environment='Network')
+            temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_environment='Network')
         except:
             response = 'error: Temperature sensor not found'
     elif rack == "Energy":
         try:
-            temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_env='Energy')
-            temperaturesensor2= TemperatureSensor.objects.get(plc=plc, measuring_env='Energy')
-            temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_env='Energy')
+            temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_environment='Energy')
+            temperaturesensor2= TemperatureSensor.objects.get(plc=plc, measuring_environment='Energy')
+            temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_environment='Energy')
         except:
             response = 'error: Temperature sensor not found'
 
     if temperaturesensor1 is not None and temperaturesensor2 is not None and temperaturesensor3 is not None:
         try:
-            latest_value_obj1 = TemperatureSensorValue.objects.filter(temperaturesensordevice=temperaturesensor1).latest('time')
-            latest_value_obj2 = TemperatureSensorValue.objects.filter(temperaturesensordevice=temperaturesensor2).latest('time')
-            latest_value_obj3 = TemperatureSensorValue.objects.filter(temperaturesensordevice=temperaturesensor3).latest('time')
+            latest_value_obj1 = TemperatureSensorValue.objects.filter(temperaturesensor=temperaturesensor1).latest('time')
+            latest_value_obj2 = TemperatureSensorValue.objects.filter(temperaturesensor=temperaturesensor2).latest('time')
+            latest_value_obj3 = TemperatureSensorValue.objects.filter(temperaturesensor=temperaturesensor3).latest('time')
         except:
             latest_value_obj1 = None
             latest_value_obj2 = None

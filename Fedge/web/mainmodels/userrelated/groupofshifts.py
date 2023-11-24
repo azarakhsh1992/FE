@@ -33,18 +33,18 @@ class Shifts(models.Model):
 
 class EmployeeGroup(models.Model):
     class Group(models.TextChoices):
-        GROUP1 = "group1", "Group 1"
-        GROUP2 = "group2", "Group 2"
-        GROUP3 = "group3", "Group 3"
-        GROUPE4 = "group4", "Group 4"
+        GROUP_A = "Group_A", "Group A"
+        GROUP_B = "Group_B", "Group B"
+        GROUP_C = "Group_C", "Group C"
+        GROUP_D = "Group_D", "Group D"
     group = models.CharField(max_length=10, choices=Group.choices, default=None, unique=True)
     def __str__(self):
         return self.group
 
 
 class ShiftAssignment(models.Model):
-    group = models.ForeignKey(EmployeeGroup, on_delete=models.CASCADE)
-    shift = models.ForeignKey(Shifts, on_delete=models.CASCADE)
+    group = models.ForeignKey(EmployeeGroup,related_name="groups", on_delete=models.CASCADE)
+    shift = models.ForeignKey(Shifts, related_name="shifts",on_delete=models.CASCADE)
     starting_date = models.DateField()
     ending_date = models.DateField()
     def clean(self):

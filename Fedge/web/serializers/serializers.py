@@ -69,3 +69,27 @@ class FullGroupShiftSerializer(serializers.ModelSerializer):
         firstnames = [user.get('firstname') for user in serialized_data]
         return firstnames
 #TODO: this serializers must be modified
+
+
+# from rest_framework import serializers
+# from .models import DoorSensor
+
+# class DoorSensorSerializer(serializers.ModelSerializer):
+#     door_direction_choices = serializers.SerializerMethodField()
+#     device_io_module_choices = serializers.SerializerMethodField()
+#     device_port_choices = serializers.SerializerMethodField()
+
+#     class Meta:
+#         model = DoorSensor
+#         fields = ['door_direction', 'device_io_module', 'device_port', 
+#                   'door_direction_choices', 'device_io_module_choices', 
+#                   'device_port_choices']
+
+#     def get_door_direction_choices(self, obj):
+#         return DoorSensor.DoorDirection.choices
+
+#     def get_device_io_module_choices(self, obj):
+#         return DoorSensor.IO_Module.choices
+
+#     def get_device_port_choices(self, obj):
+#         return DoorSensor.Port.choices

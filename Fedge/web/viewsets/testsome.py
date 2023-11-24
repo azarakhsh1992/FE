@@ -2,7 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from ..mainmodels.equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
-from ..mainmodels.equipment.energymodule import EnergysensorDevice,EnergySensorValue
+from ..mainmodels.equipment.energymodule import EnergySensor,EnergySensorValue
 from ..mainmodels.equipment.doorsensor import DoorSensor,DoorsensorValue
 from..mainmodels.equipment.latch import Latch,LatchValue
 from..mainmodels.equipment.latchsensor import LatchSensor,LatchSensorValue

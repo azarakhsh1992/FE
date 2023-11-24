@@ -2,7 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from ..mainmodels.equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
-from ..mainmodels.equipment.energymodule import EnergysensorDevice,EnergySensorValue
+from ..mainmodels.equipment.energymodule import EnergySensor,EnergySensorValue
 from ..mainmodels.equipment.doorsensor import DoorSensor,DoorsensorValue
 from..mainmodels.equipment.latch import Latch,LatchValue
 from..mainmodels.equipment.latchsensor import LatchSensor,LatchSensorValue
@@ -25,11 +25,11 @@ class MqttMiddleware(viewsets.ModelViewSet):
             tsensor = TemperatureSensor.objects.get(profinet_name=data_profinet)
             try:
                 if data["V"] == "True":
-                    TemperatureSensorValue.objects.create(temperaturesensordevice=tsensor,\
+                    TemperatureSensorValue.objects.create(temperaturesensor=tsensor,\
                         tempvalue=data["T"],tempvalue_min=data["Tmin"],tempvalue_max=data["Tmax"],humidvalue=data["RH"],time=data["Time"])
                     response = {"message":"success"}
                 elif data["V"] == "False":
-                    TemperatureSensorValue.objects.create(temperaturesensordevice=tsensor,valid=False,time=data["Time"])
+                    TemperatureSensorValue.objects.create(temperaturesensor=tsensor,valid=False,time=data["Time"])
                     response = {"message":"success"}
                 else:
                     response = {"message": "'V' as Validity not defined, data not recoreded"}
@@ -52,13 +52,13 @@ class MqttMiddleware(viewsets.ModelViewSet):
         try:
             data_profinet = data['profinet_name']
             try:
-                emsensor = EnergysensorDevice.objects.get(profinet_name=data_profinet)
+                emsensor = EnergySensor.objects.get(profinet_name=data_profinet)
                 if data ["V"]== "True":
-                    EnergySensorValue.objects.create(energysensordevice=emsensor,energy_value=data["E"],energy_unit=data["UnitE"],\
+                    EnergySensorValue.objects.create(energysensor=emsensor,energy_value=data["E"],energy_unit=data["UnitE"],\
                         power_value=data["P"],power_unit=data["UnitP"],time=data["time"])
                     response = {"message": "success"}
                 elif data ["V"] == "False":
-                    EnergySensorValue.objects.create(energysensordevice=emsensor,valid=False,time=data["time"])
+                    EnergySensorValue.objects.create(energysensor=emsensor,valid=False,time=data["time"])
                     response = {"message": "success, Validity:False"}
                 else:
                     response = {"message": "'V' as Validity not defined, data not recoreded"}

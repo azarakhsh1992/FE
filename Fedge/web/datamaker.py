@@ -37,6 +37,6 @@ def my_function():
     latchvalue = LatchValue.objects.create(latch=lockactuator, value=True, timestamp=_datetime)
     # tempsensor
     tempsensor = TemperatureSensor.objects.get(plc=plc)
-    tempsensorvalue = TemperatureSensorValue.objects.create(temperaturesensordevice=tempsensor, tempvalue=generate_random_float(24.5, 55.5), humidvalue=generate_random_float(20, 50), timestamp=_datetime)
+    tempsensorvalue = TemperatureSensorValue.objects.create(temperaturesensor=tempsensor, tempvalue=generate_random_float(24.5, 55.5), humidvalue=generate_random_float(20, 50), timestamp=_datetime)
     print(plc)
     # print('successfully created')
