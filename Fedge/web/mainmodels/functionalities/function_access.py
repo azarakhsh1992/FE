@@ -40,7 +40,7 @@ def user_door_checker(user, qrcode):
     return door_access,door_response
 
 
-def shift_checker():
+def current_shift_checker():
     # time in integer = hour*60 + minute
     early_shift=False
     late_shift=False
@@ -110,7 +110,7 @@ def access_shift(user):
     now = datetime.now().date()
     current_user_shift = ShiftAssignment.objects.filter(group=group,\
         starting_date__lte=now, ending_date__gte=now).first().shift.shift
-    early_shift, late_shift, night_shift, normal_shift, early_passed, late_passed, night_passed, normal_passed = shift_checker()
+    early_shift, late_shift, night_shift, normal_shift, early_passed, late_passed, night_passed, normal_passed = current_shift_checker()
 
     if current_day== 5 or current_day == 6:
         access = False
@@ -180,7 +180,7 @@ def access_checker(user, qrcode):
     shift_access, response_shift = access_shift(user=this_user)
     bereich_access = False
     
-    if profile.bereich.capitalize() == this_door.rack.cabinet.bereich.capitalize():
+    if profile.bereich.upper() == this_door.rack.cabinet.bereich.upper():
         bereich_access = True
         response_bereich=f"You have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
     else:

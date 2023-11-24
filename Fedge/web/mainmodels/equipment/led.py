@@ -70,7 +70,7 @@ class LED (Device):
     #     unique_together = ["door","rack"]
 
 class LedValue(models.Model):
-    time = models.DateTimeField(primary_key=True, auto_now=True)
+    time = models.DateTimeField(primary_key=True)
     led = models.ForeignKey(LED, on_delete=models.CASCADE, related_name='ledvalue')
     value = models.BooleanField(null=True)
     valid = models.BooleanField(default=None)

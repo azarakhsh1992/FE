@@ -54,7 +54,7 @@ class TemperatureSensor(Device):
 
 
 class TemperatureSensorValue(models.Model):
-    time = models.DateTimeField(primary_key=True, auto_now_add=True)
+    time = models.DateTimeField(primary_key=True)
     temperaturesensor = models.ForeignKey(TemperatureSensor, on_delete=models.CASCADE, related_name='temperaturesensorvalue')
     tempvalue = models.FloatField(null=True)
     tempvalue_min = models.FloatField(null=True)

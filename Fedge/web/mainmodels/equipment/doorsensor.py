@@ -74,7 +74,7 @@ class DoorSensor(Device):
 
 
 class DoorsensorValue(models.Model):
-    time = models.DateTimeField(primary_key=True, auto_now=True)
+    time = models.DateTimeField(primary_key=True)
     doorsensor = models.OneToOneField(DoorSensor, on_delete=models.CASCADE, related_name='doorsensorvalue',)
     value = models.BooleanField(null=True)
     valid=models.BooleanField(default=None)
