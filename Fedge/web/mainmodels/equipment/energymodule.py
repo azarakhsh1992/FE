@@ -2,7 +2,7 @@ from django.db import models
 from ..cabinetlevel.cabinets import Cabinet, Rack
 from .plc import PLC
 from ..cabinetlevel.doors import Door
-from .devices import Device
+from .devices import Device,TimescaleModel
 from django.core.exceptions import ValidationError
 
 
@@ -44,8 +44,7 @@ class EnergySensor(Device):
         pass
     
 
-class EnergySensorValue(models.Model):
-    time = models.DateTimeField(primary_key=True)
+class EnergySensorValue(TimescaleModel):
     energysensor = models.ForeignKey(EnergySensor, on_delete=models.CASCADE, related_name='energysensorvalue')
     energy_value = models.FloatField(null=True)
     energy_unit = models.CharField(default='KWh', max_length=4)

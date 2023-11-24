@@ -2,7 +2,7 @@ from django.db import models
 from ..cabinetlevel.doors import Door
 from ..cabinetlevel.cabinets import Rack
 from .plc import PLC
-from ..equipment.devices import Device
+from ..equipment.devices import Device, TimescaleModel
 from django.core.exceptions import ValidationError
 
 
@@ -75,8 +75,7 @@ class DoorButton(Device):
         super(DoorButton, self).save(*args, **kwargs)
 
 
-class ButtonValue(models.Model):
-    time = models.DateTimeField(primary_key=True)
+class ButtonValue(TimescaleModel):
     doorbutton = models.ForeignKey(DoorButton, on_delete=models.CASCADE, related_name='buttonvalue')
     value = models.BooleanField(null=True)
     valid = models.BooleanField(default=True)

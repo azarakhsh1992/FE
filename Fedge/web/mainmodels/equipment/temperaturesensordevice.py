@@ -2,7 +2,7 @@ from django.db import models
 from .plc import PLC
 from ..cabinetlevel.doors import Door
 from ..cabinetlevel.cabinets import Cabinet, Rack
-from ..equipment.devices import Device
+from ..equipment.devices import Device, TimescaleModel
 from django.core.exceptions import ValidationError
 
 
@@ -53,8 +53,7 @@ class TemperatureSensor(Device):
         super(TemperatureSensor, self).save(*args, **kwargs)
 
 
-class TemperatureSensorValue(models.Model):
-    time = models.DateTimeField(primary_key=True)
+class TemperatureSensorValue(TimescaleModel):
     temperaturesensor = models.ForeignKey(TemperatureSensor, on_delete=models.CASCADE, related_name='temperaturesensorvalue')
     tempvalue = models.FloatField(null=True)
     tempvalue_min = models.FloatField(null=True)

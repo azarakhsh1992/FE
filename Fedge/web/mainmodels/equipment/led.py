@@ -1,7 +1,7 @@
 from django.db import models
 from ..cabinetlevel.doors import Door
 from ..cabinetlevel.cabinets import Rack
-from ..equipment.devices import Device
+from ..equipment.devices import Device, TimescaleModel
 from .plc import PLC
 from django.core.exceptions import ValidationError
 
@@ -69,8 +69,7 @@ class LED (Device):
     # class Meta:
     #     unique_together = ["door","rack"]
 
-class LedValue(models.Model):
-    time = models.DateTimeField(primary_key=True)
+class LedValue(TimescaleModel):
     led = models.ForeignKey(LED, on_delete=models.CASCADE, related_name='ledvalue')
     value = models.BooleanField(null=True)
     valid = models.BooleanField(default=None)

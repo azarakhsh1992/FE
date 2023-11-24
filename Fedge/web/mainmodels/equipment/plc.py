@@ -15,7 +15,7 @@ class PLC (models.Model):
     serial_number = models.CharField(max_length=32, unique=True)
     mac_address = models.CharField(max_length=32, default=None)
     manufacturer = models.CharField(max_length=16, default=None)
-    profinet_name = models.CharField(max_length=18, editable=False, default=None, unique=True)
+    profinet_name = models.CharField(max_length=22, editable=False, default=None, unique=True)
     def save(self, *args, **kwargs):
         self.funktionseinheit=self.funktionseinheit.upper()
         self.geraet=self.geraet.upper()

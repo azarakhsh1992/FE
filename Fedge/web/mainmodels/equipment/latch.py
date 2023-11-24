@@ -2,7 +2,7 @@ from django.db import models
 from .plc import PLC
 from ..cabinetlevel.doors import Door
 from ..cabinetlevel.cabinets import Rack
-from ..equipment.devices import Device
+from ..equipment.devices import Device, TimescaleModel
 from django.core.exceptions import ValidationError
 
 
@@ -73,8 +73,7 @@ class Latch(Device):
 
 
 
-class LatchValue(models.Model):
-    time = models.DateTimeField(primary_key=True)
+class LatchValue(TimescaleModel):
     latch = models.ForeignKey(Latch, on_delete=models.CASCADE, related_name='latchvalue')
     value = models.CharField(max_length=8,null=True)
     valid = models.BooleanField(default=True)

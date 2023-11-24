@@ -2,7 +2,7 @@ from django.db import models
 from .plc import PLC
 from ..cabinetlevel.doors import Door
 from ..cabinetlevel.cabinets import Cabinet, Rack
-from ..equipment.devices import Device
+from ..equipment.devices import Device,TimescaleModel
 from django.core.exceptions import ValidationError
 
 
@@ -73,8 +73,7 @@ class DoorSensor(Device):
         super(DoorSensor, self).save(*args, **kwargs)
 
 
-class DoorsensorValue(models.Model):
-    time = models.DateTimeField(primary_key=True)
-    doorsensor = models.OneToOneField(DoorSensor, on_delete=models.CASCADE, related_name='doorsensorvalue',)
+class DoorsensorValue(TimescaleModel):
+    doorsensor = models.ForeignKey(DoorSensor, on_delete=models.CASCADE, related_name='doorsensorvalue',)
     value = models.BooleanField(null=True)
     valid=models.BooleanField(default=None)

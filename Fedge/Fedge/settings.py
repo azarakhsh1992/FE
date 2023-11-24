@@ -106,7 +106,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_HEADERS = [
     'Content-Type'
-    # 'Authorization'
+    'Authorization'
 ]
 
 # Database
@@ -122,7 +122,7 @@ CORS_ALLOW_HEADERS = [
 # postgres
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'timescale.db.backends.postgresql',
         'NAME': 'fedge',
         'USER': 'fedge',
         'PASSWORD': '75401614',

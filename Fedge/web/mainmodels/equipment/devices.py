@@ -3,6 +3,10 @@ from .plc import PLC
 from ..cabinetlevel.doors import Door
 from ..cabinetlevel.cabinets import Rack
 from django.core.exceptions import ValidationError
+from timescale.db.models.fields import TimescaleDateTimeField
+from timescale.db.models.managers import TimescaleManager
+from django.utils.timezone import now
+# from datetime import datetime
 
     # class Port_16(models.TextChoices):
     #     P1 = 'P1', 'P1'
@@ -73,6 +77,26 @@ class Device(models.Model):
         super(Device, self).save(*args, **kwargs)
     def __str__(self):
         return self.profinet_name
+
+
+
+
+class TimescaleModel(models.Model):
+    
+    """
+    A helper class for using Timescale within Django, has the TimescaleManager and
+    TimescaleDateTimeField already present. This is an abstract class it should
+    be inheritted by another class for use.
+    """
+
+    time = TimescaleDateTimeField(interval="7 day", default=now)
+    objects = models.Manager()
+    timescale = TimescaleManager()
+
+    class Meta:
+        abstract = True
+
+
 
 
 #TODO: implement this method when creating all sorts of devices in order to get the response of clean function for form
