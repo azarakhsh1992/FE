@@ -59,4 +59,5 @@ class TemperatureSensorValue(TimescaleModel):
     tempvalue_min = models.FloatField(null=True)
     tempvalue_max = models.FloatField(null=True)
     humidvalue = models.FloatField(null=True)
-    valid = models.BooleanField(default=False)
+    valid = models.BooleanField(null = True)
+    

@@ -10,6 +10,7 @@ from..mainmodels.equipment.led import LED,LedValue
 from..mainmodels.equipment.button import DoorButton,ButtonValue
 from..mainmodels.equipment.devices import Device
 from django.views.decorators.csrf import csrf_exempt
+import datetime
 
 
 
@@ -25,7 +26,7 @@ class MqttMiddleware(viewsets.ModelViewSet):
             tsensor = TemperatureSensor.objects.get(profinet_name=data_profinet)
             try:
                 if data["V"] == "True":
-                    TemperatureSensorValue.objects.create(temperaturesensor=tsensor,\
+                    TemperatureSensorValue.objects.create(temperaturesensor=tsensor, valid = True,\
                         tempvalue=data["T"],tempvalue_min=data["Tmin"],tempvalue_max=data["Tmax"],humidvalue=data["RH"],time=data["Time"])
                     response = {"message":"success"}
                 elif data["V"] == "False":
@@ -47,18 +48,18 @@ class MqttMiddleware(viewsets.ModelViewSet):
     @csrf_exempt
     @action(methods=['POST'], detail=False)
     def energy(self, request):
-        # response_data={data["E"],data["unitE"],data["P"],data["unitP"],data["V"],data["Time"]}
         data = request.data
         try:
             data_profinet = data['profinet_name']
+        # response_data={data["E"],data["unitE"],data["P"],data["unitP"],data["V"],data["Time"]}
+            emsensor = EnergySensor.objects.get(profinet_name=data_profinet)
             try:
-                emsensor = EnergySensor.objects.get(profinet_name=data_profinet)
                 if data ["V"]== "True":
                     EnergySensorValue.objects.create(energysensor=emsensor,energy_value=data["E"],energy_unit=data["UnitE"],\
-                        power_value=data["P"],power_unit=data["UnitP"],time=data["time"])
+                        power_value=data["P"],power_unit=data["UnitP"],time=data["Time"],valid=True)
                     response = {"message": "success"}
                 elif data ["V"] == "False":
-                    EnergySensorValue.objects.create(energysensor=emsensor,valid=False,time=data["time"])
+                    EnergySensorValue.objects.create(energysensor=emsensor,valid=False,time=data["Time"])
                     response = {"message": "success, Validity:False"}
                 else:
                     response = {"message": "'V' as Validity not defined, data not recoreded"}
@@ -77,16 +78,17 @@ class MqttMiddleware(viewsets.ModelViewSet):
         # response_data={data["value"],data["V"],data["Time"]}
         data = request.data
         try:
-            device_moduletype= Device.objects.get(profinet_name=data["profinet_name"]).this_module_type
+            device_moduletype= Device.objects.get(profinet_name=data["profinet_name"]).module_type
+            print(device_moduletype)
     ################################################################
             if device_moduletype == "Door Sensor":
                 try:
                     doorsensor = DoorSensor.objects.get(profinet_name=data["profinet_name"])
                     if data ["V"] == "True":
-                        DoorsensorValue.objects.create(doorsensordevice=doorsensor,value=data["value"])
+                        DoorsensorValue.objects.create(doorsensordevice=doorsensor,value=data["value"], time = data["Time"])
                         response = {"message": "success"}
                     elif data ["V"] == "False":
-                        DoorsensorValue.objects.create(doorsensordevice=doorsensor,valid=False)
+                        DoorsensorValue.objects.create(doorsensordevice=doorsensor,valid=False, time = data["Time"])
                         response = {"message": "success: Validity:False"}
                     else:
                         response = {"message": "'V' as Validity not defined, data not recoreded"}
@@ -100,11 +102,10 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 try:
                     this_latch = Latch.objects.get(profinet_name=data["profinet_name"])
                     if data["V"] == "True":
-                        response="here"
-                        LatchValue.objects.create(latch=this_latch, value=data["value"])
+                        LatchValue.objects.create(latch=this_latch, value=data["value"], time = data["Time"])
                         response = {"message": "success"}
                     elif data["V"] == "False":
-                        LatchValue.objects.create(latch=this_latch,valid=False)
+                        LatchValue.objects.create(latch=this_latch,valid=False, time = data["Time"])
                         response = {"message": "success, Validity:False"}
                     else:
                         response = {"message": "'V' as Validity not defined, data not recoreded"}
@@ -117,10 +118,10 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 try:
                     latchsensor = LatchSensor.objects.get(profinet_name=data["profinet_name"])
                     if data ["V"] == "True":
-                        LatchSensorValue.objects.create(latchsensor=latchsensor,value=data["value"])
+                        LatchSensorValue.objects.create(latchsensor=latchsensor,value=data["value"], time = data["Time"])
                         response = {"message": "success"}
                     elif data["V"] == "False":
-                        LatchSensorValue.objects.create(latchsensor=latchsensor,valid=False)
+                        LatchSensorValue.objects.create(latchsensor=latchsensor,valid=False, time = data["Time"])
                         response = {"message": "success, Validity:False"}
                     else:
                         response = {"message": "'V' as Validity not defined, data not recoreded"}
@@ -133,10 +134,10 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 try:
                     this_led = LED.objects.get(profinet_name=data["profinet_name"])
                     if data ["V"] == "True":
-                        LedValue.objects.create(led=this_led,value=data["value"])
+                        LedValue.objects.create(led=this_led,value=data["value"], time = data["Time"])
                         response = {"message": "success"}
                     elif data ["V"] == "False":
-                        LedValue.objects.create(led=this_led,valid=False)
+                        LedValue.objects.create(led=this_led,valid=False, time = data["Time"])
                         response = {"message": "success, Validity:False"}
                     else:
                         response = {"message": "'V' as Validity not defined, data not recoreded"}
@@ -149,10 +150,10 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 try:
                     doorbtn = DoorButton.objects.get(profinet_name=data["profinet_name"])
                     if data ["V"] == "True":
-                        ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"])
+                        ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"], time = data["Time"])
                         response = {"message": "success"}
                     elif data ["V"] == "False":
-                        ButtonValue.objects.create(doorbutton=doorbtn, valid=False)
+                        ButtonValue.objects.create(doorbutton=doorbtn, valid=False, time = data["Time"])
                         response = {"message": "success, Validity:False"}
                     else:
                         response = {"message": "'V' as Validity not defined, data not recoreded"}

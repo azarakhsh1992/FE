@@ -142,44 +142,64 @@ class UserProfileAdmin(admin.ModelAdmin):
 #######################Values#######################
 @admin.register(LatchValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("time","latch","value","valid")
-    fields = ("latch", "value", "valid")
-    
+    list_display = ("custom_time","latch","value","valid")
+    fields = ("time","latch", "value", "valid")
+    def custom_time(self, obj):
+        return obj.time.strftime('%Y-%m-%d %H:%M:%S.%f')
+    custom_time.short_description = "Date and Time"
+
 @admin.register(LatchSensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("time","latchsensor","value","valid")
-    fields = ("latchsensor", "value", "valid")
-    
+    list_display = ("custom_time","latchsensor","value","valid")
+    fields = ("time","latchsensor", "value", "valid")
+    def custom_time(self, obj):
+        return obj.time.strftime('%Y-%m-%d %H:%M:%S.%f')
+    custom_time.short_description = "Date and Time"
+
 @admin.register(ButtonValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("time","doorbutton","value","valid")
-    fields = ("doorbutton", "value", "valid")
-
+    list_display = ("custom_time","doorbutton","value","valid")
+    fields = ("time","doorbutton", "value", "valid")
+    def custom_time(self, obj):
+        return obj.time.strftime('%Y-%m-%d %H:%M:%S.%f')
+    custom_time.short_description = "Date and Time"
+    
 @admin.register(DoorsensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("time", "doorsensor", "value", "valid")
-    fields = ("doorsensor", "value", "valid")
+    list_display = ("custom_time", "doorsensor", "value", "valid")
+    fields = ("time","doorsensor", "value", "valid")
+    def custom_time(self, obj):
+        return obj.time.strftime('%Y-%m-%d %H:%M:%S.%f')
+    custom_time.short_description = "Date and Time"
 
 @admin.register(LedValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("time", "led", "value", "valid")
-    fields = ("led", "value", "valid")
+    list_display = ("custom_time", "led", "value", "valid")
+    fields = ("time","led", "value", "valid")
+    def custom_time(self, obj):
+        return obj.time.strftime('%Y-%m-%d %H:%M:%S.%f')
+    custom_time.short_description = "Date and Time"
 
 @admin.register(TemperatureSensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("time","temperaturesensor","tempvalue","tempvalue_min","tempvalue_max"
+    list_display = ("custom_time","temperaturesensor","tempvalue","tempvalue_min","tempvalue_max"
                     ,"humidvalue","valid")
-    fields = ("temperaturesensor", "tempvalue", "tempvalue_min", "tempvalue_max"
+    fields = ("time","temperaturesensor", "tempvalue", "tempvalue_min", "tempvalue_max"
                     , "humidvalue", "valid")
+    def custom_time(self, obj):
+        return obj.time.strftime('%Y-%m-%d %H:%M:%S.%f')
+    custom_time.short_description = "Date and Time"
 
 
 @admin.register(EnergySensorValue)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("time","energysensor","energy_value","energy_unit","power_value",
+    list_display = ("custom_time","energysensor","energy_value","energy_unit","power_value",
                     "power_unit","valid")
-    fields = ("energysensor", "energy_value", "energy_unit", "power_value",
+    fields = ("time","energysensor", "energy_value", "energy_unit", "power_value",
                     "power_unit", "valid")
-
+    def custom_time(self, obj):
+        return obj.time.strftime('%Y-%m-%d %H:%M:%S.%f')
+    custom_time.short_description = "Date and Time"
 ################################################################
 
 @admin.register(Shifts)

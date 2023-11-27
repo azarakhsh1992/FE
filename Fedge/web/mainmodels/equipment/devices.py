@@ -6,52 +6,6 @@ from django.core.exceptions import ValidationError
 from timescale.db.models.fields import TimescaleDateTimeField
 from timescale.db.models.managers import TimescaleManager
 from django.utils.timezone import now
-# from datetime import datetime
-
-    # class Port_16(models.TextChoices):
-    #     P1 = 'P1', 'P1'
-    #     P2 = 'P2', 'P2'
-    #     P3 = 'P3', 'P3'
-    #     P4 = 'P4', 'P4'
-    #     P5 = 'P5', 'P5'
-    #     P6 = 'P6', 'P6'
-    #     P7 = 'P7', 'P7'
-    #     P8 = 'P8', 'P8'
-    #     P9 = 'P9', 'P9'
-    #     P10 = 'P10', 'P10'
-    #     P11 = 'P11', 'P11'
-    #     P12 = 'P12', 'P12'
-    #     P13 = 'P13', 'P13'
-    #     P14 = 'P14', 'P14'
-    #     P15 = 'P15', 'P15'
-    #     P16 = 'P16', 'P16'
-    # class Port_8(models.TextChoices):
-    #     P1 = 'P1', 'P1'
-    #     P2 = 'P2', 'P2'
-    #     P3 = 'P3', 'P3'
-    #     P4 = 'P4', 'P4'
-    #     P5 = 'P5', 'P5'
-    #     P6 = 'P6', 'P6'
-    #     P7 = 'P7', 'P7'
-    #     P8 = 'P8', 'P8'
-    # class Port_2(models.TextChoices):
-    #     P1 = 'P1', 'P1'
-    #     P2 = 'P2', 'P2'
-    # class Port_4(models.TextChoices):
-    #     P1 = 'P1', 'P1'
-    #     P2 = 'P2', 'P2'
-    #     P3 = 'P3', 'P3'
-    #     P4 = 'P4', 'P4'
-    # class IO_Module(models.TextChoices):
-    #     DI_1 = 'DI_16', 'DI 16-Kanal'
-    #     DI_2 = 'DI_2', 'DI 2-Kanal'
-    #     DO_1 = 'DO_16', 'DO 16-Kanal'
-    #     DO_2 = 'DO_8', 'DO 8-Kanal'
-    #     IOL_1 = 'IOL_1', 'IOL 1'
-    #     IOL_2 = 'IOL_2', 'IOL 2'
-    #     EM_1 = 'EM_1', 'EM 1'
-    #     EM_2 = 'EM_2', 'EM 2'
-
 
 class Device(models.Model):
     plc = models.ForeignKey(PLC, related_name='devices', on_delete=models.DO_NOTHING, null=False)
@@ -89,7 +43,7 @@ class TimescaleModel(models.Model):
     be inheritted by another class for use.
     """
 
-    time = TimescaleDateTimeField(interval="7 day", default=now)
+    time = TimescaleDateTimeField(interval="7 day")
     objects = models.Manager()
     timescale = TimescaleManager()
 
