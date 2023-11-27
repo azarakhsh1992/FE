@@ -20,28 +20,34 @@ class MqttMiddleware(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False)
     def temp(self,request):
         data = request.data
-        try:
-            data_profinet = data['profinet_name']
-            # response_data={data["T"],data["Tmin"],data["Tmax"],data["RH"],data["V"],data["Time"]}
-            tsensor = TemperatureSensor.objects.get(profinet_name=data_profinet)
+        if ("T", "Tmin", "Tmax", "RH", "V", "Time") in data:
+            print("heree")
             try:
-                if data["V"] == "True":
-                    TemperatureSensorValue.objects.create(temperaturesensor=tsensor, valid = True,\
-                        tempvalue=data["T"],tempvalue_min=data["Tmin"],tempvalue_max=data["Tmax"],humidvalue=data["RH"],time=data["Time"])
-                    response = {"message":"success"}
-                elif data["V"] == "False":
-                    TemperatureSensorValue.objects.create(temperaturesensor=tsensor,valid=False,time=data["Time"])
-                    response = {"message":"success"}
-                else:
-                    response = {"message": "'V' as Validity not defined, data not recoreded"}
-                return Response(response, status=status.HTTP_200_OK)
+                data_profinet = data['profinet_name']
+                # response_data={data["T"],data["Tmin"],data["Tmax"],data["RH"],data["V"],data["Time"]}
+                tsensor = TemperatureSensor.objects.get(profinet_name=data_profinet)
+                try:
+                    if data["V"] == "True":
+                        TemperatureSensorValue.objects.create(temperaturesensor=tsensor, valid = True,\
+                            tempvalue=data["T"],tempvalue_min=data["Tmin"],tempvalue_max=data["Tmax"],humidvalue=data["RH"],time=data["Time"])
+                        response = {"message":"success"}
+                    elif data["V"] == "False":
+                        TemperatureSensorValue.objects.create(temperaturesensor=tsensor,valid=False,time=data["Time"])
+                        response = {"message":"success"}
+                    else:
+                        response = {"message": "'V' as Validity not defined, data not recoreded"}
+                    return Response(response, status=status.HTTP_200_OK)
+                except:
+                    response = {"message": "Data does not match"}
+                    # response = {{"message": "Data does not match"},response_data}
+                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
             except:
-                response = {"message": "Data does not match"}
-                # response = {{"message": "Data does not match"},response_data}
+                response = {"message": "Profinet_name for temperature sensor does not exist"}
+                # response = {data_profinet:response_data}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        except:
-            response = {"message": "Profinet_name for temperature sensor does not exist"}
-            # response = {data_profinet:response_data}
+        else:
+            response = {"message": "Data does not match"}
+            # response = {{"message": "Data does not match"},response_data}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 ################################################################
 ################################################################
@@ -49,26 +55,30 @@ class MqttMiddleware(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False)
     def energy(self, request):
         data = request.data
-        try:
-            data_profinet = data['profinet_name']
-        # response_data={data["E"],data["unitE"],data["P"],data["unitP"],data["V"],data["Time"]}
-            emsensor = EnergySensor.objects.get(profinet_name=data_profinet)
+        if ("E", "UnitE", "P", "UnitP", "V", "Time") in data:
             try:
-                if data ["V"]== "True":
-                    EnergySensorValue.objects.create(energysensor=emsensor,energy_value=data["E"],energy_unit=data["UnitE"],\
-                        power_value=data["P"],power_unit=data["UnitP"],time=data["Time"],valid=True)
-                    response = {"message": "success"}
-                elif data ["V"] == "False":
-                    EnergySensorValue.objects.create(energysensor=emsensor,valid=False,time=data["Time"])
-                    response = {"message": "success, Validity:False"}
-                else:
-                    response = {"message": "'V' as Validity not defined, data not recoreded"}
-                return Response(response, status=status.HTTP_200_OK)
+                data_profinet = data['profinet_name']
+            # response_data={data["E"],data["unitE"],data["P"],data["unitP"],data["V"],data["Time"]}
+                emsensor = EnergySensor.objects.get(profinet_name=data_profinet)
+                try:
+                    if data ["V"]== "True":
+                        EnergySensorValue.objects.create(energysensor=emsensor,energy_value=data["E"],energy_unit=data["UnitE"],\
+                            power_value=data["P"],power_unit=data["UnitP"],time=data["Time"],valid=True)
+                        response = {"message": "success"}
+                    elif data ["V"] == "False":
+                        EnergySensorValue.objects.create(energysensor=emsensor,valid=False,time=data["Time"])
+                        response = {"message": "success, Validity:False"}
+                    else:
+                        response = {"message": "'V' as Validity not defined, data not recoreded"}
+                    return Response(response, status=status.HTTP_200_OK)
+                except:
+                    response = {"message": "Data does not match"}
+                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
             except:
-                response = {"message": "Data does not match"}
+                response = {"message": "Profinet_name for Energy Sensor does not exist"}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        except:
-            response = {"message": "Profinet_name for Energy Sensor does not exist"}
+        else:
+            response = {"message": "Data does not match"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 ################################################################
 ################################################################
@@ -77,94 +87,98 @@ class MqttMiddleware(viewsets.ModelViewSet):
     def dido(self, request):
         # response_data={data["value"],data["V"],data["Time"]}
         data = request.data
-        try:
-            device_moduletype= Device.objects.get(profinet_name=data["profinet_name"]).module_type
-            print(device_moduletype)
-    ################################################################
-            if device_moduletype == "Door Sensor":
-                try:
-                    doorsensor = DoorSensor.objects.get(profinet_name=data["profinet_name"])
-                    if data ["V"] == "True":
-                        DoorsensorValue.objects.create(doorsensordevice=doorsensor,value=data["value"], time = data["Time"])
-                        response = {"message": "success"}
-                    elif data ["V"] == "False":
-                        DoorsensorValue.objects.create(doorsensordevice=doorsensor,valid=False, time = data["Time"])
-                        response = {"message": "success: Validity:False"}
-                    else:
-                        response = {"message": "'V' as Validity not defined, data not recoreded"}
-                    return Response(response, status=status.HTTP_200_OK)
-                except:
-                    response = {"message": "Data does not match"}
+        if ("value", "V", "Time") in data:
+            try:
+                device_moduletype= Device.objects.get(profinet_name=data["profinet_name"]).module_type
+                print(device_moduletype)
+        ################################################################
+                if device_moduletype == "Door Sensor":
+                    try:
+                        doorsensor = DoorSensor.objects.get(profinet_name=data["profinet_name"])
+                        if data ["V"] == "True":
+                            DoorsensorValue.objects.create(doorsensordevice=doorsensor,value=data["value"], time = data["Time"])
+                            response = {"message": "success"}
+                        elif data ["V"] == "False":
+                            DoorsensorValue.objects.create(doorsensordevice=doorsensor,valid=False, time = data["Time"])
+                            response = {"message": "success: Validity:False"}
+                        else:
+                            response = {"message": "'V' as Validity not defined, data not recoreded"}
+                        return Response(response, status=status.HTTP_200_OK)
+                    except:
+                        response = {"message": "Data does not match"}
+                        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        ################################################################
+                elif device_moduletype == "Latch":
+                    
+                    try:
+                        this_latch = Latch.objects.get(profinet_name=data["profinet_name"])
+                        if data["V"] == "True":
+                            LatchValue.objects.create(latch=this_latch, value=data["value"], time = data["Time"])
+                            response = {"message": "success"}
+                        elif data["V"] == "False":
+                            LatchValue.objects.create(latch=this_latch,valid=False, time = data["Time"])
+                            response = {"message": "success, Validity:False"}
+                        else:
+                            response = {"message": "'V' as Validity not defined, data not recoreded"}
+                        return Response(response, status=status.HTTP_200_OK)
+                    except:
+                        # response = {"message": "Data does not match"}
+                        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        ########################################################################
+                elif device_moduletype == "Latch Sensor":
+                    try:
+                        latchsensor = LatchSensor.objects.get(profinet_name=data["profinet_name"])
+                        if data ["V"] == "True":
+                            LatchSensorValue.objects.create(latchsensor=latchsensor,value=data["value"], time = data["Time"])
+                            response = {"message": "success"}
+                        elif data["V"] == "False":
+                            LatchSensorValue.objects.create(latchsensor=latchsensor,valid=False, time = data["Time"])
+                            response = {"message": "success, Validity:False"}
+                        else:
+                            response = {"message": "'V' as Validity not defined, data not recoreded"}
+                        return Response(response, status=status.HTTP_200_OK)
+                    except:
+                        response = {"message": "Data does not match"}
+                        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        #########################################################################
+                elif device_moduletype == "LED":
+                    try:
+                        this_led = LED.objects.get(profinet_name=data["profinet_name"])
+                        if data ["V"] == "True":
+                            LedValue.objects.create(led=this_led,value=data["value"], time = data["Time"])
+                            response = {"message": "success"}
+                        elif data ["V"] == "False":
+                            LedValue.objects.create(led=this_led,valid=False, time = data["Time"])
+                            response = {"message": "success, Validity:False"}
+                        else:
+                            response = {"message": "'V' as Validity not defined, data not recoreded"}
+                        return Response(response, status=status.HTTP_200_OK)
+                    except:
+                        response = {"message": "Data does not match"}
+                        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        ##########################################################################
+                elif device_moduletype == "Door Button":
+                    try:
+                        doorbtn = DoorButton.objects.get(profinet_name=data["profinet_name"])
+                        if data ["V"] == "True":
+                            ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"], time = data["Time"])
+                            response = {"message": "success"}
+                        elif data ["V"] == "False":
+                            ButtonValue.objects.create(doorbutton=doorbtn, valid=False, time = data["Time"])
+                            response = {"message": "success, Validity:False"}
+                        else:
+                            response = {"message": "'V' as Validity not defined, data not recoreded"}
+                        return Response(response, status=status.HTTP_200_OK)
+                    except:
+                        response = {"message": "Data does not match"}
+                        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        ####################################################################
+                else:
+                    response = {"message": "module not found in the database"}
                     return Response(response, status=status.HTTP_400_BAD_REQUEST)
-    ################################################################
-            elif device_moduletype == "Latch":
-                
-                try:
-                    this_latch = Latch.objects.get(profinet_name=data["profinet_name"])
-                    if data["V"] == "True":
-                        LatchValue.objects.create(latch=this_latch, value=data["value"], time = data["Time"])
-                        response = {"message": "success"}
-                    elif data["V"] == "False":
-                        LatchValue.objects.create(latch=this_latch,valid=False, time = data["Time"])
-                        response = {"message": "success, Validity:False"}
-                    else:
-                        response = {"message": "'V' as Validity not defined, data not recoreded"}
-                    return Response(response, status=status.HTTP_200_OK)
-                except:
-                    # response = {"message": "Data does not match"}
-                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
-    ########################################################################
-            elif device_moduletype == "Latch Sensor":
-                try:
-                    latchsensor = LatchSensor.objects.get(profinet_name=data["profinet_name"])
-                    if data ["V"] == "True":
-                        LatchSensorValue.objects.create(latchsensor=latchsensor,value=data["value"], time = data["Time"])
-                        response = {"message": "success"}
-                    elif data["V"] == "False":
-                        LatchSensorValue.objects.create(latchsensor=latchsensor,valid=False, time = data["Time"])
-                        response = {"message": "success, Validity:False"}
-                    else:
-                        response = {"message": "'V' as Validity not defined, data not recoreded"}
-                    return Response(response, status=status.HTTP_200_OK)
-                except:
-                    response = {"message": "Data does not match"}
-                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
-    #########################################################################
-            elif device_moduletype == "LED":
-                try:
-                    this_led = LED.objects.get(profinet_name=data["profinet_name"])
-                    if data ["V"] == "True":
-                        LedValue.objects.create(led=this_led,value=data["value"], time = data["Time"])
-                        response = {"message": "success"}
-                    elif data ["V"] == "False":
-                        LedValue.objects.create(led=this_led,valid=False, time = data["Time"])
-                        response = {"message": "success, Validity:False"}
-                    else:
-                        response = {"message": "'V' as Validity not defined, data not recoreded"}
-                    return Response(response, status=status.HTTP_200_OK)
-                except:
-                    response = {"message": "Data does not match"}
-                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
-    ##########################################################################
-            elif device_moduletype == "Door Button":
-                try:
-                    doorbtn = DoorButton.objects.get(profinet_name=data["profinet_name"])
-                    if data ["V"] == "True":
-                        ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"], time = data["Time"])
-                        response = {"message": "success"}
-                    elif data ["V"] == "False":
-                        ButtonValue.objects.create(doorbutton=doorbtn, valid=False, time = data["Time"])
-                        response = {"message": "success, Validity:False"}
-                    else:
-                        response = {"message": "'V' as Validity not defined, data not recoreded"}
-                    return Response(response, status=status.HTTP_200_OK)
-                except:
-                    response = {"message": "Data does not match"}
-                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
-    ####################################################################
-            else:
-                response = {"message": "module not found in the database"}
+            except:
+                response = {"message": "This Profinet_name does not exist"}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        except:
-            response = {"message": "This Profinet_name does not exist"}
+        else:
+            response = {"message": "Data does not match"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
