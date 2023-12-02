@@ -200,14 +200,16 @@ class UserProfileAdmin(admin.ModelAdmin):
     def custom_time(self, obj):
         return obj.time.strftime('%Y-%m-%d %H:%M:%S.%f')
     custom_time.short_description = "Date and Time"
-################################################################
+####################################Shift and User############################
 
 @admin.register(Shifts)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("id","shift","shift_start", "shift_end", "extra_time")
+    list_display = ("id","shift","shift_start", "shift_end", "extra_time_minute")
     fields = ("shift","shift_start", "shift_end", "extra_time")
 
-
+    def extra_time_minute(self, obj):
+        return obj.extra_time_int
+    extra_time_minute.short_description = "Extra time in Minutes"
 
 # @admin.register(UserProfile)
 # class UserProfileAdmin(admin.ModelAdmin):

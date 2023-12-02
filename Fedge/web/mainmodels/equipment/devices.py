@@ -8,10 +8,10 @@ from timescale.db.models.managers import TimescaleManager
 from django.utils.timezone import now
 
 class Device(models.Model):
-    plc = models.ForeignKey(PLC, related_name='devices', on_delete=models.DO_NOTHING, null=False)
+    plc = models.ForeignKey(PLC, related_name='devices', on_delete=models.CASCADE, null=False)
     #TODO: profinet name of the PLC must be checked; if Gerät and BMK is for Device, it should be editted as PLC to be Funktionseinheit
     #TODO: module inheritance works, Form class must be created for each module to implement uniqueness conditions
-    rack= models.ForeignKey(Rack, editable=True, related_name="device", null=False, on_delete=models.DO_NOTHING)
+    rack= models.ForeignKey(Rack, editable=True, related_name="device", null=False, on_delete=models.CASCADE)
     geraet = models.CharField(max_length=3, default=None)
     bmk = models.CharField(max_length=4, default=None)
     serial_number = models.CharField(max_length=50, unique=True)

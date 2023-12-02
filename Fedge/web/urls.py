@@ -10,7 +10,8 @@ from .viewsets.cabinetanddoor import CabinetViewset, DoorViewset
 from .viewsets.moduleviewsets import ContainerViewset
 from .viewsets.requestviewsets import RequestViewset
 from .viewsets.pythonapp import MqttMiddleware
-from .viewsets.testsome import test_shift, test_access
+from .viewsets.testsome import test_access
+from .viewsets.monitoring import Monitoring
 
 router = routers.DefaultRouter()
 router.register(r'userprofile', views.UserProfileViewset)
@@ -22,8 +23,8 @@ router.register(r'shifts', views.ShiftsViewset)
 router.register(r'containers', ContainerViewset)
 router.register(r'requests', RequestViewset)
 router.register(r'mqttmiddleware', MqttMiddleware)
-router.register(r'test_shift', test_shift)
 router.register(r'test_access', test_access)
+router.register(r'monitoring', Monitoring)
 
 urlpatterns = [
     # path('', views.home, name='web-home'),

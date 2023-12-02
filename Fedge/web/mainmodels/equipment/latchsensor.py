@@ -76,4 +76,4 @@ class LatchSensor(Device):
 class LatchSensorValue(TimescaleModel):
     latchsensor = models.ForeignKey(LatchSensor, on_delete=models.CASCADE, related_name='latchsensorvalue')
     value = models.BooleanField(null=True)
-    valid=models.BooleanField(default=None)
+    valid=models.BooleanField(null=True)

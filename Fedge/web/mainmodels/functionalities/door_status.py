@@ -5,8 +5,10 @@ from ..cabinetlevel.doors import Door
 from ..equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
 from ..userrelated.users import User
 from ..equipment.doorsensor import DoorSensor, DoorsensorValue
+from django.utils import timezone
 
 def is_safe(this_door):
+    current_time = timezone.now()
     critical_value = 60
     door = Door.objects.get(id=this_door.id)
     plc= PLC.objects.get(cabinet=door.rack.cabinet)
@@ -48,9 +50,9 @@ def is_safe(this_door):
 
     if temperaturesensor1 is not None and temperaturesensor2 is not None and temperaturesensor3 is not None:
         try:
-            latest_value_obj1 = TemperatureSensorValue.objects.filter(temperaturesensor=temperaturesensor1).latest('time')
-            latest_value_obj2 = TemperatureSensorValue.objects.filter(temperaturesensor=temperaturesensor2).latest('time')
-            latest_value_obj3 = TemperatureSensorValue.objects.filter(temperaturesensor=temperaturesensor3).latest('time')
+            latest_value_obj1 = TemperatureSensorValue.objects.filter(temperaturesensor=temperaturesensor1, time__lte=current_time).latest('time')
+            latest_value_obj2 = TemperatureSensorValue.objects.filter(temperaturesensor=temperaturesensor2, time__lte=current_time).latest('time')
+            latest_value_obj3 = TemperatureSensorValue.objects.filter(temperaturesensor=temperaturesensor3, time__lte=current_time).latest('time')
         except:
             latest_value_obj1 = None
             latest_value_obj2 = None
@@ -84,8 +86,9 @@ def is_safe(this_door):
 
 def Check_door_status(this_door):
     door_sensor = DoorSensor.objects.get(device_door = this_door)
+    current_time = timezone.now()
     try:
-        latest_data = DoorsensorValue.objects.filter(doorsensordevice = door_sensor).latest('time')
+        latest_data = DoorsensorValue.objects.filter(doorsensordevice = door_sensor, time__lte=current_time).latest('time')
     except:
         latest_data = None
         

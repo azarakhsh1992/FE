@@ -19,29 +19,9 @@ from ..mainmodels.userrelated.groupofshifts import EmployeeGroup, Shifts, ShiftA
 from ..mainmodels.cabinetlevel.doors import Door
 from ..mainmodels.functionalities.function_access import access_checker
 from datetime import datetime
+from ..mainmodels.functionalities.mqtt_publish import send_mqtt_latch
 
 
-
-
-
-class test_shift(viewsets.ModelViewSet):
-    serializer_class = UserProfileSerializer
-    queryset = UserProfile.objects.all()
-    @csrf_exempt
-    @action(methods=['POST'], detail=False)
-    # @action(methods=['POST'], detail=False, serializer_class=)
-    def temp(self,request):
-        this_user= User.objects.get(username=request.data["user"])
-        profile= UserProfile.objects.get(user=this_user)
-        group = UserProfile.objects.get(user=this_user).employee_group.id
-        door = Door.objects.get(qr=request.data["door"]).qr
-        shift = ShiftAssignment.objects.filter(group=group,\
-        starting_date__lte=datetime.now(), ending_date__gte=datetime.now()).first().shift.shift
-        response = {"user":this_user.username,"group": group,"shift":shift, "door":door}
-        return Response(response,status=status.HTTP_200_OK)
-        # return Response(profile.firstname,profile.employee_group.shift.shift,profile.employee_group.shift.da)
-        
-        
 class test_access(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
     queryset = UserProfile.objects.all()
@@ -52,9 +32,16 @@ class test_access(viewsets.ModelViewSet):
         this_user= User.objects.get(username=request.data["user"]).id
         profile= UserProfile.objects.get(user=this_user)
         group = UserProfile.objects.get(user=this_user).employee_group.id
+        door_obj = Door.objects.get(qr=request.data["door"])
         door_qr = Door.objects.get(qr=request.data["door"]).qr
         shift = ShiftAssignment.objects.filter(group=group,\
         starting_date__lte=datetime.now(), ending_date__gte=datetime.now()).first().shift.shift
         access, message = access_checker(user=this_user, qrcode=door_qr)
+        try:
+            latch = Latch.objects.get(door= door_obj)
+        except:
+            print("Latch not found")
+        if access:
+            send_mqtt_latch(latch=latch, value=True)
         response={"access": access, "message": message}
         return Response(response,status=status.HTTP_200_OK)

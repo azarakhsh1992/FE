@@ -105,7 +105,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_HEADERS = [
     'Content-Type'
-    # 'Authorization'
+    'Authorization'
 ]
 
 # Database
@@ -133,16 +133,16 @@ CORS_ALLOW_HEADERS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 #tsdb
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'fedge',
-#         'USER': 'fedge',
-#         'PASSWORD': '75401614',
-#         'HOST': 'localhost',  # Set to the address of your database
-#         'PORT': '5432',  # Leave as an empty string to use the default port
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'timescale.db.backends.postgresql',
+        'NAME': 'fedge',
+        'USER': 'fedge',
+        'PASSWORD': '75401614',
+        'HOST': 'localhost',  # Set to the address of your database
+        'PORT': '5432',  # Leave as an empty string to use the default port
+    }
+}
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -163,11 +163,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'CET'
+# TIME_ZONE = 'CET'
+TIME_ZONE = 'Europe/Berlin'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -203,13 +205,3 @@ APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'timescale.db.backends.postgresql',
-        'NAME': 'fedge',
-        'USER': 'fedge',
-        'PASSWORD': '75401614',
-        'HOST': 'localhost',  # Set to the address of your database
-        'PORT': '5432',  # Leave as an empty string to use the default port
-    }
-}

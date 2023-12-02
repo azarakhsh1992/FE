@@ -42,7 +42,7 @@ class EnergySensor(Device):
         super(EnergySensor, self).save(*args, **kwargs)
     class Meta:
         pass
-    
+
 
 class EnergySensorValue(TimescaleModel):
     energysensor = models.ForeignKey(EnergySensor, on_delete=models.CASCADE, related_name='energysensorvalue')
@@ -50,4 +50,4 @@ class EnergySensorValue(TimescaleModel):
     energy_unit = models.CharField(default='KWh', max_length=4)
     power_value = models.FloatField(null=True)
     power_unit = models.CharField(default='KW', max_length=4)
-    valid = models.BooleanField(default=False)
+    valid = models.BooleanField(null=True)

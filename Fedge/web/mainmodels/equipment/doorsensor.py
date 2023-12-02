@@ -76,4 +76,4 @@ class DoorSensor(Device):
 class DoorsensorValue(TimescaleModel):
     doorsensor = models.ForeignKey(DoorSensor, on_delete=models.CASCADE, related_name='doorsensorvalue',)
     value = models.BooleanField(null=True)
-    valid=models.BooleanField(default=None)
+    valid=models.BooleanField(null=True)

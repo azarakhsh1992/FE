@@ -15,7 +15,7 @@ def user_door_checker(user, qrcode):
     if profile.role== "Elektriker":
         if rack_name == "Energy":
             door_access = True
-            door_response = " You have access to the Energy rack door of the {cabinet}"
+            door_response = f" You have access to the {rack_name} rack of the {cabinet} Cabinet"
         elif rack_name == "Cooling" and this_door.direction == "Rear":
             door_access = True
             door_response = f" You have access to the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet"
@@ -23,20 +23,32 @@ def user_door_checker(user, qrcode):
             door_access = False
             door_response = f"The scanned door is the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet, and you do not have access to this door."
     elif profile.role == "Anlagen":
-        door_access = False
-        door_response="The employee accessible doors not defined."
+        door_access = True
+        door_response= f" You have access to the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet"
     elif profile.role == "IT":
-        door_access = False
-        door_response="The employee accessible doors not defined."
+        if rack_name in ["Edge_A","Edge_B"] and this_door.direction == "Front":
+                door_access = True
+                door_response = f" You have access to the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet"
+        elif rack_name == "Network":
+            door_access = True
+            door_response = f" You have access to the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet"
+        else:
+            door_access = False
+            door_response = f"The scanned door is the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet, and you do not have access to this door."
     elif profile.role == "Netzwerk":
-        door_access = False
-        door_response="The employee accessible doors not defined."
+        if rack_name in ["Edge_A","Edge_B"] and this_door.direction == "Rear":
+                door_access = True
+                door_response = f" You have access to the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet"
+        elif rack_name == "Network":
+            door_access = True
+            door_response = f" You have access to the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet"
     elif profile.role == "IH":
-        door_access = False
-        door_response="The employee accessible doors not defined."
+        if this_door.direction == "Rear":
+                door_access = True
+                door_response = f" You have access to the {this_door.direction} door of the {rack_name} rack of the {cabinet} Cabinet"
     else:
         door_access = False
-        door_response="The employee role is not defined."
+        door_response="The employee role or the accessible cabinet is not defined."
     return door_access,door_response
 
 

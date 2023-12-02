@@ -51,6 +51,8 @@ class TemperatureSensor(Device):
         self.port=self.device_port
         self.io_module=self.device_io_module
         super(TemperatureSensor, self).save(*args, **kwargs)
+    class Meta:
+        pass
 
 
 class TemperatureSensorValue(TimescaleModel):
