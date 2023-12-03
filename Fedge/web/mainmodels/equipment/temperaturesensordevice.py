@@ -29,6 +29,7 @@ class TemperatureSensor(Device):
     measuring_environment = models.CharField(choices=MeasuringEnvironment.choices, default=None, max_length=16, unique=True)
     device_io_module = models.CharField(choices=IO_Module.choices,editable=True, max_length=8,null=False)
     device_port = models.CharField(choices=Port_4.choices,editable=True, max_length=4,null=False)
+    critical_value = models.FloatField(default=70,editable=True)
     def clean(self):
         if self.measuring_environment in ["Edge_A_top","Edge_A_middle","Edge_A_bottom"] and self.rack.name !="Edge_A":
             raise ValidationError("Wrong selection: Rack and measuring environment do not match")

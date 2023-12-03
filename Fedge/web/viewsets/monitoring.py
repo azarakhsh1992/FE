@@ -324,3 +324,21 @@ class Monitoring(viewsets.ModelViewSet):
             print(e)  # or use logging
             response = {"message": "Data does not match"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+    @csrf_exempt
+    @action(methods=['POST'], detail=False)
+    def cabinet_status_monitoring(self,request):
+        data = request.data
+        try:    
+            measuring_env=data["measuring_env"]
+            period=data["period"]
+            door = Door.objects.get(qr=request.data["qr"])
+            plc = PLC.objects.get(cabinet=door.rack.cabinet)
+            sensor = EnergySensor.objects.get(plc =plc, measuring_environment=measuring_env)
+            current_time = timezone.now()
+            response ={}
+        except Exception as e:
+            print(e)  # or use logging
+            response = {"message": "Data does not match"}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            

@@ -48,8 +48,8 @@ class UserProfileAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
                     , "module_type", "io_module", "port",
-                    "measuring_environment","rack","get_latest_validity")
-    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer", "device_io_module", "device_port" ,"measuring_environment","rack")
+                    "measuring_environment","rack","get_latest_validity","critical_value")
+    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer", "device_io_module", "device_port" ,"measuring_environment","rack","critical_value")
     def get_latest_validity(self, obj):
         try:
             latest_value = TemperatureSensorValue.objects.filter(temperaturesensor=obj).latest('time')
@@ -85,7 +85,6 @@ class UserProfileAdmin(admin.ModelAdmin):
             return "No Data"
     get_latest_validity.short_description = "Latest Data Validity"
     
-
 @admin.register(DoorButton)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
@@ -98,7 +97,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         except ButtonValue.DoesNotExist:
             return "No Data"
     get_latest_validity.short_description = "Latest Data Validity"
-    
+
 @admin.register(LED)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
