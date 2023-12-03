@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from ..mainmodels.cabinetlevel.cabinets import Cabinet
 from ..mainmodels.cabinetlevel.doors import Door
@@ -16,8 +18,10 @@ from ..serializers.serializers import UserSerializer
 class RequestViewset(viewsets.ModelViewSet):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes=[IsAuthenticated]
 
-    @action(methods=['POST'], detail=False)
+    @action(methods=['POST'], detail=False, authentication_classes = [TokenAuthentication], permission_classes=[IsAuthenticated])
     def userrequest(self, request):
         user = request.data['user']
         userserserializer = UserSerializer(data=user)
