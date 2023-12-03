@@ -1,7 +1,5 @@
 *.pyc
 /env
 db.sqlite3
-fedge/venv/
-venv/
 BMK.pdf
 Fedge/web/migrations/
