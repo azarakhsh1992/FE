@@ -15,6 +15,7 @@ import datetime
 
 class Monitoring(viewsets.ModelViewSet):
     queryset = Door.objects.all()
+
     @csrf_exempt
     @action(methods=['POST'], detail=False)
     def monitoring_current_data(self,request):
