@@ -330,8 +330,6 @@ class Monitoring(viewsets.ModelViewSet):
     def cabinet_status_monitoring(self,request):
         data = request.data
         try:    
-            measuring_env=data["measuring_env"]
-            period=data["period"]
             door = Door.objects.get(qr=request.data["qr"])
             plc = PLC.objects.get(cabinet=door.rack.cabinet)
             sensor = EnergySensor.objects.get(plc =plc, measuring_environment=measuring_env)
