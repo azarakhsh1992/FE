@@ -32,7 +32,6 @@ class Monitoring(viewsets.ModelViewSet):
             door_sensors = DoorSensor.objects.filter(plc = this_plc)
 
             for i in energy_sensors:
-                start_time = current_time - timezone.timedelta(hours=1)
                 qs = EnergySensorValue.objects.filter(energysensor=i, valid=True, time__lte=current_time)
                 if qs.exists():
                     latest_value_energy = qs.latest("time")
@@ -51,7 +50,6 @@ class Monitoring(viewsets.ModelViewSet):
                     print(f"No data for energy sensor {i}")
 
             for i in temperature_sensors:
-                start_time = current_time - timezone.timedelta(hours=24)
                 qs = TemperatureSensorValue.objects.filter(temperaturesensor=i, valid=True, time__lte=current_time)
                 if qs.exists():
                     latest_value_temperature = qs.latest("time")
@@ -69,7 +67,6 @@ class Monitoring(viewsets.ModelViewSet):
                     print(f"No data for temperature sensor {i}")
 
             for i in door_sensors:
-                start_time = current_time - timezone.timedelta(hours=1)
                 qs = DoorsensorValue.objects.filter(doorsensor=i, valid=True, time__lte=current_time)
                 if qs.exists():
                     latest_value_sensors = qs.latest("time")
