@@ -63,7 +63,8 @@ class Monitoring(viewsets.ModelViewSet):
                             "Time": latest_value_temperature.time,
                             "Current": latest_value_temperature.tempvalue,
                             "Max": latest_value_temperature.tempvalue_max,
-                            "Min": latest_value_temperature.humidvalue,
+                            "Min": latest_value_temperature.tempvalue_min,
+                            "Humidity":latest_value_temperature.humidvalue,
                             "Validity": latest_value_temperature.valid
                         }
                     if "Edge_B" in sensor.measuring_environment:
@@ -72,7 +73,8 @@ class Monitoring(viewsets.ModelViewSet):
                             "Time": latest_value_temperature.time,
                             "Current": latest_value_temperature.tempvalue,
                             "Max": latest_value_temperature.tempvalue_max,
-                            "Min": latest_value_temperature.humidvalue,
+                            "Min": latest_value_temperature.tempvalue_min,
+                            "Humidity":latest_value_temperature.humidvalue,
                             "Validity": latest_value_temperature.valid
                         }
                     if "Network" in sensor.measuring_environment:
@@ -81,7 +83,8 @@ class Monitoring(viewsets.ModelViewSet):
                             "Time": latest_value_temperature.time,
                             "Current": latest_value_temperature.tempvalue,
                             "Max": latest_value_temperature.tempvalue_max,
-                            "Min": latest_value_temperature.humidvalue,
+                            "Min": latest_value_temperature.tempvalue_min,
+                            "Humidity":latest_value_temperature.humidvalue,
                             "Validity": latest_value_temperature.valid
                         }
                     if "Energy" in sensor.measuring_environment:
@@ -90,7 +93,8 @@ class Monitoring(viewsets.ModelViewSet):
                             "Time": latest_value_temperature.time,
                             "Current": latest_value_temperature.tempvalue,
                             "Max": latest_value_temperature.tempvalue_max,
-                            "Min": latest_value_temperature.humidvalue,
+                            "Min": latest_value_temperature.tempvalue_min,
+                            "Humidity":latest_value_temperature.humidvalue,
                             "Validity": latest_value_temperature.valid
                         }
             payload_temp = {"Edge_A":payload_tempA,"Edge_B":payload_tempB,"Network":payload_tempN,"Energy":payload_tempE}
@@ -127,7 +131,7 @@ class Monitoring(viewsets.ModelViewSet):
                 else:
                     print(f"No data for door sensor {i}")
 
-            response = {"Temperature":payload_temp, "Energy":payload_energy, "Door Sensors": payload_doorsensor}
+            response = {"Temperature":payload_temp, "Energy":payload_energy, "Door_Sensors": payload_doorsensor}
             return Response(response, status=status.HTTP_200_OK)
         
         except Exception as e:
