@@ -42,7 +42,7 @@ class RequestViewset(viewsets.ModelViewSet):
                 # req_id = serialized_data.data.get('id')
                 # response = {'message': accessresponse,
                 #             'id': req_id}
-                response = {'userprfile':accessresponse}
+                response = {'message':accessresponse,'access':access}
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'message': accessresponse}
