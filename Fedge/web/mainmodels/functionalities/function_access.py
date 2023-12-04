@@ -6,10 +6,10 @@ from ..userrelated.users import User, UserProfile
 from datetime import datetime, timedelta
 
 
-def user_door_checker(user, qrcode):
+def user_door_checker(user, door):
     #TODO: here must the accessible doors be clearly defined
     profile = UserProfile.objects.get(user=user)
-    this_door = Door.objects.get(qr=qrcode)
+    this_door = door
     rack_name = this_door.rack.name
     cabinet = this_door.rack.cabinet.profinet_name
     if profile.role== "Elektriker":
@@ -181,13 +181,13 @@ def access_shift(user):
     return access,response
 
 
-def access_checker(user, qrcode):
+def access_checker(user, door):
     response = '-'
     access = False
-    this_door= Door.objects.get(qr=qrcode)
-    this_user = User.objects.get(id=user)
+    this_door = door
+    this_user = user
     profile = UserProfile.objects.get(user=this_user)
-    door_access, door_response = user_door_checker(user=this_user, qrcode=qrcode)
+    door_access, door_response = user_door_checker(user=this_user, door=this_door)
     response_bereich = "-"
     shift_access, response_shift = access_shift(user=this_user)
     bereich_access = False

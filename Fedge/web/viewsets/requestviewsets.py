@@ -13,7 +13,7 @@ from ..serializers.cabinetanddoor import DoorSerializer, FullDoorSerializer
 from ..serializers.requestserializers import RequestSerializer
 from ..mainmodels.functionalities.function_access import access_checker
 from ..serializers.serializers import UserSerializer
-
+from ..mainmodels.userrelated.users import UserProfile
 
 class RequestViewset(viewsets.ModelViewSet):
     queryset = Request.objects.all()
@@ -24,26 +24,25 @@ class RequestViewset(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False, authentication_classes = [TokenAuthentication], permission_classes=[IsAuthenticated])
     def userrequest(self, request):
         user = request.data['user']
-        userserserializer = UserSerializer(data=user)
-        if userserserializer.is_valid():
-            userobj = User.objects.get(**userserserializer.validated_data)
-            qrcode = request.data['qrcode']
+        userobj = User.objects.get(username=user)
+        if userobj:
+            qrcode = request.data['qr']
             door = Door.objects.get(qr=qrcode)
             cabinet = door.rack.cabinet
             rack = door.rack
             # for functionality un-comment below
-            # access, accessresponse = access_checker(user=userobj, door=door)
             access, accessresponse = access_checker(user=userobj, door=door)
             if access:
-                eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
-                    description=request.data['description'],\
-                        datetime=request.data['time'], servicelog=False, buttonstatus=False,\
-                            cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
-                # TODO: send to container to light an LED : it will send event base on container
-                serialized_data = RequestSerializer(eventreq)
-                req_id = serialized_data.data.get('id')
-                response = {'message': accessresponse,
-                            'id': req_id}
+                # eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
+                #     description=request.data['description'],\
+                #         datetime=request.data['time'], servicelog=False, buttonstatus=False,\
+                #             cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
+                # # TODO: send to container to light an LED : it will send event base on container
+                # serialized_data = RequestSerializer(eventreq)
+                # req_id = serialized_data.data.get('id')
+                # response = {'message': accessresponse,
+                #             'id': req_id}
+                response = {'userprfile':accessresponse}
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'message': accessresponse}
@@ -55,8 +54,8 @@ class RequestViewset(viewsets.ModelViewSet):
     @action(methods=['POST'],detail=False)
     def userservice(self, request):
         user = request.data['user']
-        userserserializer = UserSerializer(data=user)
-        if userserserializer.is_valid():
+        userobj = User.objects.get(username=user)
+        if userobj:
             userrequest = request.data['request']
             userservice = request.data['service']
             try:
