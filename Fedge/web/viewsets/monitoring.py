@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from ..mainmodels.equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
 from ..mainmodels.equipment.energymodule import EnergySensor,EnergySensorValue
 from ..mainmodels.equipment.doorsensor import DoorSensor,DoorsensorValue
-from..mainmodels.equipment.plc import PLC
+from ..mainmodels.equipment.plc import PLC
 from ..mainmodels.cabinetlevel.doors import Door
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
