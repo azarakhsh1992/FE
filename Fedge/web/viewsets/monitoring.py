@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from ..mainmodels.equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
 from ..mainmodels.equipment.energymodule import EnergySensor,EnergySensorValue
 from ..mainmodels.equipment.doorsensor import DoorSensor,DoorsensorValue
-from..mainmodels.equipment.plc import PLC
+from ..mainmodels.equipment.plc import PLC
 from ..mainmodels.cabinetlevel.doors import Door
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
@@ -15,7 +15,6 @@ import datetime
 
 class Monitoring(viewsets.ModelViewSet):
     queryset = Door.objects.all()
-
     @csrf_exempt
     @action(methods=['POST'], detail=False)
     def monitoring_current_data(self,request):
@@ -49,23 +48,72 @@ class Monitoring(viewsets.ModelViewSet):
                     })
                 else:
                     print(f"No data for energy sensor {i}")
-
-            for i in temperature_sensors:
-                qs = TemperatureSensorValue.objects.filter(temperaturesensor=i, valid=True, time__lte=current_time)
+            payload_tempA = {}
+            payload_tempB = {}
+            payload_tempN = {}
+            payload_tempE = {}
+            for sensor in temperature_sensors:
+                qs = TemperatureSensorValue.objects.filter(temperaturesensor=sensor, valid=True, time__lte=current_time)
                 if qs.exists():
                     latest_value_temperature = qs.latest("time")
-                    payload_temp.update({
-                        i.measuring_environment:
-                    {
-                        "Time":latest_value_temperature.time,
-                        "Current":latest_value_temperature.tempvalue,
-                        "Max":latest_value_temperature.tempvalue_max,
-                        "Min":latest_value_temperature.humidvalue,
-                        "Validity":latest_value_temperature.valid
-                    }
-                    })
-                else:
-                    print(f"No data for temperature sensor {i}")
+                    if "Edge_A" in sensor.measuring_environment:
+                        key = sensor.measuring_environment.split("Edge_A_")[-1]
+                        payload_tempA[key] = {
+                            "Time": latest_value_temperature.time,
+                            "Current": latest_value_temperature.tempvalue,
+                            "Max": latest_value_temperature.tempvalue_max,
+                            "Min": latest_value_temperature.tempvalue_min,
+                            "Humidity":latest_value_temperature.humidvalue,
+                            "Validity": latest_value_temperature.valid
+                        }
+                    if "Edge_B" in sensor.measuring_environment:
+                        key = sensor.measuring_environment.split("Edge_B_")[-1]
+                        payload_tempB[key] = {
+                            "Time": latest_value_temperature.time,
+                            "Current": latest_value_temperature.tempvalue,
+                            "Max": latest_value_temperature.tempvalue_max,
+                            "Min": latest_value_temperature.tempvalue_min,
+                            "Humidity":latest_value_temperature.humidvalue,
+                            "Validity": latest_value_temperature.valid
+                        }
+                    if "Network" in sensor.measuring_environment:
+                        key = sensor.measuring_environment.split("Network")[-1]
+                        payload_tempN[key] = {
+                            "Time": latest_value_temperature.time,
+                            "Current": latest_value_temperature.tempvalue,
+                            "Max": latest_value_temperature.tempvalue_max,
+                            "Min": latest_value_temperature.tempvalue_min,
+                            "Humidity":latest_value_temperature.humidvalue,
+                            "Validity": latest_value_temperature.valid
+                        }
+                    if "Energy" in sensor.measuring_environment:
+                        key = sensor.measuring_environment.split("Energy")[-1]
+                        payload_tempE[key] = {
+                            "Time": latest_value_temperature.time,
+                            "Current": latest_value_temperature.tempvalue,
+                            "Max": latest_value_temperature.tempvalue_max,
+                            "Min": latest_value_temperature.tempvalue_min,
+                            "Humidity":latest_value_temperature.humidvalue,
+                            "Validity": latest_value_temperature.valid
+                        }
+            payload_temp = {"Edge_A":payload_tempA,"Edge_B":payload_tempB,"Network":payload_tempN,"Energy":payload_tempE}
+            # for i in temperature_sensors:
+            #     start_time = current_time - timezone.timedelta(hours=24)
+            #     qs = TemperatureSensorValue.objects.filter(temperaturesensor=i, valid=True, time__lte=current_time)
+            #     if qs.exists():
+            #         latest_value_temperature = qs.latest("time")
+            #         payload_temp.update({
+            #             i.measuring_environment:
+            #         {
+            #             "Time":latest_value_temperature.time,
+            #             "Current":latest_value_temperature.tempvalue,
+            #             "Max":latest_value_temperature.tempvalue_max,
+            #             "Min":latest_value_temperature.humidvalue,
+            #             "Validity":latest_value_temperature.valid
+            #         }
+            #         })
+            #     else:
+            #         print(f"No data for temperature sensor {i}")
 
             for i in door_sensors:
                 qs = DoorsensorValue.objects.filter(doorsensor=i, valid=True, time__lte=current_time)
@@ -81,7 +129,7 @@ class Monitoring(viewsets.ModelViewSet):
                 else:
                     print(f"No data for door sensor {i}")
 
-            response = {"Temperature":payload_temp, "Energy":payload_energy, "Door Sensors": payload_doorsensor}
+            response = {"Temperature":payload_temp, "Energy":payload_energy, "Door_Sensors": payload_doorsensor}
             return Response(response, status=status.HTTP_200_OK)
         
         except Exception as e:
