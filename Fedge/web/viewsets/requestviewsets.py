@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import User
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -33,16 +35,17 @@ class RequestViewset(viewsets.ModelViewSet):
             # for functionality un-comment below
             access, accessresponse = access_checker(user=userobj, door=door)
             if access:
-                # eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
-                #     description=request.data['description'],\
-                #         datetime=request.data['time'], servicelog=False, buttonstatus=False,\
-                #             cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
-                # # TODO: send to container to light an LED : it will send event base on container
-                # serialized_data = RequestSerializer(eventreq)
-                # req_id = serialized_data.data.get('id')
-                # response = {'message': accessresponse,
-                #             'id': req_id}
-                response = {'message':accessresponse,'access':access}
+                eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
+                    description="test",\
+                        datetime=datetime.datetime.now(), servicelog=False, buttonstatus=False,\
+                            cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
+                # TODO: send to container to light an LED : it will send event base on container
+                serialized_data = RequestSerializer(eventreq)
+                req_id = serialized_data.data.get('id')
+                response = {'message': accessresponse,
+                            'access':access,
+                            'id': req_id}
+                # response = {'message':accessresponse,'access':access}
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'message': accessresponse}
@@ -131,3 +134,22 @@ class RequestViewset(viewsets.ModelViewSet):
         except:
             response = {'message': 'this request not exists'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=["POST"], detail=False)
+    def canclerequest(self, request):
+        canceled_req = request.data['request']
+        canceled_id = canceled_req['id']
+        try:
+            obj_req = Request.objects.get(id=canceled_id)
+            if obj_req.cancelingfrnt == False:
+                obj_req.cancelingfrnt = True
+                obj_req.save()
+                response = {
+                    'message':'request canceled',
+                }
+                return Response(response,status=status.HTTP_200_OK)
+        except:
+            response = {
+                'message':'request not exist or canceled before'
+            }
+            return Response(response,status=status.HTTP_400_BAD_REQUEST)

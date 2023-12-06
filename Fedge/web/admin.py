@@ -12,8 +12,7 @@ from .mainmodels.equipment.button import DoorButton, ButtonValue
 from .mainmodels.userrelated.groupofshifts import EmployeeGroup,Shifts, ShiftAssignment
 from .mainmodels.equipment.devices import Device
 from .mainmodels.equipment.energymodule import EnergySensor, EnergySensorValue
-
-
+from .mainmodels.requests.requests import Request
 
 ######################Cabinet level########################
 @admin.register(Cabinet)
@@ -231,3 +230,12 @@ class EmployeeGroupAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ("group", "shift","starting_date","ending_date")
     list_display = ["group","shift","starting_date","ending_date"]
+
+@admin.register(Request)
+class UserProfileAdmin(admin.ModelAdmin):
+    fields = ("user", "cabinet", "door", "rack", "description",
+              "servicelog", "buttonstatus", "cancelinghdw", "cancelingfrnt",
+              "sendtomiddleware", "sendtofrontend", "datetime")
+    list_display = ("id", "user", "cabinet", "door", "rack", "description",
+              "servicelog", "buttonstatus", "cancelinghdw", "cancelingfrnt",
+              "sendtomiddleware", "sendtofrontend", "datetime")
