@@ -33,10 +33,10 @@ class test_access(viewsets.ModelViewSet):
         profile= UserProfile.objects.get(user=this_user)
         group = UserProfile.objects.get(user=this_user).employee_group.id
         door_obj = Door.objects.get(qr=request.data["door"])
-        door_qr = Door.objects.get(qr=request.data["door"]).qr
+        door = Door.objects.get(qr=request.data["door"])
         shift = ShiftAssignment.objects.filter(group=group,\
         starting_date__lte=datetime.now(), ending_date__gte=datetime.now()).first().shift.shift
-        access, message = access_checker(user=this_user, qrcode=door_qr)
+        access, message = access_checker(user=this_user, door=door)
         try:
             latch = Latch.objects.get(door= door_obj)
         except:

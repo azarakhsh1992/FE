@@ -164,6 +164,21 @@ class MqttMiddleware(viewsets.ModelViewSet):
                         response = {"message": "Data does not match"}
                         return Response(response, status=status.HTTP_400_BAD_REQUEST)
         ##########################################################################
+                # elif device_moduletype == "LED":
+                #     try:
+                #         this_led = LED.objects.get(profinet_name=profinet_name_data)
+                #         if data ["V"] == "True":
+                #             LedValue.objects.create(led=this_led,value=data["value"], time = data["Time"], valid=True)
+                #             response = {"message": "success"}
+                #             return Response(response, status=status.HTTP_200_OK)
+                #         elif data ["V"] == "False":
+                #             LedValue.objects.create(led=this_led,value=data["value"],valid=False, time = data["Time"])
+                #             response = {"message": "success, Validity:False"}
+                #             return Response(response, status=status.HTTP_200_OK)
+                #     except:
+                #         response = {"message": "Data does not match"}
+                #         return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        ##########################################################################
                 elif device_moduletype == "Door Button":
                     try:
                         doorbtn = DoorButton.objects.get(profinet_name=profinet_name_data)

@@ -42,6 +42,60 @@ Energy - 2 modules (Event-based message): "E;Float;UnitE;String;P;Float;UnitP;St
 
 DIDO  modules (Event-based messages): "value;BOOL;V;BOOL;time;DateTime"
 
+TO turn on the LEDs, the topic is the PLC_name and the messages are like this: "LED;LED.profinet_name;value"
+the value is to set based on the scenario and it is a value definning by the datasheet
+
+TO opne/close the Latches, the topic is the PLC_name and the messages are like this: "LATCH;Latch.profinet_name;value" # valuse can be either("open"/"close") or ("TRUE"/"FALSE") or ("true"/"false")
+
 MQTT messages to publish for DOs:
 Topic: PLC.Profinet_name
 Message: "value;"
+
+
+{
+  "hour":
+  {
+    "Edge_A": {
+        "top": {
+            "keys":"values"
+        },
+        "middle": {
+          "keys":"values"
+        },
+        "bottom": {
+          "keys":"values"
+        }
+    },
+  }
+    "Edge_B": 
+    {
+      "": {
+      "keys":"values"
+    },
+    "Network": {
+        "": {
+          "keys":"values"
+        }
+    }
+  },
+  "day":{
+    "Edge_A": {
+      "top": {
+        "keys":"values"
+      },
+    "middle": {
+        "keys":"values"
+      }
+    },
+    "Edge_B": {
+      "top": {
+        "keys":"values"
+      },
+      "Network": {
+        "": {
+          "keys":"values"
+        }
+      }
+    }
+  }
+}

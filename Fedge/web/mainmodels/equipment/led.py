@@ -71,5 +71,5 @@ class LED (Device):
 
 class LedValue(TimescaleModel):
     led = models.ForeignKey(LED, on_delete=models.CASCADE, related_name='ledvalue')
-    value = models.BooleanField(null=True)
+    value = models.IntegerField(null=True)
     valid = models.BooleanField(default=None)
