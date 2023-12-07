@@ -122,11 +122,12 @@ class RequestViewset(viewsets.ModelViewSet):
     @action(methods=["POST"], detail=False)
     def frontend(self, request):
         req_frontend = request.data['request']
-        req_id = req_frontend.id
+        req_id = req_frontend['id']
         try:
             obj_req = Request.objects.get(id=req_id)
-            if obj_req.sendtomiddleware == True and obj_req.sendtofrontend == False:
-                response = {'message': 'door is open, please confirm servicelog after maintanance'}
+            if obj_req.sendtomiddleware == True and obj_req.sendtofrontend == False and obj_req.cancelingfrnt == False and obj_req.buttonstatus == True:
+                response = {'access':True,
+                            'message': 'door is open, please confirm servicelog after maintanance'}
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'message': 'please wait'}

@@ -233,7 +233,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Request)
 class UserProfileAdmin(admin.ModelAdmin):
-    fields = ("user", "cabinet", "door", "rack", "description",
+    fields = ("user", "description",
               "servicelog", "buttonstatus", "cancelinghdw", "cancelingfrnt",
               "sendtomiddleware", "sendtofrontend", "datetime")
     list_display = ("id", "user", "cabinet", "door", "rack", "description",
