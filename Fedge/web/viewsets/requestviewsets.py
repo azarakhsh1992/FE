@@ -1,5 +1,4 @@
 import datetime
-
 from django.contrib.auth.models import User
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -39,7 +38,7 @@ class RequestViewset(viewsets.ModelViewSet):
                     description="test",\
                         datetime=datetime.datetime.now(), servicelog=False, buttonstatus=False,\
                             cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
-                # TODO: send to container to light an LED : it will send event base on container
+                # TODO: send to container to light an LED : it will send event base on container for watiting
                 serialized_data = RequestSerializer(eventreq)
                 req_id = serialized_data.data.get('id')
                 response = {'message': accessresponse,
@@ -68,6 +67,8 @@ class RequestViewset(viewsets.ModelViewSet):
                     newservicelog = Servicelog.objects.create(request=existreq, description=userservice['description'], datetime=userservice['datetime'])
                     existreq.servicelog = True
                     existreq.save()
+                    #TODO: send to plc: it will send event base on container for resetting LED, read from latch sensor if the latch is closed or open then
+                    # send to front end as a warning, then after 3 seconds it gets the response check the latch sensor and then submit the log whatever the latch sensor is open or closed
                     response = {'message': 'service log submitted successfully'}
                     return Response(response,status=status.HTTP_200_OK)
                 else:
@@ -76,7 +77,6 @@ class RequestViewset(viewsets.ModelViewSet):
             except:
                 response={'message':'this request is not exists'}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
-
         else:
             response = {'message': 'this user not exists'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
@@ -126,6 +126,7 @@ class RequestViewset(viewsets.ModelViewSet):
         try:
             obj_req = Request.objects.get(id=req_id)
             if obj_req.sendtomiddleware == True and obj_req.sendtofrontend == False and obj_req.cancelingfrnt == False and obj_req.buttonstatus == True:
+                #TODO: send to container to light an LED : it will send event base on container for watiting
                 response = {'access':True,
                             'message': 'door is open, please confirm servicelog after maintanance'}
                 return Response(response, status=status.HTTP_200_OK)
@@ -148,6 +149,7 @@ class RequestViewset(viewsets.ModelViewSet):
                 response = {
                     'message':'request canceled',
                 }
+                #TODO: send to container to light an LED : it will send event base on container for resetting the LED
                 return Response(response,status=status.HTTP_200_OK)
         except:
             response = {

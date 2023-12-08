@@ -163,6 +163,7 @@ class MqttMiddleware(viewsets.ModelViewSet):
                     except:
                         response = {"message": "Data does not match"}
                         return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
         ##########################################################################
                 # elif device_moduletype == "LED":
                 #     try:
@@ -179,6 +180,7 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 #         response = {"message": "Data does not match"}
                 #         return Response(response, status=status.HTTP_400_BAD_REQUEST)
         ##########################################################################
+
                 elif device_moduletype == "Door Button":
                     try:
                         doorbtn = DoorButton.objects.get(profinet_name=profinet_name_data)

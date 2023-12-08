@@ -36,7 +36,7 @@ def send_mqtt_latch(latch,value):
         client = mqtt.Client()
         client.connect(broker, 1883, 60)  # Replace with your MQTT broker address
         client.publish(topic, message)
-        client.disconnect()    
+        client.disconnect()
         response= "Message sent to MQTT broker successfully"
         sent = True
     except:

@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.db.models import Min, Max, Avg
 import datetime
+import json
 
 
 
@@ -95,24 +96,6 @@ class Monitoring(viewsets.ModelViewSet):
                         }
                 payload_temp = {"Edge_A":payload_tempA,"Edge_B":payload_tempB,"Network":payload_tempN,"Energy":payload_tempE}
 
-            # for i in temperature_sensors:
-            #     start_time = current_time - timezone.timedelta(hours=24)
-            #     values = TemperatureSensorValue.objects.filter(temperaturesensor=i, valid=True, time__lte=current_time)
-            #     if values.exists():
-            #         latest_value_temperature = values.latest("time")
-            #         payload_temp.update({
-            #             i.measuring_environment:
-            #         {
-            #             "Time":latest_value_temperature.time,
-            #             "Current":latest_value_temperature.tempvalue,
-            #             "Max":latest_value_temperature.tempvalue_max,
-            #             "Min":latest_value_temperature.humidvalue,
-            #             "Validity":latest_value_temperature.valid
-            #         }
-            #         })
-            #     else:
-            #         print(f"No data for temperature sensor {i}")
-
             for sensor in door_sensors:
                 values = DoorsensorValue.objects.filter(doorsensor=sensor, valid=True, time__lte=current_time)
                 if values.exists():
@@ -135,6 +118,7 @@ class Monitoring(viewsets.ModelViewSet):
             response = {"message": "Data does not match"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
+
     @csrf_exempt
     @action(methods=['POST'], detail=False)
     def history_temp(self,request):
@@ -147,198 +131,359 @@ class Monitoring(viewsets.ModelViewSet):
             sensors = TemperatureSensor.objects.filter(plc = plc)
             current_time = timezone.now()
             response ={}
-            payload_tempA = {}
-            payload_tempB = {}
-            payload_tempN_h = {}
-            payload_tempE_h = {}
-            payload_tempA_d = {}
-            response_period = {}
-            payload_tempN_d = {}
-            payload_tempE_d = {}
-            payload_tempA_w = {}
-            payload_tempB_w = {}
-            payload_tempN_w = {}
-            payload_tempE_w = {}
-            payload_tempA_m = {}
-            payload_tempB_m = {}
-            payload_tempN_m = {}
-            payload_tempE_m = {}
-        ###hour
+            
+            payload_h_at ={}
+            payload_d_at ={}
+            payload_w_at ={}
+            payload_m_at ={}
+            payload_h_am ={}
+            payload_d_am ={}
+            payload_w_am ={}
+            payload_m_am ={}
+            payload_h_ab ={}
+            payload_d_ab ={}
+            payload_w_ab ={}
+            payload_m_ab ={}
+            
+            payload_h_bt ={}
+            payload_d_bt ={}
+            payload_w_bt ={}
+            payload_m_bt ={}
+            payload_h_bm ={}
+            payload_d_bm ={}
+            payload_w_bm ={}
+            payload_m_bm ={}
+            payload_h_bb ={}
+            payload_d_bb ={}
+            payload_w_bb ={}
+            payload_m_bb ={}
+            
+            payload_h_e ={}
+            payload_d_e ={}
+            payload_w_e ={}
+            payload_m_e ={}
+            
+            payload_h_n={}
+            payload_d_n ={}
+            payload_w_n ={}
+            payload_m_n ={}
+            ###hour
             for period in ("hour","day","week","month"):
-                print("first for")
-                try:
-                    if period == "hour":
-                        start_time = current_time - timezone.timedelta(hours=1)
-                    elif period == "day":
-                        start_time = current_time - timezone.timedelta(hours=24)
-                    elif period == "week":
-                        start_time = current_time.replace(hour=0,minute=0,second=0,microsecond=0) - timezone.timedelta(days=current_time.weekday())
-                    elif period == "month":
-                        start_time = current_time - timezone.timedelta(days=30)
-                    for sensor in sensors.filter(measuring_environment__startswith= "Edge_A_"):
-                        print("second for")
-                        filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
-                        if filtered_values.exists():
-                            aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'),\
-                                                                    RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
-                            print(period,start_time)
-                            time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                            time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                            time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                            time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                            payload_tempA.update({(sensor.measuring_environment.replace("Edge_A_", "")):{
-                                "Minimum temperature":round(aggregated_values["temp_min"],2),
-                                "last time at minimum temperature":time_min_temp,
-                                "Maximum temperature":round(aggregated_values["temp_max"], 2),
-                                "last time at maximum temperature":time_max_temp,
-                                "Average temperature":round(aggregated_values["temp_avg"],2),
-                                "Minimum humidity":round(aggregated_values["RH_min"],2),
-                                "last time at minimum humidity":time_min_RH,
-                                "Maximum humidity":round(aggregated_values["RH_max"], 2),
-                                "last time at maximum humidity":time_max_RH,
-                                "Average humidity":round(aggregated_values["RH_avg"],2)
-                                }})
-                        response_period = response_period.update({"Edge_B":payload_tempB})
-                    for sensor in sensors.filter(measuring_environment__startswith = "Edge_B"):
-                        filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
-                        if filtered_values.exists():
-                            aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'),\
-                                                                    RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
-                            time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                            time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                            time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                            time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                            payload_tempB.update({(sensor.measuring_environment.replace("Edge_B_", "")):{
-                                "Minimum temperature":round(aggregated_values["temp_min"],2),
-                                "last time at minimum temperature":time_min_temp,
-                                "Maximum temperature":round(aggregated_values["temp_max"], 2),
-                                "last time at maximum temperature":time_max_temp,
-                                "Average temperature":round(aggregated_values["temp_avg"],2),
-                                "Minimum humidity":round(aggregated_values["RH_min"],2),
-                                "last time at minimum humidity":time_min_RH,
-                                "Maximum humidity":round(aggregated_values["RH_max"], 2),
-                                "last time at maximum humidity":time_max_RH,
-                                "Average humidity":round(aggregated_values["RH_avg"],2)
-                                }})
-                            response_period = response_period.update({"Edge_B":payload_tempB})
-                    response=response.update({period:response_period})
-                    return Response(response, status=status.HTTP_200_OK)
-                except Exception as e:
-                    response = {"message": "value not found"}
-                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                # print("first for")
+                if period == "hour":
+                    start_time = current_time - timezone.timedelta(hours=1)
+                elif period == "day":
+                    start_time = current_time - timezone.timedelta(hours=24)
+                elif period == "week":
+                    start_time = current_time.replace(hour=0,minute=0,second=0,microsecond=0) - timezone.timedelta(days=current_time.weekday())
+                elif period == "month":
+                    start_time = current_time - timezone.timedelta(days=30)
                     
-                
-                
-            ###day
-        #     try:
-        #         start_time = current_time - timezone.timedelta(hours=24)
-        #         filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor, time__range=[start_time,current_time], valid=True)
-        #         aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'))
-        #         time_max = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-        #         time_min = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-        #         response = {"Minimum":round(aggregated_values["temp_min"],2),"last time at minimum":time_min, "Maximum":round(aggregated_values["temp_max"], 2),"last time at maximum":time_max, "Average":round(aggregated_values["temp_avg"],2)}
-        #         # return Response(response, status=status.HTTP_200_OK)
-        #     except Exception as e:
-        #         response = {"message": "value not found"}
-        #         # return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                for sensor in sensors.filter(measuring_environment__startswith= "Edge_A"):
+                    # print("EDGE_A:",sensor.profinet_name)
+                    # print(period,": ",sensor.measuring_environment)
+                    filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
+                    # print("filtered_value time: ", filtered_values.latest("time").time, ", start time: ", start_time, ", Sensor: ",sensor.measuring_environment, period)
+                    if filtered_values.exists():
+                        # print("There")
+                        
+                        aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'),\
+                                                                RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
+                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        
+                        payload={
+                            "Minimum temperature":round(aggregated_values["temp_min"],2),
+                            "last time at minimum temperature":time_min_temp,
+                            "Maximum temperature":round(aggregated_values["temp_max"], 2),
+                            "last time at maximum temperature":time_max_temp,
+                            "Average temperature":round(aggregated_values["temp_avg"],2),
+                            "Minimum humidity":round(aggregated_values["RH_min"],2),
+                            "last time at minimum humidity":time_min_RH,
+                            "Maximum humidity":round(aggregated_values["RH_max"], 2),
+                            "last time at maximum humidity":time_max_RH,
+                            "Average humidity":round(aggregated_values["RH_avg"],2)
+                            }
+                        # print(period,sensor.measuring_environment, payload)
+                        if period == "hour" and sensor.measuring_environment == "Edge_A_top":
+                            payload_h_at =payload
+                        elif period == "day" and sensor.measuring_environment == "Edge_A_top":
+                            payload_d_at =payload
+                        elif period == "week" and sensor.measuring_environment == "Edge_A_top":
+                            payload_w_at =payload
+                        elif period == "month" and sensor.measuring_environment == "Edge_A_top":
+                            payload_m_at =payload
+                            
+                        elif period == "hour" and sensor.measuring_environment == "Edge_A_middle":
+                            payload_h_am =payload
+                        elif period == "day" and sensor.measuring_environment == "Edge_A_middle":
+                            payload_d_am =payload
+                        elif period == "week" and sensor.measuring_environment == "Edge_A_middle":
+                            payload_w_am =payload
+                        elif period == "month" and sensor.measuring_environment == "Edge_A_middle":
+                            payload_m_am =payload
+                            
+                        elif period == "hour" and sensor.measuring_environment == "Edge_A_bottom":
+                            payload_h_ab =payload
+                        elif period == "day" and sensor.measuring_environment == "Edge_A_bottom":
+                            payload_d_ab =payload
+                        elif period == "week" and sensor.measuring_environment == "Edge_A_bottom":
+                            payload_w_ab =payload
+                        elif period == "month" and sensor.measuring_environment == "Edge_A_bottom":
+                            payload_m_ab =payload
+                            
+                        else:
+                            pass
             
-        #     ###week
-        #     try:
-        #         start_time = current_time.replace(hour=0,minute=0,second=0,microsecond=0) - timezone.timedelta(days=current_time.weekday())
-        #         filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor, time__range=[start_time,current_time], valid=True)
-        #         aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'))
-        #         time_max = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-        #         time_min = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-        #         response = {"Minimum":round(aggregated_values["temp_min"],2),"last time at minimum":time_min, "Maximum":round(aggregated_values["temp_max"], 2),"last time at maximum":time_max, "Average":round(aggregated_values["temp_avg"],2)}
-        #         # return Response(response, status=status.HTTP_200_OK)
-        #     except Exception as e:
-        #         response = {"message": "value not found"}
-        #         # return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                for sensor in sensors.filter(measuring_environment__startswith= "Edge_B"):
+                    # print("EDGE_A:",sensor.profinet_name)
+                    # print(period,": ",sensor.measuring_environment)
+                    filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
+                    # print("filtered_value time: ", filtered_values.latest("time").time, ", start time: ", start_time, ", Sensor: ",sensor.measuring_environment, period)
+                    if filtered_values.exists():
+                        # print("There")
+                        
+                        aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'),\
+                                                                RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
+                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        
+                        payload={
+                            "Minimum temperature":round(aggregated_values["temp_min"],2),
+                            "last time at minimum temperature":time_min_temp,
+                            "Maximum temperature":round(aggregated_values["temp_max"], 2),
+                            "last time at maximum temperature":time_max_temp,
+                            "Average temperature":round(aggregated_values["temp_avg"],2),
+                            "Minimum humidity":round(aggregated_values["RH_min"],2),
+                            "last time at minimum humidity":time_min_RH,
+                            "Maximum humidity":round(aggregated_values["RH_max"], 2),
+                            "last time at maximum humidity":time_max_RH,
+                            "Average humidity":round(aggregated_values["RH_avg"],2)
+                            }
+                        if period == "hour" and sensor.measuring_environment == "Edge_B_top":
+                            payload_h_bt =payload
+                        elif period == "day" and sensor.measuring_environment == "Edge_B_top":
+                            payload_d_bt =payload
+                        elif period == "week" and sensor.measuring_environment == "Edge_B_top":
+                            payload_w_bt =payload
+                        elif period == "month" and sensor.measuring_environment == "Edge_B_top":
+                            payload_m_bt =payload
+                            
+                        elif period == "hour" and sensor.measuring_environment == "Edge_B_middle":
+                            payload_h_bm =payload
+                        elif period == "day" and sensor.measuring_environment == "Edge_B_middle":
+                            payload_d_bm =payload
+                        elif period == "week" and sensor.measuring_environment == "Edge_B_middle":
+                            payload_w_bm =payload
+                        elif period == "month" and sensor.measuring_environment == "Edge_B_middle":
+                            payload_m_bm =payload
+                            
+                        elif period == "hour" and sensor.measuring_environment == "Edge_B_bottom":
+                            payload_h_bb =payload
+                        elif period == "day" and sensor.measuring_environment == "Edge_B_bottom":
+                            payload_d_bb =payload
+                        elif period == "week" and sensor.measuring_environment == "Edge_B_bottom":
+                            payload_w_bb =payload
+                        elif period == "month" and sensor.measuring_environment == "Edge_B_bottom":
+                            payload_m_bb =payload
+                        else:
+                            pass
+                for sensor in sensors.filter(measuring_environment__startswith= "Energy"):
+                    # print("EDGE_A:",sensor.profinet_name)
+                    # print(period,": ",sensor.measuring_environment)
+                    filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
+                    # print("filtered_value time: ", filtered_values.latest("time").time, ", start time: ", start_time, ", Sensor: ",sensor.measuring_environment, period)
+                    if filtered_values.exists():
+                        # print("There")
+                        
+                        aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'),\
+                                                                RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
+                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        
+                        payload={
+                            "Minimum temperature":round(aggregated_values["temp_min"],2),
+                            "last time at minimum temperature":time_min_temp,
+                            "Maximum temperature":round(aggregated_values["temp_max"], 2),
+                            "last time at maximum temperature":time_max_temp,
+                            "Average temperature":round(aggregated_values["temp_avg"],2),
+                            "Minimum humidity":round(aggregated_values["RH_min"],2),
+                            "last time at minimum humidity":time_min_RH,
+                            "Maximum humidity":round(aggregated_values["RH_max"], 2),
+                            "last time at maximum humidity":time_max_RH,
+                            "Average humidity":round(aggregated_values["RH_avg"],2)
+                            }
+                        if period == "hour" and sensor.measuring_environment == "Energy":
+                            payload_h_e =payload
+                        elif period == "day" and sensor.measuring_environment == "Energy":
+                            payload_d_e =payload
+                        elif period == "week" and sensor.measuring_environment == "Energy":
+                            payload_w_e =payload
+                        elif period == "month" and sensor.measuring_environment == "Energy":
+                            payload_m_e =payload
+                        else:
+                            pass
+                for sensor in sensors.filter(measuring_environment__startswith= "Network"):
+                    # print("EDGE_A:",sensor.profinet_name)
+                    # print(period,": ",sensor.measuring_environment)
+                    filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
+                    # print("filtered_value time: ", filtered_values.latest("time").time, ", start time: ", start_time, ", Sensor: ",sensor.measuring_environment, period)
+                    if filtered_values.exists():
+                        # print("There")
+                        
+                        aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'),\
+                                                                RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
+                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        
+                        payload={
+                            "Minimum temperature":round(aggregated_values["temp_min"],2),
+                            "last time at minimum temperature":time_min_temp,
+                            "Maximum temperature":round(aggregated_values["temp_max"], 2),
+                            "last time at maximum temperature":time_max_temp,
+                            "Average temperature":round(aggregated_values["temp_avg"],2),
+                            "Minimum humidity":round(aggregated_values["RH_min"],2),
+                            "last time at minimum humidity":time_min_RH,
+                            "Maximum humidity":round(aggregated_values["RH_max"], 2),
+                            "last time at maximum humidity":time_max_RH,
+                            "Average humidity":round(aggregated_values["RH_avg"],2)
+                            }
+                        if period == "hour" and sensor.measuring_environment == "Network":
+                            payload_h_n=payload
+                        elif period == "day" and sensor.measuring_environment == "Network":
+                            payload_d_n =payload
+                        elif period == "week" and sensor.measuring_environment == "Network":
+                            payload_w_n =payload
+                        elif period == "month" and sensor.measuring_environment == "Network":
+                            payload_m_n =payload
+                        else:
+                            pass
+            # print(payload_m_am)
+            response = {"Edge_A":{
+                "top":{
+                    "hour":
+                        payload_h_at
+                    ,
+                    "day":
+                        payload_d_at
+                    ,
+                    "week":
+                        payload_w_at
+                    ,
+                    "month":
+                        payload_m_at
+                    },
+                "middle":{
+                    "hour":
+                        payload_h_am
+                    ,
+                    "day":
+                        payload_d_am
+                    ,
+                    "week":
+                        payload_w_am
+                    ,
+                    "month":
+                        payload_m_am
+                    },
+                "bottom":{
+                    "hour":
+                        payload_h_ab
+                    ,
+                    "day":
+                        payload_d_ab
+                    ,
+                    "week":
+                        payload_w_ab
+                    ,
+                    "month":
+                        payload_m_ab
+                    },
+                    },
+                        "Edge_B":{
+                "top":{
+                    "hour":
+                        payload_h_bt
+                    ,
+                    "day":
+                        payload_d_bt
+                    ,
+                    "week":
+                        payload_w_bt
+                    ,
+                    "month":
+                        payload_m_bt
+                    },
+                "middle":{
+                    "hour":
+                        payload_h_bm
+                    ,
+                    "day":
+                        payload_d_bm
+                    ,
+                    "week":
+                        payload_w_bm
+                    ,
+                    "month":
+                        payload_m_bm
+                    },
+                "bottom":{
+                    "hour":
+                        payload_h_bb
+                    ,
+                    "day":
+                        payload_d_bb
+                    ,
+                    "week":
+                        payload_w_bb
+                    ,
+                    "month":
+                        payload_m_bb
+                    },
+                    },
+                        "Energy":{
+                "":{
+                    "hour":
+                        payload_h_e
+                    ,
+                    "day":
+                        payload_d_e
+                    ,
+                    "week":
+                        payload_w_e
+                    ,
+                    "month":
+                        payload_m_e
+                    },
+                    },
+                        "Network":{
+                "":{
+                    "hour":
+                        payload_h_n
+                    ,
+                    "day":
+                        payload_d_n
+                    ,
+                    "week":
+                        payload_w_n
+                    ,
+                    "month":
+                        payload_m_n
+                    },
+                    }
+                        }
+            print(response)
+            return Response(response, status=status.HTTP_200_OK)
         
-        #     ###month
-        #     try:
-        #         start_time = current_time - timezone.timedelta(days=30)
-        #         filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor, time__range=[start_time,current_time], valid=True)
-        #         aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'))
-        #         time_max = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-        #         time_min = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-        #         response = {"Minimum":round(aggregated_values["temp_min"],2),"last time at minimum":time_min, "Maximum":round(aggregated_values["temp_max"], 2),"last time at maximum":time_max, "Average":round(aggregated_values["temp_avg"],2)}
-        #         # return Response(response, status=status.HTTP_200_OK)
-        #     except Exception as e:
-        #         response = {"message": "value not found"}
-        #         # return Response(response, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(e)  # or use logging
-            response = {"message": "Data does not match"}
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        
-    @csrf_exempt
-    @action(methods=['POST'], detail=False)
-    def history_RH(self,request):
-        response={}
-        try:
-            data = request.data
-            measuring_env=data["measuring_env"]
-            period=data["period"]
-            door = Door.objects.get(qr=request.data["qr"])
-            sensor = TemperatureSensor.objects.get(rack =door.rack, measuring_environment=measuring_env)
-            current_time = timezone.now()
-            response ={}
-            
-            ##hour
-            try:
-                start_time = current_time - timezone.timedelta(hours=1)
-                print(start_time)
-                print(current_time)
-                filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
-                aggregated_values = filtered_values.aggregate(RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
-                time_max = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                time_min = filtered_values.filter(tempvalue_min =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                response = {"Minimum":round(aggregated_values["RH_min"],2),"last time at minimum":time_min, "Maximum":round(aggregated_values["RH_max"], 2),"last time at maximum":time_max, "Average":round(aggregated_values["RH_avg"],2)}
-                # return Response(response, status=status.HTTP_200_OK)
-            except Exception as e:
-                response = {"message": "value not found"}
-                # return Response(response, status=status.HTTP_400_BAD_REQUEST)
-            ##day
-            try:
-                start_time = current_time - timezone.timedelta(hours=24)
-                filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor, time__range=[start_time,current_time], valid=True)
-                aggregated_values = filtered_values.aggregate(RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
-                time_max = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                time_min = filtered_values.filter(humidvalue = aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                response = {"Minimum":round(aggregated_values["RH_min"],2),"last time at minimum":time_min, "Maximum":round(aggregated_values["RH_max"], 2),"last time at maximum":time_max, "Average":round(aggregated_values["RH_avg"],2)}
-                # return Response(response, status=status.HTTP_200_OK)
-            except Exception as e:
-                response = {"message": "value not found"}
-                # return Response(response, status=status.HTTP_400_BAD_REQUEST)
-            
-            ##week
-            try:
-                start_time = current_time.replace(hour=0,minute=0,second=0,microsecond=0) - timezone.timedelta(days=current_time.weekday())
-                filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor, time__range=[start_time,current_time], valid=True)
-                aggregated_values = filtered_values.aggregate(RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
-                time_max = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                time_min = filtered_values.filter(humidvalue = aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                response = {"Minimum":round(aggregated_values["RH_min"],2),"last time at minimum":time_min, "Maximum":round(aggregated_values["RH_max"], 2),"last time at maximum":time_max, "Average":round(aggregated_values["RH_avg"],2)}
-                # return Response(response, status=status.HTTP_200_OK)
-            except Exception as e:
-                response = {"message": "value not found"}
-                # # return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        
-            ##month
-            try:
-                start_time = current_time - timezone.timedelta(days=30)
-                filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor, time__range=[start_time,current_time], valid=True)
-                aggregated_values = filtered_values.aggregate(RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
-                time_max = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                time_min = filtered_values.filter(humidvalue = aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                response = {"Minimum":round(aggregated_values["RH_min"],2),"last time at minimum":time_min, "Maximum":round(aggregated_values["RH_max"], 2),"last time at maximum":time_max, "Average":round(aggregated_values["RH_avg"],2)}
-                # return Response(response, status=status.HTTP_200_OK)
-            except Exception as e:
-                response = {"message": "value not found"}
-                # return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            print(e)  # or use logging
             response = {"message": "Data does not match"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
         
