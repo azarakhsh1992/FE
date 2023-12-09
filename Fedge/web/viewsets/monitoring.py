@@ -119,6 +119,8 @@ class Monitoring(viewsets.ModelViewSet):
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+
     @csrf_exempt
     @action(methods=['POST'], detail=False)
     def history_temp(self,request):
@@ -609,140 +611,77 @@ class Monitoring(viewsets.ModelViewSet):
     
     @csrf_exempt
     @action(methods=['POST'], detail=False)
-    def history_door_sensor(self,request):
+    def history_doorsensor(self,request):
         response={}
         try:
             data = request.data
             door = Door.objects.get(qr=request.data["qr"])
             plc = PLC.objects.get(cabinet=door.rack.cabinet)
-            sensor = DoorSensor.objects.get(plc = plc, door = door)
+            sensors = DoorSensor.objects.filter(plc = plc)
             current_time = timezone.now()
             response ={}
             payload ={}
-            filtered_values = DoorsensorValue.objects.filter(doorsensor=sensor, valid=True).order_by('time')[:10]
-            if filtered_values.exists():
-                aggregated_values = filtered_values.aggregate(power_min=Min('power_value'), power_max=Max('power_value'),power_avg=Avg('power_value'),energy_avg=Avg('energy_value'))
+                        
+            payload_AF = {}
+            payload_AR = {}
+            payload_BF = {}
+            payload_BR = {}
+            payload_N = {}
+            payload_E = {}
+            payload_CF = {}
+            payload_CR = {}
+            for sensor in sensors:
                 
-                time_power_max = filtered_values.filter(power_value =aggregated_values["power_max"]).latest("time").time
-                time_power_min = filtered_values.filter(power_value =aggregated_values["power_min"]).latest("time").time
+                filtered_values = DoorsensorValue.objects.filter(doorsensor=sensor, valid=True).order_by('-time')[:11]
 
-                payload = {
-                    "Minimum Power":aggregated_values["power_min"],
-                    "last time at minimum power":time_power_min,
-                    "Maximum Power":aggregated_values["power_max"],
-                    "last time at maximum power":time_power_max,
-                    "Average Power":aggregated_values["power_avg"],
-                    "Average Energy":aggregated_values["energy_avg"]
-                    }
-            else:
-                payload = {}
-            # print(payload_w_e1)
-            response = {sensor.door.rack+"_"+sensor.door_direction:{
-                "1":{
-                    "Status":
-                        response
-                    ,
-                    "From":
-                        response
-                    ,
-                    "To":
-                        response
-                    },
-                "2":{
-                    "Status":
-                        response
-                    ,
-                    "From":
-                        response
-                    ,
-                    "To":
-                        response
-                    },
-                "3":{
-                    "Status":
-                        response
-                    ,
-                    "From":
-                        response
-                    ,
-                    "To":
-                        response
-                    },
-                "4":{
-                    "Status":
-                        response
-                    ,
-                    "From":
-                        response
-                    ,
-                    "To":
-                        response
-                    },
-                "5":{
-                    "Status":
-                        response
-                    ,
-                    "From":
-                        response
-                    ,
-                    "To":
-                        response
-                    },
-                "6":{
-                    "Status":
-                        response
-                    ,
-                    "From":
-                        response
-                    ,
-                    "To":
-                        response
-                    },
-                "7":{
-                    "Status":
-                        response
-                    ,
-                    "From":
-                        response
-                    ,
-                    "To":
-                        response
-                    },
-                "8":{
-                    "Status":
-                        response
-                    ,
-                    "From":
-                        response
-                    ,
-                    "To":
-                        response
-                    },
-                "9":{
-                    "Status":
-                        response
-                    ,
-                    "From":
-                        response
-                    ,
-                    "To":
-                        response
-                    },
-                "10":{
-                    "Status":
-                        response
-                    ,
-                    "From":
-                        response
-                    ,
-                    "To":
-                        response
-                    },
-                }
-                        }
-            
+                if filtered_values.exists():
+                    for i in range(0,10):
+                        try:
+                            door_status = filtered_values[i].value
+                            time1 = filtered_values[i].time
+                            time2 = filtered_values[i+1].time
+                            payload.update({i+1:{
+                                "status":door_status,
+                                "from":time1,
+                                "to":time2,
+                                }})
+                        except:
+                            payload.update({i+1:{
+                                "status":"-",
+                                "from":"-",
+                                "to":"-",
+                                }})
+                            
+                    if sensor.door.rack.name=="Edge_A" and sensor.door_direction=="Front":
+                        payload_AF.update(payload)
+                    if sensor.door.rack.name=="Edge_A" and sensor.door_direction=="Rear":
+                        payload_AR.update(payload)
+                    if sensor.door.rack.name=="Edge_B" and sensor.door_direction=="Front":
+                        payload_BF.update(payload)
+                    if sensor.door.rack.name=="Edge_B" and sensor.door_direction=="Rear":
+                        payload_BR.update(payload)
+                    if sensor.door.rack.name=="Network" and sensor.door_direction=="Network":
+                        payload_N.update(payload)
+                    if sensor.door.rack.name=="Energy" and sensor.door_direction=="Energy":
+                        payload_E.update(payload)
+                    if sensor.door.rack.name=="Cooling" and sensor.door_direction=="Front":
+                        payload_CF.update(payload)
+                    if sensor.door.rack.name=="Cooling" and sensor.door_direction=="Rear":
+                        payload_CR.update(payload)
+                    
+                    
+            response = {
+                "Edge_A Front":payload_AF,
+                "Edge_A Rear": payload_AR,
+                "Edge_B_Front": payload_BF,
+                "Edge_B Rear": payload_BR,
+                "Network": payload_N,
+                "Energy": payload_E,
+                "Cooling Front": payload_CF,
+                "Cooling Rear": payload_CR
+            }
+
             return Response(response, status=status.HTTP_200_OK)
-        
         except Exception as e:
             response = {"message": "Data does not match"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
