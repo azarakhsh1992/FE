@@ -6,15 +6,19 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 
+
 from ..mainmodels.cabinetlevel.cabinets import Cabinet
 from ..mainmodels.cabinetlevel.doors import Door
 from ..mainmodels.equipment.plc import PLC
+from ..mainmodels.equipment.latch import Latch
+from ..mainmodels.equipment.led import LED,LedValueCases
 from ..mainmodels.requests.requests import Request, Servicelog
 from ..serializers.cabinetanddoor import DoorSerializer, FullDoorSerializer
 from ..serializers.requestserializers import RequestSerializer
 from ..mainmodels.functionalities.function_access import access_checker
 from ..serializers.serializers import UserSerializer
 from ..mainmodels.userrelated.users import UserProfile
+from ..mainmodels.functionalities.mqtt_publish import send_mqtt_latch, send_mqtt_led
 
 class RequestViewset(viewsets.ModelViewSet):
     queryset = Request.objects.all()
@@ -31,6 +35,7 @@ class RequestViewset(viewsets.ModelViewSet):
             door = Door.objects.get(qr=qrcode)
             cabinet = door.rack.cabinet
             rack = door.rack
+            led = LED.objects.get(door=door)
             # for functionality un-comment below
             access, accessresponse = access_checker(user=userobj, door=door)
             if access:
@@ -38,16 +43,18 @@ class RequestViewset(viewsets.ModelViewSet):
                     description="test",\
                         datetime=datetime.datetime.now(), servicelog=False, buttonstatus=False,\
                             cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
-                # TODO: send to container to light an LED : it will send event base on container for watiting
+                
                 serialized_data = RequestSerializer(eventreq)
                 req_id = serialized_data.data.get('id')
                 response = {'message': accessresponse,
                             'access':access,
                             'id': req_id}
+                send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value)
                 # response = {'message':accessresponse,'access':access}
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'message': accessresponse}
+                send_mqtt_led(led=led, value=LedValueCases.objects.get(description="access_denied").value)
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
         else:
             response = {'message': "User's data not Valid "}

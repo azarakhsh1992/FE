@@ -3,7 +3,7 @@ from .mainmodels.cabinetlevel.cabinets import Cabinet, Rack
 from .mainmodels.userrelated.users import UserProfile
 from .mainmodels.cabinetlevel.doors import Door
 from .mainmodels.equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
-from .mainmodels.equipment.led import LED, LedValue
+from .mainmodels.equipment.led import LED, LedValue, LedValueCases
 from .mainmodels.equipment.latch import Latch, LatchValue
 from .mainmodels.equipment.plc import PLC
 from .mainmodels.equipment.doorsensor import DoorSensor, DoorsensorValue
@@ -19,6 +19,7 @@ from .mainmodels.requests.requests import Request
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("id","bereich","segment","anlage","arg_sps","pultbereich_sk","station","profinet_name")
     fields = ("bereich","segment","anlage","arg_sps","pultbereich_sk","station")
+    
 
 @admin.register(Rack)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -230,6 +231,11 @@ class EmployeeGroupAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ("group", "shift","starting_date","ending_date")
     list_display = ["group","shift","starting_date","ending_date"]
+
+@admin.register(LedValueCases)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("description","functionality","value")
+    fields = ("description","functionality","value")
 
 @admin.register(Request)
 class UserProfileAdmin(admin.ModelAdmin):

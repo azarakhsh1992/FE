@@ -22,7 +22,7 @@ def send_mqtt_latch(latch,value):
         topic = plc_profinet_name
     except:
         response= "Latch not found"
-    message = profinet_name+';%s'%latch_value
+    message = "LATCH;"+profinet_name+';%s'%latch_value
     try:
         client = mqtt.Client()
         client.connect(broker, 1883, 60)  # Replace with your MQTT broker address
@@ -49,15 +49,25 @@ def send_mqtt_led(led,value):
     sent= False
     message=''
     try:
-        profinet_name = Latch.objects.get(pk=led.pk).profinet_name
-        plc = Latch.objects.get(pk=led.pk).plc.profinet_name
+        profinet_name = LED.objects.get(pk=led.pk).profinet_name
+        plc_profinet_name = LED.objects.get(pk=led.pk).plc.profinet_name
+        topic = plc_profinet_name
     except:
-        response= "Latch not found"
-    message = profinet_name+':%s'%value
+        response= "LED not found"
+    message = "LED;"+profinet_name+';%s'%value
     try:
         client = mqtt.Client()
         client.connect(broker, 1883, 60)  # Replace with your MQTT broker address
-        client.publish("plc", message)
+        client.publish(topic, message)
+        client.disconnect()    
+        response= "Message sent to MQTT broker successfully"
+        sent=True
+    except:
+        response= "Cannot connect to MQTT broker"
+    try:
+        client = mqtt.Client()
+        client.connect(broker, 1883, 60)  # Replace with your MQTT broker address
+        client.publish(topic, message)
         client.disconnect()    
         response= "Message sent to MQTT broker successfully"
         sent=True

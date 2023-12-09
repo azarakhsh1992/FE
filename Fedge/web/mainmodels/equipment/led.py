@@ -73,3 +73,16 @@ class LedValue(TimescaleModel):
     led = models.ForeignKey(LED, on_delete=models.CASCADE, related_name='ledvalue')
     value = models.IntegerField(null=True)
     valid = models.BooleanField(default=None)
+
+
+class LedValueCases(models.Model):
+    class Description(models.TextChoices):
+        A = "default", "Door is closed and available for user"
+        B = "wait_button", "waiting for the door button being pushed"
+        C = "access_denied", "Access Denied for this user because they don't have access to this door"
+        D = "door_not_locked", "Door is not locked after user requested to log out"
+        E = "access_granted", "Access granted for this user and door opened"
+        F = "default_open", "Door is open and not available for user"
+    description = models.CharField(choices=Description.choices,max_length=24, unique=True)
+    functionality = models.TextField(max_length=128, blank=True)
+    value = models.IntegerField(default=0)

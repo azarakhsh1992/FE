@@ -64,7 +64,7 @@ class Monitoring(viewsets.ModelViewSet):
                         key = sensor.measuring_environment.split("Edge_A_")[-1]
                         payload_tempA[key] = {
                             "Time": latest_value_temperature.time,
-                            "Current": latest_value_temperature.tempvalue,
+                            "Temperature": latest_value_temperature.tempvalue,
                             "Humidity":latest_value_temperature.humidvalue,
                             "Validity": latest_value_temperature.valid
                         }
@@ -72,7 +72,7 @@ class Monitoring(viewsets.ModelViewSet):
                         key = sensor.measuring_environment.split("Edge_B_")[-1]
                         payload_tempB[key] = {
                             "Time": latest_value_temperature.time,
-                            "Current": latest_value_temperature.tempvalue,
+                            "Temperature": latest_value_temperature.tempvalue,
                             "Humidity":latest_value_temperature.humidvalue,
                             "Validity": latest_value_temperature.valid
                         }
@@ -81,7 +81,7 @@ class Monitoring(viewsets.ModelViewSet):
                         key = sensor.measuring_environment.split("Network")[-1]
                         payload_tempN[key] = {
                             "Time": latest_value_temperature.time,
-                            "Current": latest_value_temperature.tempvalue,
+                            "Temperature": latest_value_temperature.tempvalue,
                             "Humidity":latest_value_temperature.humidvalue,
                             "Validity": latest_value_temperature.valid
                         }
@@ -90,7 +90,7 @@ class Monitoring(viewsets.ModelViewSet):
                         key = sensor.measuring_environment.split("Energy")[-1]
                         payload_tempE[key] = {
                             "Time": latest_value_temperature.time,
-                            "Current": latest_value_temperature.tempvalue,
+                            "Temperature": latest_value_temperature.tempvalue,
                             "Humidity":latest_value_temperature.humidvalue,
                             "Validity": latest_value_temperature.valid
                         }
@@ -169,7 +169,6 @@ class Monitoring(viewsets.ModelViewSet):
             payload_m_n ={}
             ###hour
             for period in ("hour","day","week","month"):
-                # print("first for")
                 if period == "hour":
                     start_time = current_time - timezone.timedelta(hours=1)
                 elif period == "day":
@@ -180,19 +179,16 @@ class Monitoring(viewsets.ModelViewSet):
                     start_time = current_time - timezone.timedelta(days=30)
                     
                 for sensor in sensors.filter(measuring_environment__startswith= "Edge_A"):
-                    # print("EDGE_A:",sensor.profinet_name)
-                    # print(period,": ",sensor.measuring_environment)
+
                     filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
-                    # print("filtered_value time: ", filtered_values.latest("time").time, ", start time: ", start_time, ", Sensor: ",sensor.measuring_environment, period)
                     if filtered_values.exists():
-                        # print("There")
                         
                         aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'),\
                                                                 RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
-                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"]).latest("time").time
+                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"]).latest("time").time
+                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"]).latest("time").time
+                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"]).latest("time").time
                         
                         payload={
                             "Minimum temperature":round(aggregated_values["temp_min"],2),
@@ -206,7 +202,6 @@ class Monitoring(viewsets.ModelViewSet):
                             "last time at maximum humidity":time_max_RH,
                             "Average humidity":round(aggregated_values["RH_avg"],2)
                             }
-                        # print(period,sensor.measuring_environment, payload)
                         if period == "hour" and sensor.measuring_environment == "Edge_A_top":
                             payload_h_at =payload
                         elif period == "day" and sensor.measuring_environment == "Edge_A_top":
@@ -238,19 +233,15 @@ class Monitoring(viewsets.ModelViewSet):
                             pass
             
                 for sensor in sensors.filter(measuring_environment__startswith= "Edge_B"):
-                    # print("EDGE_A:",sensor.profinet_name)
-                    # print(period,": ",sensor.measuring_environment)
                     filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
-                    # print("filtered_value time: ", filtered_values.latest("time").time, ", start time: ", start_time, ", Sensor: ",sensor.measuring_environment, period)
                     if filtered_values.exists():
-                        # print("There")
                         
                         aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'),\
                                                                 RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
-                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"]).latest("time").time
+                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"]).latest("time").time
+                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"]).latest("time").time
+                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"]).latest("time").time
                         
                         payload={
                             "Minimum temperature":round(aggregated_values["temp_min"],2),
@@ -293,19 +284,15 @@ class Monitoring(viewsets.ModelViewSet):
                         else:
                             pass
                 for sensor in sensors.filter(measuring_environment__startswith= "Energy"):
-                    # print("EDGE_A:",sensor.profinet_name)
-                    # print(period,": ",sensor.measuring_environment)
                     filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
-                    # print("filtered_value time: ", filtered_values.latest("time").time, ", start time: ", start_time, ", Sensor: ",sensor.measuring_environment, period)
                     if filtered_values.exists():
-                        # print("There")
                         
                         aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'),\
                                                                 RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
-                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"]).latest("time").time
+                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"]).latest("time").time
+                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"]).latest("time").time
+                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"]).latest("time").time
                         
                         payload={
                             "Minimum temperature":round(aggregated_values["temp_min"],2),
@@ -330,19 +317,15 @@ class Monitoring(viewsets.ModelViewSet):
                         else:
                             pass
                 for sensor in sensors.filter(measuring_environment__startswith= "Network"):
-                    # print("EDGE_A:",sensor.profinet_name)
-                    # print(period,": ",sensor.measuring_environment)
                     filtered_values = TemperatureSensorValue.objects.filter(temperaturesensor=sensor,time__range=[start_time,current_time], valid=True)
-                    # print("filtered_value time: ", filtered_values.latest("time").time, ", start time: ", start_time, ", Sensor: ",sensor.measuring_environment, period)
                     if filtered_values.exists():
-                        # print("There")
                         
                         aggregated_values = filtered_values.aggregate(temp_min=Min('tempvalue_min'), temp_max=Max('tempvalue_max'),temp_avg=Avg('tempvalue'),\
                                                                 RH_min=Min('humidvalue'), RH_max=Max('humidvalue'),RH_avg=Avg('humidvalue'))
-                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"],time__range=[start_time,current_time], valid=True).latest("time").time
+                        time_max_temp = filtered_values.filter(tempvalue_max =aggregated_values["temp_max"]).latest("time").time
+                        time_min_temp = filtered_values.filter(tempvalue_min =aggregated_values["temp_min"]).latest("time").time
+                        time_max_RH = filtered_values.filter(humidvalue = aggregated_values["RH_max"]).latest("time").time
+                        time_min_RH = filtered_values.filter(humidvalue =aggregated_values["RH_min"]).latest("time").time
                         
                         payload={
                             "Minimum temperature":round(aggregated_values["temp_min"],2),
@@ -366,7 +349,6 @@ class Monitoring(viewsets.ModelViewSet):
                             payload_m_n =payload
                         else:
                             pass
-            # print(payload_m_am)
             response = {"Edge_A":{
                 "top":{
                     "hour":
@@ -480,7 +462,6 @@ class Monitoring(viewsets.ModelViewSet):
                     },
                     }
                         }
-            print(response)
             return Response(response, status=status.HTTP_200_OK)
         
         except Exception as e:
@@ -493,93 +474,122 @@ class Monitoring(viewsets.ModelViewSet):
         response={}
         try:
             data = request.data
-            measuring_env=data["measuring_env"]
-            period=data["period"]
             door = Door.objects.get(qr=request.data["qr"])
             plc = PLC.objects.get(cabinet=door.rack.cabinet)
-            sensor = EnergySensor.objects.get(plc =plc, measuring_environment=measuring_env)
+            sensors = EnergySensor.objects.filter(plc =plc)
             current_time = timezone.now()
             response ={}
+            payload ={}
+            payload_h_e1 = {}
+            payload_d_e1 = {}
+            payload_w_e1 = {}
+            payload_m_e1 = {}
             
-            if period == "hour":
-                try:
+            payload_h_e2 = {}
+            payload_d_e2 = {}
+            payload_w_e2 = {}
+            payload_m_e2 = {}
+            for period in ("hour","day","week","month"):
+                if period == "hour":
                     start_time = current_time - timezone.timedelta(hours=1)
-                    filtered_values = EnergySensorValue.objects.filter(energysensor=sensor,time__range=[start_time,current_time], valid=True)
-                    aggregated_values = filtered_values.aggregate(power_min=Min('power_value'), power_max=Max('power_value'),power_avg=Avg('power_value'),energy_avg=Avg('energy_value'))
-                    time_power_max = filtered_values.filter(power_value =aggregated_values["power_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                    time_power_min = filtered_values.filter(power_value =aggregated_values["power_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                    response = {
-                        "Minimum Power":round(aggregated_values["power_min"],3),
-                        "last time at minimum power":time_power_min,
-                        "Maximum Power":round(aggregated_values["power_max"],3),
-                        "last time at maximum power":time_power_max,
-                        "Average Power":round(aggregated_values["power_avg"],3),
-                        "Average Energy":round(aggregated_values["energy_avg"],3)
-                        }
-                    return Response(response, status=status.HTTP_200_OK)
-                except Exception as e:
-                    response = {"message": "value not found"}
-                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
-            if period == "day":
-                try:
+                elif period == "day":
                     start_time = current_time - timezone.timedelta(hours=24)
-                    filtered_values = EnergySensorValue.objects.filter(energysensor=sensor,time__range=[start_time,current_time], valid=True)
-                    aggregated_values = filtered_values.aggregate(power_min=Min('power_value'), power_max=Max('power_value'),power_avg=Avg('power_value'),energy_avg=Avg('energy_value'))
-                    time_power_max = filtered_values.filter(power_value =aggregated_values["power_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                    time_power_min = filtered_values.filter(power_value =aggregated_values["power_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                    response = {
-                        "Minimum Power":round(aggregated_values["power_min"],3),
-                        "last time at minimum power":time_power_min,
-                        "Maximum Power":round(aggregated_values["power_max"],3),
-                        "last time at maximum power":time_power_max,
-                        "Average Power":round(aggregated_values["power_avg"],3),
-                        "Average Energy":round(aggregated_values["energy_avg"],3)
-                        }
-                    return Response(response, status=status.HTTP_200_OK)
-                except Exception as e:
-                    response = {"message": "value not found"}
-                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
-                
-            if period == "week":
-                try:
-                    filtered_values = EnergySensorValue.objects.filter(energysensor=sensor,time__range=[start_time,current_time], valid=True)
-                    aggregated_values = filtered_values.aggregate(power_min=Min('power_value'), power_max=Max('power_value'),power_avg=Avg('power_value'),energy_avg=Avg('energy_value'))
-                    time_power_max = filtered_values.filter(power_value =aggregated_values["power_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                    time_power_min = filtered_values.filter(power_value =aggregated_values["power_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                    response = {
-                        "Minimum Power":round(aggregated_values["power_min"],3),
-                        "last time at minimum power":time_power_min,
-                        "Maximum Power":round(aggregated_values["power_max"],3),
-                        "last time at maximum power":time_power_max,
-                        "Average Power":round(aggregated_values["power_avg"],3),
-                        "Average Energy":round(aggregated_values["energy_avg"],3)
-                        }
-                    return Response(response, status=status.HTTP_200_OK)
-                except Exception as e:
-                    response = {"message": "value not found"}
-                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
-            
-            if period == "month":
-                try:
+                elif period == "week":
+                    start_time = current_time.replace(hour=0,minute=0,second=0,microsecond=0) - timezone.timedelta(days=current_time.weekday())
+                elif period == "month":
                     start_time = current_time - timezone.timedelta(days=30)
+                    
+                for sensor in sensors.filter(measuring_environment__startswith= "EM1"):
+                    
                     filtered_values = EnergySensorValue.objects.filter(energysensor=sensor,time__range=[start_time,current_time], valid=True)
-                    aggregated_values = filtered_values.aggregate(power_min=Min('power_value'), power_max=Max('power_value'),power_avg=Avg('power_value'),energy_avg=Avg('energy_value'))
-                    time_power_max = filtered_values.filter(power_value =aggregated_values["power_max"],time__range=[start_time,current_time], valid=True).latest("time").time
-                    time_power_min = filtered_values.filter(power_value =aggregated_values["power_min"],time__range=[start_time,current_time], valid=True).latest("time").time
-                    response = {
-                        "Minimum Power":round(aggregated_values["power_min"],3),
-                        "last time at minimum power":time_power_min,
-                        "Maximum Power":round(aggregated_values["power_max"],3),
-                        "last time at maximum power":time_power_max,
-                        "Average Power":round(aggregated_values["power_avg"],3),
-                        "Average Energy":round(aggregated_values["energy_avg"],3)
+                    if filtered_values.exists():
+                        aggregated_values = filtered_values.aggregate(power_min=Min('power_value'), power_max=Max('power_value'),power_avg=Avg('power_value'),energy_avg=Avg('energy_value'))
+                        
+                        time_power_max = filtered_values.filter(power_value =aggregated_values["power_max"]).latest("time").time
+                        time_power_min = filtered_values.filter(power_value =aggregated_values["power_min"]).latest("time").time
+
+                        payload = {
+                            "Minimum Power":aggregated_values["power_min"],
+                            "last time at minimum power":time_power_min,
+                            "Maximum Power":aggregated_values["power_max"],
+                            "last time at maximum power":time_power_max,
+                            "Average Power":aggregated_values["power_avg"],
+                            "Average Energy":aggregated_values["energy_avg"]
+                            }
+
+                        if period == "hour":
+                            payload_h_e1 =payload
+                        elif period == "day":
+                            payload_d_e1 =payload
+                        elif period == "week":
+                            payload_w_e1 =payload
+                        elif period == "month":
+                            payload_m_e1 =payload
+                        else:
+                            pass
+
+                for sensor in sensors.filter(measuring_environment__startswith= "EM2"):
+                    
+                    filtered_values = EnergySensorValue.objects.filter(energysensor=sensor,time__range=[start_time,current_time], valid=True)
+                    
+                    if filtered_values.exists():
+
+                        aggregated_values = filtered_values.aggregate(power_min=Min('power_value'), power_max=Max('power_value'),power_avg=Avg('power_value'),energy_avg=Avg('energy_value'))
+                        
+                        time_power_max = filtered_values.filter(power_value =aggregated_values["power_max"]).latest("time").time
+                        time_power_min = filtered_values.filter(power_value =aggregated_values["power_min"]).latest("time").time
+
+                        payload = {
+                            "Minimum Power":aggregated_values["power_min"],
+                            "last time at minimum power":time_power_min,
+                            "Maximum Power":aggregated_values["power_max"],
+                            "last time at maximum power":time_power_max,
+                            "Average Power":aggregated_values["power_avg"],
+                            "Average Energy":aggregated_values["energy_avg"]
+                            }
+                        if period == "hour":
+                            payload_h_e2 =payload
+                        elif period == "day":
+                            payload_d_e2 =payload
+                        elif period == "week":
+                            payload_w_e2 =payload
+                        elif period == "month":
+                            payload_m_e2 =payload
+                        else:
+                            pass
+
+            response = {"EM1":{
+                "":{
+                    "hour":
+                        payload_h_e1
+                    ,
+                    "day":
+                        payload_d_e1
+                    ,
+                    "week":
+                        payload_w_e1
+                    ,
+                    "month":
+                        payload_m_e1
+                    }},
+                        "EM2":{
+                "":{
+                    "hour":
+                        payload_h_e2
+                    ,
+                    "day":
+                        payload_d_e2
+                    ,
+                    "week":
+                        payload_w_e2
+                    ,
+                    "month":
+                        payload_m_e2
+                    }}
                         }
-                    return Response(response, status=status.HTTP_200_OK)
-                except Exception as e:
-                    response = {"message": "value not found"}
-                    return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response, status=status.HTTP_200_OK)
+        
         except Exception as e:
-            print(e)  # or use logging
             response = {"message": "Data does not match"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
@@ -590,11 +600,149 @@ class Monitoring(viewsets.ModelViewSet):
         try:    
             door = Door.objects.get(qr=request.data["qr"])
             plc = PLC.objects.get(cabinet=door.rack.cabinet)
-            sensor = EnergySensor.objects.get(plc =plc, measuring_environment=measuring_env)
             current_time = timezone.now()
             response ={}
         except Exception as e:
             print(e)  # or use logging
             response = {"message": "Data does not match"}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
+    
+    @csrf_exempt
+    @action(methods=['POST'], detail=False)
+    def history_door_sensor(self,request):
+        response={}
+        try:
+            data = request.data
+            door = Door.objects.get(qr=request.data["qr"])
+            plc = PLC.objects.get(cabinet=door.rack.cabinet)
+            sensor = DoorSensor.objects.get(plc = plc, door = door)
+            current_time = timezone.now()
+            response ={}
+            payload ={}
+            filtered_values = DoorsensorValue.objects.filter(doorsensor=sensor, valid=True).order_by('time')[:10]
+            if filtered_values.exists():
+                aggregated_values = filtered_values.aggregate(power_min=Min('power_value'), power_max=Max('power_value'),power_avg=Avg('power_value'),energy_avg=Avg('energy_value'))
+                
+                time_power_max = filtered_values.filter(power_value =aggregated_values["power_max"]).latest("time").time
+                time_power_min = filtered_values.filter(power_value =aggregated_values["power_min"]).latest("time").time
+
+                payload = {
+                    "Minimum Power":aggregated_values["power_min"],
+                    "last time at minimum power":time_power_min,
+                    "Maximum Power":aggregated_values["power_max"],
+                    "last time at maximum power":time_power_max,
+                    "Average Power":aggregated_values["power_avg"],
+                    "Average Energy":aggregated_values["energy_avg"]
+                    }
+            else:
+                payload = {}
+            # print(payload_w_e1)
+            response = {sensor.door.rack+"_"+sensor.door_direction:{
+                "1":{
+                    "Status":
+                        response
+                    ,
+                    "From":
+                        response
+                    ,
+                    "To":
+                        response
+                    },
+                "2":{
+                    "Status":
+                        response
+                    ,
+                    "From":
+                        response
+                    ,
+                    "To":
+                        response
+                    },
+                "3":{
+                    "Status":
+                        response
+                    ,
+                    "From":
+                        response
+                    ,
+                    "To":
+                        response
+                    },
+                "4":{
+                    "Status":
+                        response
+                    ,
+                    "From":
+                        response
+                    ,
+                    "To":
+                        response
+                    },
+                "5":{
+                    "Status":
+                        response
+                    ,
+                    "From":
+                        response
+                    ,
+                    "To":
+                        response
+                    },
+                "6":{
+                    "Status":
+                        response
+                    ,
+                    "From":
+                        response
+                    ,
+                    "To":
+                        response
+                    },
+                "7":{
+                    "Status":
+                        response
+                    ,
+                    "From":
+                        response
+                    ,
+                    "To":
+                        response
+                    },
+                "8":{
+                    "Status":
+                        response
+                    ,
+                    "From":
+                        response
+                    ,
+                    "To":
+                        response
+                    },
+                "9":{
+                    "Status":
+                        response
+                    ,
+                    "From":
+                        response
+                    ,
+                    "To":
+                        response
+                    },
+                "10":{
+                    "Status":
+                        response
+                    ,
+                    "From":
+                        response
+                    ,
+                    "To":
+                        response
+                    },
+                }
+                        }
             
+            return Response(response, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            response = {"message": "Data does not match"}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)

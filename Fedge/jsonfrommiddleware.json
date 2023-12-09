@@ -52,50 +52,208 @@ Topic: PLC.Profinet_name
 Message: "value;"
 
 
+Temperature History:
 {
-  "hour":
-  {
-    "Edge_A": {
-        "top": {
-            "keys":"values"
-        },
-        "middle": {
-          "keys":"values"
-        },
-        "bottom": {
-          "keys":"values"
-        }
-    },
-  }
-    "Edge_B": 
-    {
-      "": {
-      "keys":"values"
-    },
-    "Network": {
-        "": {
-          "keys":"values"
-        }
-    }
+  "Edge_A": {
+      "top": {
+          "hour": {},
+          "day": {},
+          "week": {},
+          "month": {
+              "Minimum temperature": 24.0,
+              "last time at minimum temperature": "2023-11-28T10:21:29",
+              "Maximum temperature": 32.0,
+              "last time at maximum temperature": "2023-11-28T10:21:29",
+              "Average temperature": 28.0,
+              "Minimum humidity": 45.0,
+              "last time at minimum humidity": "2023-11-28T10:21:29",
+              "Maximum humidity": 45.0,
+              "last time at maximum humidity": "2023-11-28T10:21:29",
+              "Average humidity": 45.0
+          }
+      },
+      "middle": {
+          "hour": {},
+          "day": {
+              "Minimum temperature": 18.0,
+              "last time at minimum temperature": "2023-12-08T04:37:32",
+              "Maximum temperature": 32.0,
+              "last time at maximum temperature": "2023-12-08T04:37:32",
+              "Average temperature": 21.0,
+              "Minimum humidity": 24.0,
+              "last time at minimum humidity": "2023-12-08T04:37:32",
+              "Maximum humidity": 24.0,
+              "last time at maximum humidity": "2023-12-08T04:37:32",
+              "Average humidity": 24.0
+          },
+          "week": {
+              "Minimum temperature": 18.0,
+              "last time at minimum temperature": "2023-12-08T04:37:32",
+              "Maximum temperature": 34.0,
+              "last time at maximum temperature": "2023-12-05T11:39:15",
+              "Average temperature": 21.71,
+              "Minimum humidity": 23.2,
+              "last time at minimum humidity": "2023-12-05T15:29:04.207997",
+              "Maximum humidity": 65.0,
+              "last time at maximum humidity": "2023-12-05T11:39:15",
+              "Average humidity": 26.81
+          },
+          "month": {
+              "Minimum temperature": 15.0,
+              "last time at minimum temperature": "2023-12-01T23:42:13",
+              "Maximum temperature": 34.0,
+              "last time at maximum temperature": "2023-12-05T11:39:15",
+              "Average temperature": 21.49,
+              "Minimum humidity": 23.2,
+              "last time at minimum humidity": "2023-12-05T15:29:04.207997",
+              "Maximum humidity": 96.1,
+              "last time at maximum humidity": "2023-11-30T16:19:32.310789",
+              "Average humidity": 27.62
+          }
+      },
+      "bottom": {
+          "hour": {},
+          "day": {},
+          "week": {},
+          "month": {}
+      }
   },
-  "day":{
-    "Edge_A": {
+  "Edge_B": {
       "top": {
-        "keys":"values"
+          "hour": {},
+          "day": {},
+          "week": {},
+          "month": {}
       },
-    "middle": {
-        "keys":"values"
-      }
-    },
-    "Edge_B": {
-      "top": {
-        "keys":"values"
+      "middle": {
+          "hour": {},
+          "day": {},
+          "week": {},
+          "month": {}
       },
-      "Network": {
-        "": {
-          "keys":"values"
-        }
+      "bottom": {
+          "hour": {},
+          "day": {},
+          "week": {},
+          "month": {}
       }
-    }
+  },
+  "Energy": {
+      "": {
+          "hour": {},
+          "day": {},
+          "week": {},
+          "month": {}
+      }
+  },
+  "Network": {
+      "": {
+          "hour": {},
+          "day": {},
+          "week": {
+              "Minimum temperature": 22.0,
+              "last time at minimum temperature": "2023-12-05T09:49:04",
+              "Maximum temperature": 25.0,
+              "last time at maximum temperature": "2023-12-05T09:49:04",
+              "Average temperature": 23.0,
+              "Minimum humidity": 45.0,
+              "last time at minimum humidity": "2023-12-05T09:49:04",
+              "Maximum humidity": 45.0,
+              "last time at maximum humidity": "2023-12-05T09:49:04",
+              "Average humidity": 45.0
+          },
+          "month": {
+              "Minimum temperature": 22.0,
+              "last time at minimum temperature": "2023-12-05T09:49:04",
+              "Maximum temperature": 25.0,
+              "last time at maximum temperature": "2023-12-05T09:49:04",
+              "Average temperature": 23.0,
+              "Minimum humidity": 45.0,
+              "last time at minimum humidity": "2023-12-05T09:49:04",
+              "Maximum humidity": 45.0,
+              "last time at maximum humidity": "2023-12-05T09:49:04",
+              "Average humidity": 45.0
+          }
+      }
+  }
+}
+
+
+
+
+################################################################################################################################
+Energy History:
+{
+  "EM1": {
+      "": {
+          "hour": {
+              "Minimum Power": 42.0,
+              "last time at minimum power": "2023-12-08T21:29:56",
+              "Maximum Power": 42.0,
+              "last time at maximum power": "2023-12-08T21:29:56",
+              "Average Power": 42.0,
+              "Average Energy": 242.0
+          },
+          "day": {
+              "Minimum Power": 42.0,
+              "last time at minimum power": "2023-12-08T21:29:56",
+              "Maximum Power": 42.0,
+              "last time at maximum power": "2023-12-08T21:29:56",
+              "Average Power": 42.0,
+              "Average Energy": 242.0
+          },
+          "week": {
+              "Minimum Power": 0.0,
+              "last time at minimum power": "2023-12-06T15:47:53.236594",
+              "Maximum Power": 42.0,
+              "last time at maximum power": "2023-12-08T21:29:56",
+              "Average Power": 0.04057971014492753,
+              "Average Energy": 5262.069565217392
+          },
+          "month": {
+              "Minimum Power": 0.0,
+              "last time at minimum power": "2023-12-06T15:47:53.236594",
+              "Maximum Power": 42.0,
+              "last time at maximum power": "2023-12-08T21:29:56",
+              "Average Power": 0.19718796250616677,
+              "Average Energy": 5252.004933399112
+          }
+      }
+  },
+  "EM2": {
+      "": {
+          "hour": {
+              "Minimum Power": 229.0,
+              "last time at minimum power": "2023-12-08T21:30:28",
+              "Maximum Power": 229.0,
+              "last time at maximum power": "2023-12-08T21:30:28",
+              "Average Power": 229.0,
+              "Average Energy": 214.0
+          },
+          "day": {
+              "Minimum Power": 229.0,
+              "last time at minimum power": "2023-12-08T21:30:28",
+              "Maximum Power": 229.0,
+              "last time at maximum power": "2023-12-08T21:30:28",
+              "Average Power": 229.0,
+              "Average Energy": 214.0
+          },
+          "week": {
+              "Minimum Power": 0.0,
+              "last time at minimum power": "2023-12-06T15:48:16.897935",
+              "Maximum Power": 229.0,
+              "last time at maximum power": "2023-12-08T21:30:28",
+              "Average Power": 0.21502347417840376,
+              "Average Energy": 5293.159624413145
+          },
+          "month": {
+              "Minimum Power": 0.0,
+              "last time at minimum power": "2023-12-06T15:48:16.897935",
+              "Maximum Power": 229.0,
+              "last time at maximum power": "2023-12-08T21:30:28",
+              "Average Power": 0.17889471176750835,
+              "Average Energy": 5321.565030967127
+          }
+      }
   }
 }
