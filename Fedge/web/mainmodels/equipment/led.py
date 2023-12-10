@@ -35,7 +35,7 @@ class LED (Device):
         NETWORK = 'Network', 'Network rack'
         ENERGY = 'Energy', 'Energy rack'
     door_direction = models.CharField(choices=DoorDirection.choices,max_length=32, null=False)
-    door = models.ForeignKey(Door, related_name='leds', on_delete=models.CASCADE, editable=False)
+    door = models.OneToOneField(Door, related_name='leds', on_delete=models.CASCADE, editable=False)
     device_io_module = models.CharField(choices=IO_Module.choices,editable=True, max_length=8,null=False)
     device_port = models.CharField(choices=Port.choices,editable=True, max_length=4,null=False)
     def clean(self):

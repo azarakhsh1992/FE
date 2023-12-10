@@ -6,13 +6,15 @@ from ..mainmodels.equipment.energymodule import EnergySensor,EnergySensorValue
 from ..mainmodels.equipment.doorsensor import DoorSensor,DoorsensorValue
 from..mainmodels.equipment.latch import Latch,LatchValue
 from..mainmodels.equipment.latchsensor import LatchSensor,LatchSensorValue
-from..mainmodels.equipment.led import LED,LedValue
+from..mainmodels.equipment.led import LED,LedValue, LedValueCases
 from..mainmodels.equipment.button import DoorButton,ButtonValue
 from..mainmodels.equipment.devices import Device
 from django.views.decorators.csrf import csrf_exempt
-import datetime
-
-
+from ..mainmodels.requests.requests import Request
+from ..mainmodels.cabinetlevel.doors import Door
+from ..mainmodels.cabinetlevel.cabinets import Cabinet,Rack
+from ..mainmodels.functionalities.mqtt_publish import send_mqtt_led
+from ..mainmodels.functionalities.door_status import led_status_find
 
 class MqttMiddleware(viewsets.ModelViewSet):
     queryset = Device.objects.all()
@@ -103,12 +105,20 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 if device_moduletype == "Door Sensor":
                     try:
                         doorsensor = DoorSensor.objects.get(profinet_name=profinet_name_data)
+                        value=data["value"]
                         if data ["V"] == "True":
-                            DoorsensorValue.objects.create(doorsensor=doorsensor,value=data["value"],valid=True, time = data["Time"])
+                            DoorsensorValue.objects.create(doorsensor=doorsensor,value=value,valid=True, time = data["Time"])
+                            if value=="open":
+                                try:
+                                    led = LED.objects.get(door =doorsensor.door)
+                                    value=LedValueCases.objects.get(description="default_open").value
+                                    send_mqtt_led(led=led,value=value,delay=False,delay_value=0)
+                                except:
+                                    pass
                             response = {"message": "success"}
                             return Response(response, status=status.HTTP_200_OK)
                         elif data ["V"] == "False":
-                            DoorsensorValue.objects.create(doorsensor=doorsensor,value=data["value"],valid=False, time = data["Time"])
+                            DoorsensorValue.objects.create(doorsensor=doorsensor,value=value,valid=False, time = data["Time"])
                             response = {"message": "success: Validity:False"}
                             return Response(response, status=status.HTTP_200_OK)
                     except:
@@ -184,8 +194,21 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 elif device_moduletype == "Door Button":
                     try:
                         doorbtn = DoorButton.objects.get(profinet_name=profinet_name_data)
+                        door = doorbtn.door
+                        rack = door.rack
+                        cabinet = rack.cabinet
                         if data ["V"] == "True":
                             ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"], time = data["Time"], valid=True)
+                            #This will check for existing request for this door
+                            try:
+                                obj_req = Request.objects.get(cabinet=cabinet, door= door, rack= rack, send_to_frontend=False,cancelled_by_frontend=False,button_pushed=False)
+                            except:
+                                pass
+                            if obj_req is not None:
+                                obj_req.button_pushed=True
+                                obj_req.save()
+                            else:
+                                pass
                             response = {"message": "success"}
                             return Response(response, status=status.HTTP_200_OK)
                         elif data ["V"] == "False":

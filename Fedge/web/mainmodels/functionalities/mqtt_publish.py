@@ -48,9 +48,9 @@ def send_mqtt_led(led,value,delay,delay_value):
     profinet_name=''
     sent= False
     if delay:
-        message = "LED;"+profinet_name+';D;T;%s;%s'%value %delay_value
+        message = "LED;"+profinet_name+';D;T;%i;%i'%value %delay_value
     else:
-        message = "LED;"+profinet_name+';D;F;%s;%s'%value %delay_value
+        message = "LED;"+profinet_name+';D;F;%i;%i'%value %delay_value
         
     try:
         profinet_name = LED.objects.get(pk=led.pk).profinet_name

@@ -240,8 +240,8 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(Request)
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ("user", "description",
-              "servicelog", "buttonstatus", "cancelinghdw", "cancelingfrnt",
-              "sendtomiddleware", "sendtofrontend", "datetime")
+              "servicelog", "button_pushed", "cancelinghdw", "cancelled_by_frontend",
+              "send_to_plc", "send_to_frontend", "datetime")
     list_display = ("id", "user", "cabinet", "door", "rack", "description",
-              "servicelog", "buttonstatus", "cancelinghdw", "cancelingfrnt",
-              "sendtomiddleware", "sendtofrontend", "datetime")
+              "servicelog", "button_pushed", "cancelinghdw", "cancelled_by_frontend",
+              "send_to_plc", "send_to_frontend", "datetime")

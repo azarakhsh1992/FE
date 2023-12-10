@@ -1,11 +1,10 @@
-import datetime
+from django.utils import timezone
 from django.contrib.auth.models import User
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
-
 
 from ..mainmodels.cabinetlevel.cabinets import Cabinet
 from ..mainmodels.cabinetlevel.doors import Door
@@ -19,6 +18,7 @@ from ..mainmodels.functionalities.function_access import access_checker
 from ..serializers.serializers import UserSerializer
 from ..mainmodels.userrelated.users import UserProfile
 from ..mainmodels.functionalities.mqtt_publish import send_mqtt_latch, send_mqtt_led
+from ..mainmodels.functionalities.door_status import led_status_find
 
 class RequestViewset(viewsets.ModelViewSet):
     queryset = Request.objects.all()
@@ -41,20 +41,22 @@ class RequestViewset(viewsets.ModelViewSet):
             if access:
                 eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
                     description="test",\
-                        datetime=datetime.datetime.now(), servicelog=False, buttonstatus=False,\
-                            cancelinghdw=False, cancelingfrnt=False, sendtomiddleware=False)
+                        datetime=timezone.now(), servicelog=False, button_pushed=False,\
+                            cancelinghdw=False, cancelled_by_frontend=False, send_to_plc=False)
                 
                 serialized_data = RequestSerializer(eventreq)
                 req_id = serialized_data.data.get('id')
                 response = {'message': accessresponse,
                             'access':access,
                             'id': req_id}
-                send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value)
+                current_led_value = led_status_find(door=door)
+                send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value,delay=True,delay_value=current_led_value)
                 # response = {'message':accessresponse,'access':access}
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'message': accessresponse}
-                send_mqtt_led(led=led, value=LedValueCases.objects.get(description="access_denied").value)
+                current_led_value = led_status_find(door=door)
+                send_mqtt_led(led=led, value=LedValueCases.objects.get(description="access_denied").value,delay=True,delay_value=current_led_value)
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
         else:
             response = {'message': "User's data not Valid "}
@@ -64,6 +66,10 @@ class RequestViewset(viewsets.ModelViewSet):
     def userservice(self, request):
         user = request.data['user']
         userobj = User.objects.get(username=user)
+        #####TODO: this function needs the door to be able to light the LED accordingly
+        qrcode = request.data['qr']
+        door = Door.objects.get(qr=qrcode)
+        #########
         if userobj:
             userrequest = request.data['request']
             userservice = request.data['service']
@@ -76,6 +82,10 @@ class RequestViewset(viewsets.ModelViewSet):
                     existreq.save()
                     #TODO: send to plc: it will send event base on container for resetting LED, read from latch sensor if the latch is closed or open then
                     # send to front end as a warning, then after 3 seconds it gets the response check the latch sensor and then submit the log whatever the latch sensor is open or closed
+                    current_led_value = led_status_find(door=door)
+                    send_mqtt_led(led=LED.objects.get(door=door), value=LedValueCases.objects.get(description="door_not_locked").value,delay=True,delay_value=current_led_value)
+                    
+                    
                     response = {'message': 'service log submitted successfully'}
                     return Response(response,status=status.HTTP_200_OK)
                 else:
@@ -95,7 +105,7 @@ class RequestViewset(viewsets.ModelViewSet):
         req_door = request.data['door']
         obj_plc = PLC.objects.get(profinet_name=req_plc)
         obj_cabinet = obj_plc.cabinet
-        obj_request = Request.objects.get(cabinet=obj_cabinet, sendtomiddleware=False)
+        obj_request = Request.objects.get(cabinet=obj_cabinet, send_to_plc=False)
         obj_doors = [obj.door for obj in obj_request]
         serializer = FullDoorSerializer(obj_doors, many=True)
         customized_data = []
@@ -104,8 +114,14 @@ class RequestViewset(viewsets.ModelViewSet):
                 if reqdoor.name == door.get('name'):
                     try:
                         _door_obj = Door.objects.get(cabinet=obj_cabinet, name=door.get('name'))
+                        latch = Latch.objects.get(door=_door_obj)
+                        led = LED.objects.get(door=_door_obj)
                         _onhandlereq = Request.objects.get(cabinet=obj_cabinet, door=_door_obj)
-                        _onhandlereq.sendtomiddleware = True
+                        #TODO: light the LED and open the latch
+                        send_mqtt_latch(latch=latch)
+                        send_mqtt_led(led=led,value=LedValueCases.objects.get("access_granted").value,delay=True,\
+                            delay_value=LedValueCases.objects.get("default_open").value)
+                        _onhandlereq.send_to_plc = True
                         _onhandlereq.save()
                         customized_data.append({
                             'name': door.get('name'),
@@ -132,8 +148,8 @@ class RequestViewset(viewsets.ModelViewSet):
         req_id = req_frontend['id']
         try:
             obj_req = Request.objects.get(id=req_id)
-            if obj_req.sendtomiddleware == True and obj_req.sendtofrontend == False and obj_req.cancelingfrnt == False and obj_req.buttonstatus == True:
-                #TODO: send to container to light an LED : it will send event base on container for watiting
+            door = obj_req.door
+            if obj_req.send_to_plc == True and obj_req.send_to_frontend == False and obj_req.cancelled_by_frontend == False and obj_req.button_pushed == True:
                 response = {'access':True,
                             'message': 'door is open, please confirm servicelog after maintanance'}
                 return Response(response, status=status.HTTP_200_OK)
@@ -150,8 +166,8 @@ class RequestViewset(viewsets.ModelViewSet):
         canceled_id = canceled_req['id']
         try:
             obj_req = Request.objects.get(id=canceled_id)
-            if obj_req.cancelingfrnt == False:
-                obj_req.cancelingfrnt = True
+            if obj_req.cancelled_by_frontend == False:
+                obj_req.cancelled_by_frontend = True
                 obj_req.save()
                 response = {
                     'message':'request canceled',

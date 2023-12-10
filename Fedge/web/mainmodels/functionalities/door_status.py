@@ -112,7 +112,7 @@ def Check_door_status(this_door):
         response = "The sensor is faulted."
     return access, response
 
-def led_find_status(door):
+def led_status_find(door):
     current_time=timezone.now()
     response =""
     led_value = LedValueCases.objects.get(description="door_not_locked").value
@@ -131,4 +131,4 @@ def led_find_status(door):
             response = "door is open"
     else:
         response = "No data available"
-    return led_value,response
+    return led_value
