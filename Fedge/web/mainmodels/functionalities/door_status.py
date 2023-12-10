@@ -3,6 +3,7 @@ from ..cabinetlevel.cabinets import Cabinet
 from ..equipment.plc import PLC
 from ..cabinetlevel.doors import Door
 from ..equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
+from ..equipment.led import LED,LedValueCases 
 from ..userrelated.users import User
 from ..equipment.doorsensor import DoorSensor, DoorsensorValue
 from django.utils import timezone
@@ -110,3 +111,24 @@ def Check_door_status(this_door):
     else:
         response = "The sensor is faulted."
     return access, response
+
+def led_find_status(door):
+    current_time=timezone.now()
+    response =""
+    led_value = LedValueCases.objects.get(description="door_not_locked").value
+    try:
+        door_sensor = DoorSensor.objects.get(door=door)
+        latest_data = DoorsensorValue.objects.filter(doorsensordevice=door_sensor, valid=True, time_lte=current_time).latest('time')
+    except:
+        response = "No sensor or valid sensor data found"
+    if latest_data is not None:
+        value = latest_data.value
+        if value == "closed":
+            led_value = LedValueCases.objects.get(description="default").value
+            response = "door is closed"
+        elif value == "open":
+            led_value = LedValueCases.objects.get(description="default_open").value
+            response = "door is open"
+    else:
+        response = "No data available"
+    return led_value,response

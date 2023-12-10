@@ -3,4 +3,6 @@ T;24;Tmin;20;Tmax;35;RH;45.5;V;TRUE
 value;TRUE;V;TRUE
 
 LED;profinet_name;value
+alternative: LED;profinet_name;D;True/False;value;delay_value
+3;22;1;;4/5;x;y
 LATCH;profinet_name;value
