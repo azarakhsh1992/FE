@@ -37,4 +37,4 @@ class UserProfile(models.Model):
 class UserLog(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.DO_NOTHING, related_name="userlog")
     request = models.ForeignKey(to=Request, on_delete=models.DO_NOTHING, related_name="userlog")
-    servicelog = models.ForeignKey(to=Servicelog, on_delete=models.DO_NOTHING, related_name="userlog")
+    servicelog = models.ForeignKey(to=Servicelog, on_delete=models.DO_NOTHING, related_name="userlog", null=True)
