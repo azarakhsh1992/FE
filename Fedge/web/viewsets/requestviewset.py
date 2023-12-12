@@ -19,7 +19,7 @@ from ..serializers.serializers import UserSerializer
 from ..mainmodels.userrelated.users import UserProfile
 from ..mainmodels.functionalities.mqtt_publish import send_mqtt_latch, send_mqtt_led
 from ..mainmodels.functionalities.door_status import led_status_find
-
+from ..mainmodels.userrelated.users import UserLog
 class RequestViewset(viewsets.ModelViewSet):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
@@ -51,7 +51,7 @@ class RequestViewset(viewsets.ModelViewSet):
                             'id': req_id}
                 current_led_value = led_status_find(door=door)
                 send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value,delay=True,delay_value=current_led_value)
-                # response = {'message':accessresponse,'access':access}
+                userlog = UserLog.objects.create(user=userobj, request=eventreq)
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'message': accessresponse}
@@ -84,6 +84,12 @@ class RequestViewset(viewsets.ModelViewSet):
                     # send to front end as a warning, then after 3 seconds it gets the response check the latch sensor and then submit the log whatever the latch sensor is open or closed
                     current_led_value = led_status_find(door=door)
                     send_mqtt_led(led=LED.objects.get(door=door), value=LedValueCases.objects.get(description="door_not_locked").value,delay=True,delay_value=current_led_value)
+                    try:
+                        userlog = UserLog.objects.get(user=userobj, request=existreq)
+                        userlog.servicelog = newservicelog
+                        userlog.save()
+                    except:
+                        pass
                     response = {'message': 'service log submitted successfully'}
                     return Response(response,status=status.HTTP_200_OK)
                 else:
