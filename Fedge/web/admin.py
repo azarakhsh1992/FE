@@ -13,7 +13,7 @@ from .mainmodels.userrelated.groupofshifts import EmployeeGroup,Shifts, ShiftAss
 from .mainmodels.equipment.devices import Device
 from .mainmodels.equipment.energymodule import EnergySensor, EnergySensorValue
 from .mainmodels.requests.requests import Request
-
+from .mainmodels.userrelated.users import UserLog
 ######################Cabinet level########################
 @admin.register(Cabinet)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -245,3 +245,8 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "cabinet", "door", "rack", "description",
               "servicelog", "button_pushed", "cancelinghdw", "cancelled_by_frontend",
               "send_to_plc", "send_to_frontend", "time")
+
+@admin.register(UserLog)
+class UserProfileAdmin(admin.ModelAdmin):
+    fields = ()
+    list_display = ("id", "user", "request", "servicelog")

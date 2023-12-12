@@ -8,7 +8,7 @@ from django.urls import path, re_path
 
 from .viewsets.cabinetanddoor import CabinetViewset, DoorViewset
 from .viewsets.moduleviewsets import ContainerViewset
-from .viewsets.requestviewsets import RequestViewset
+from .viewsets.requestviewset import RequestViewset
 from .viewsets.pythonapp import MqttMiddleware
 from .viewsets.testsome import test_access
 from .viewsets.monitoring import Monitoring
