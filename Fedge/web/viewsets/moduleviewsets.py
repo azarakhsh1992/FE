@@ -26,7 +26,7 @@ class ContainerViewset(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False)
     def gettemp(self, request):
         num = request.data['num']
-        datas = TemperatureSensorValue.objects.order_by('-datetime')[:int(num)]
+        datas = TemperatureSensorValue.objects.order_by('-time')[:int(num)]
         datas = TempSensorValSerializer(datas, many=True)
         finaldata = datas.data
         return Response(finaldata, status=status.HTTP_200_OK)

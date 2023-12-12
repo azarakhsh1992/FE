@@ -83,6 +83,7 @@ class LedValueCases(models.Model):
         D = "door_not_locked", "Door is not locked after user requested to log out"
         E = "access_granted", "Access granted for this user and door opened"
         F = "default_open", "Door is open and not available for user"
+        G = "request_expired", "user has requested an access but the button not pushed"
     description = models.CharField(choices=Description.choices,max_length=24, unique=True)
     functionality = models.TextField(max_length=128, blank=True)
     value = models.IntegerField(default=0)

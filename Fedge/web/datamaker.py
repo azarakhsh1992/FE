@@ -1,5 +1,4 @@
 import random
-from datetime import datetime
 from apscheduler.jobstores.base import JobLookupError
 from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -11,6 +10,7 @@ from .mainmodels.equipment.led import LED, LedValue
 from .mainmodels.equipment.latch import Latch, LatchValue
 from .mainmodels.equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
 from .mainmodels.equipment.plc import PLC
+from django.utils import timezone
 
 scheduler = BackgroundScheduler()
 scheduler.add_jobstore(DjangoJobStore(), "default")
@@ -23,7 +23,7 @@ def generate_random_float(start, end):
 
 @register_job(scheduler, IntervalTrigger(seconds=10), id='my_function', replace_existing=True)
 def my_function():
-    _datetime = datetime.now()
+    _datetime = timezone.now()
     cabinet = Cabinet.objects.get(profinet_name="K11111111111111")
     plc = PLC.objects.get(cabinet=cabinet)
     # door sensor

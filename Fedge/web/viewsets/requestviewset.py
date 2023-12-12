@@ -41,7 +41,7 @@ class RequestViewset(viewsets.ModelViewSet):
             if access:
                 eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
                     description="test",\
-                        datetime=timezone.now(), servicelog=False, button_pushed=False,\
+                        time=timezone.now(), servicelog=False, button_pushed=False,\
                             cancelinghdw=False, cancelled_by_frontend=False, send_to_plc=False)
                 
                 serialized_data = RequestSerializer(eventreq)
@@ -77,15 +77,13 @@ class RequestViewset(viewsets.ModelViewSet):
                 existreq = Request.objects.get(id=userrequest['id'])
                 # TODO: if that door is closed
                 if existreq.servicelog == False:
-                    newservicelog = Servicelog.objects.create(request=existreq, description=userservice['description'], datetime=userservice['datetime'])
+                    newservicelog = Servicelog.objects.create(request=existreq, description=userservice['description'], time=userservice['time'])
                     existreq.servicelog = True
                     existreq.save()
                     #TODO: send to plc: it will send event base on container for resetting LED, read from latch sensor if the latch is closed or open then
                     # send to front end as a warning, then after 3 seconds it gets the response check the latch sensor and then submit the log whatever the latch sensor is open or closed
                     current_led_value = led_status_find(door=door)
                     send_mqtt_led(led=LED.objects.get(door=door), value=LedValueCases.objects.get(description="door_not_locked").value,delay=True,delay_value=current_led_value)
-                    
-                    
                     response = {'message': 'service log submitted successfully'}
                     return Response(response,status=status.HTTP_200_OK)
                 else:
@@ -99,62 +97,44 @@ class RequestViewset(viewsets.ModelViewSet):
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
-    @action(methods=['POST'], detail=False)
-    def middleware(self, request):
-        req_plc = request.data['profinet_name']
-        req_door = request.data['door']
-        obj_plc = PLC.objects.get(profinet_name=req_plc)
-        obj_cabinet = obj_plc.cabinet
-        obj_request = Request.objects.get(cabinet=obj_cabinet, send_to_plc=False)
-        obj_doors = [obj.door for obj in obj_request]
-        serializer = FullDoorSerializer(obj_doors, many=True)
-        customized_data = []
-        for reqdoor in req_door:
-            for door in serializer.data:
-                if reqdoor.name == door.get('name'):
-                    try:
-                        _door_obj = Door.objects.get(cabinet=obj_cabinet, name=door.get('name'))
-                        latch = Latch.objects.get(door=_door_obj)
-                        led = LED.objects.get(door=_door_obj)
-                        _onhandlereq = Request.objects.get(cabinet=obj_cabinet, door=_door_obj)
-                        #TODO: light the LED and open the latch
-                        send_mqtt_latch(latch=latch)
-                        send_mqtt_led(led=led,value=LedValueCases.objects.get("access_granted").value,delay=True,\
-                            delay_value=LedValueCases.objects.get("default_open").value)
-                        _onhandlereq.send_to_plc = True
-                        _onhandlereq.save()
-                        customized_data.append({
-                            'name': door.get('name'),
-                            "opening": True,
-                            'request': 'exists'
-                        })
-                    except:
-                        customized_data.append({
-                            'name': door.get('name'),
-                            "opening": False,
-                            'request': 'some problem'
-                        })
-                else:
-                    customized_data.append({
-                        'name': door.get('name'),
-                        "opening": False,
-                        'request': 'not exists'
-                    })
-        return Response(customized_data)
-
     @action(methods=["POST"], detail=False)
-    def frontend(self, request):
+    def open_door(self, request):
         req_frontend = request.data['request']
         req_id = req_frontend['id']
         try:
             obj_req = Request.objects.get(id=req_id)
             door = obj_req.door
-            if obj_req.send_to_plc == True and obj_req.send_to_frontend == False and obj_req.cancelled_by_frontend == False and obj_req.button_pushed == True:
+            if obj_req.send_to_plc == True and obj_req.send_to_frontend == False and\
+                obj_req.cancelled_by_frontend == False and obj_req.button_pushed == True:
                 response = {'access':True,
-                            'message': 'door is open, please confirm servicelog after maintanance'}
+                            'message': 'doori s open, please confirm servicelog after maintanance'}
+                try:
+                    latch_published_status, response2=send_mqtt_latch(latch=Latch.objects.get(door=door),\
+                        value=True, delay=True, delay_value= False)
+                except:
+                    response2={'message': 'no Latch found'}
+                try:
+                    if latch_published_status:
+                        led_published_status, response2 = send_mqtt_led(led=LED.objects.get(door=door),\
+                            value=LedValueCases.objects.get(description="access_granted").value,delay=True\
+                                ,delay_value=LedValueCases.objects.get(description="default_open").value)
+                    else:
+                        current_led_value = led_status_find(door=door)
+                        led_published_status, response2 = current_led_value = send_mqtt_led(led=LED.objects.get(door=door),\
+                            value=current_led_value,delay=False,delay_value=current_led_value)
+                except:
+                    response2= {'message': 'No LED found'}
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'message': 'please wait'}
+                try:
+                    led = LED.objects.get(door=door)
+                    current_led_value = led_status_find(door=door)
+                    led_published_status, response2 = send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value,\
+                        delay=True,delay_value=current_led_value)
+                except:
+                    response2={'message': 'no LED found'}
+                response.update(response2)
                 return Response(response, status=status.HTTP_200_OK)
         except:
             response = {'message': 'this request not exists'}
@@ -166,14 +146,22 @@ class RequestViewset(viewsets.ModelViewSet):
         canceled_id = canceled_req['id']
         try:
             obj_req = Request.objects.get(id=canceled_id)
+            door=obj_req.door
             if obj_req.cancelled_by_frontend == False:
                 obj_req.cancelled_by_frontend = True
                 obj_req.save()
                 response = {
                     'message':'request canceled',
                 }
-                #TODO: send to container to light an LED : it will send event base on container for resetting the LED
+                try:
+                    current_led_value = led_status_find(door=door)
+                    send_mqtt_led(led=LED.objects.get(door=door),\
+                        value=LedValueCases.objects.get(description="request_expired").value,delay=True,delay_value=current_led_value)
+                except:
+                    pass
                 return Response(response,status=status.HTTP_200_OK)
+            else:
+                pass
         except:
             response = {
                 'message':'request not exist or canceled before'

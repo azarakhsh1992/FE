@@ -2,7 +2,12 @@ E;1500;UnitE;KWh;P;15.5;UnitP;KW;V;TRUE
 T;24;Tmin;20;Tmax;35;RH;45.5;V;TRUE
 value;TRUE;V;TRUE
 
-LED;profinet_name;value
+LED;profinet_name;value;delay_value;time
 alternative: LED;profinet_name;D;T/F;value;delay_value
 3;22;1;;4/5;x;y
-LATCH;profinet_name;value
+LATCH;profinet_name;value;delay_value;time
+
+
+KAAASDASASDVDASASDASDD
+
+KAAASDASASDVDASSVFRFSV

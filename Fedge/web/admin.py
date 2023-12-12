@@ -241,7 +241,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ("user", "description",
               "servicelog", "button_pushed", "cancelinghdw", "cancelled_by_frontend",
-              "send_to_plc", "send_to_frontend", "datetime")
+              "send_to_plc", "send_to_frontend", "time")
     list_display = ("id", "user", "cabinet", "door", "rack", "description",
               "servicelog", "button_pushed", "cancelinghdw", "cancelled_by_frontend",
-              "send_to_plc", "send_to_frontend", "datetime")
+              "send_to_plc", "send_to_frontend", "time")

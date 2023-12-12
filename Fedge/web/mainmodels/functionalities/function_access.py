@@ -3,13 +3,13 @@ from ..cabinetlevel.cabinets import Cabinet, Rack
 from ..cabinetlevel.doors import Door
 from ..userrelated.groupofshifts import Shifts, EmployeeGroup, ShiftAssignment
 from ..userrelated.users import User, UserProfile
-from datetime import datetime, timedelta
+from django.utils import timezone
 
 
 def user_door_checker(user, door):
     #TODO: here must the accessible doors be clearly defined
     profile = UserProfile.objects.get(user=user)
-    this_door = door
+    this_door = Door.objects.get(pk=door.pk)
     rack_name = this_door.rack.name
     cabinet = this_door.rack.cabinet.profinet_name
     if profile.role== "Elektriker":
@@ -81,7 +81,7 @@ def current_shift_checker():
     shift_time4_end = Shifts.objects.get(shift="Normal").shift_end_int
     shift_time4_extra = Shifts.objects.get(shift="Normal").extra_time_int
     
-    current_time = ((datetime.now().hour) * 60) + datetime.now().minute
+    current_time = ((timezone.now().hour) * 60) + timezone.now().minute
     if shift_time1_start < current_time < shift_time1_end:
         early_shift = True
     else:
@@ -117,9 +117,9 @@ def current_shift_checker():
 
 def access_shift(user):
     access=False
-    current_day = datetime.now().weekday()
-    group = UserProfile.objects.get(user=user).employee_group.id
-    now = datetime.now().date()
+    current_day = timezone.now().weekday()
+    group = UserProfile.objects.get(user=user).employee_group.pk
+    now = timezone.now().date()
     current_user_shift = ShiftAssignment.objects.filter(group=group,\
         starting_date__lte=now, ending_date__gte=now).first().shift.shift
     early_shift, late_shift, night_shift, normal_shift, early_passed, late_passed, night_passed, normal_passed = current_shift_checker()
@@ -184,25 +184,29 @@ def access_shift(user):
 def access_checker(user, door):
     response = '-'
     access = False
-    this_door = door
     this_user = user
+    this_door = Door.objects.get(pk=door.pk)
     profile = UserProfile.objects.get(user=this_user)
-    door_access, door_response = user_door_checker(user=this_user, door=this_door)
-    response_bereich = "-"
-    shift_access, response_shift = access_shift(user=this_user)
-    bereich_access = False
-    
-    if profile.bereich.upper() == this_door.rack.cabinet.bereich.upper():
-        bereich_access = True
-        response_bereich=f"You have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
-    else:
-        response_bereich = f"You do not have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
-    if shift_access and bereich_access and door_access:
-        access = True
+    if this_door is not None and this_user is not None:
+        door_access, door_response = user_door_checker(user=this_user, door=this_door)
+        response_bereich = "-"
+        shift_access, response_shift = access_shift(user=this_user)
+        bereich_access = False
+        
+        if profile.bereich.upper() == this_door.rack.cabinet.bereich.upper():
+            bereich_access = True
+            response_bereich=f"You have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
+        else:
+            response_bereich = f"You do not have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
+        if shift_access and bereich_access and door_access:
+            access = True
+        else:
+            access = False
+            #TODO: a log that gets the data of cabinet, rack, door, user, response, datetime that saves into another model
+        response = response_shift+response_bereich+door_response
     else:
         access = False
-        #TODO: a log that gets the data of cabinet, rack, door, user, response, datetime that saves into another model
-    response = response_shift+response_bereich+door_response
+        response = "no door or user found"
     return access, response
 
     #TODO: A function of logging the event should be added to the end of this function

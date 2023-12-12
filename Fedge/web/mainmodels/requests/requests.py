@@ -16,11 +16,11 @@ class Request(models.Model):
     cancelled_by_frontend = models.BooleanField(default=False, blank=False, null=False)
     send_to_plc = models.BooleanField(default=False, blank=False, null=False)
     send_to_frontend = models.BooleanField(default=False, blank=False, null=False)
-    datetime = models.DateTimeField()
+    time = models.DateTimeField()
     def save(self, *args, **kwargs):
         self.cabinet = self.door.rack.cabinet
         super(Request, self).save(*args, **kwargs)
 class Servicelog(models.Model):
     request = models.OneToOneField(Request, related_name='servicelogs', on_delete=models.CASCADE)
     description = models.TextField(blank=False)
-    datetime = models.DateTimeField()
+    time = models.DateTimeField()

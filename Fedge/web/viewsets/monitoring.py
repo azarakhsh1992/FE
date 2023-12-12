@@ -9,8 +9,6 @@ from ..mainmodels.cabinetlevel.doors import Door
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.db.models import Min, Max, Avg
-import datetime
-import json
 
 
 

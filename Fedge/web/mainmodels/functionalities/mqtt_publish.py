@@ -5,24 +5,24 @@ from ..equipment.latch import Latch
 from ..equipment.led import LED
 
 
-def send_mqtt_latch(latch,value):
+def send_mqtt_latch(latch,value,delay,delay_value):
     broker="192.168.1.1"
     profinet_name=''
     topic =''
     latch_value=''
-    sent= False
     message=''
-    if value == True:
-        latch_value = "True"
-    else:
-        pass
+    sent= False
     try:
-        profinet_name = Latch.objects.get(pk=latch.pk).profinet_name
-        plc_profinet_name = Latch.objects.get(pk=latch.pk).plc.profinet_name
+        latch = Latch.objects.get(pk=latch.pk)
+        profinet_name = latch.profinet_name
+        plc_profinet_name = latch.plc.profinet_name
         topic = plc_profinet_name
     except:
         response= "Latch not found"
-    message = "LATCH;"+profinet_name+';%s'%latch_value
+    if delay:
+        message = "LATCH;"+profinet_name+';D;T;%i;%i'%value %delay_value
+    else:
+        message = "LATCH;"+profinet_name+';D;F;%i;%i'%value %delay_value
     try:
         client = mqtt.Client()
         client.connect(broker, 1883, 60)  # Replace with your MQTT broker address
@@ -46,19 +46,21 @@ def send_mqtt_latch(latch,value):
 def send_mqtt_led(led,value,delay,delay_value):
     broker="192.168.1.1"
     profinet_name=''
+    topic =''
+    message=''
     sent= False
+
+    try:
+        led = LED.objects.get(pk=led.pk)
+        profinet_name = led.profinet_name
+        plc_profinet_name = led.plc.profinet_name
+        topic = plc_profinet_name
+    except:
+        response= "LED not found"
     if delay:
         message = "LED;"+profinet_name+';D;T;%i;%i'%value %delay_value
     else:
         message = "LED;"+profinet_name+';D;F;%i;%i'%value %delay_value
-        
-    try:
-        profinet_name = LED.objects.get(pk=led.pk).profinet_name
-        plc_profinet_name = LED.objects.get(pk=led.pk).plc.profinet_name
-        topic = plc_profinet_name
-    except:
-        response= "LED not found"
-
     try:
         client = mqtt.Client()
         client.connect(broker, 1883, 60)  # Replace with your MQTT broker address

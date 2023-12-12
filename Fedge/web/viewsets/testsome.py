@@ -18,8 +18,8 @@ from django.contrib.auth.models import User
 from ..mainmodels.userrelated.groupofshifts import EmployeeGroup, Shifts, ShiftAssignment
 from ..mainmodels.cabinetlevel.doors import Door
 from ..mainmodels.functionalities.function_access import access_checker
-from datetime import datetime
 from ..mainmodels.functionalities.mqtt_publish import send_mqtt_latch
+from django.utils import timezone
 
 
 class test_access(viewsets.ModelViewSet):
@@ -35,7 +35,7 @@ class test_access(viewsets.ModelViewSet):
         door_obj = Door.objects.get(qr=request.data["door"])
         door = Door.objects.get(qr=request.data["door"])
         shift = ShiftAssignment.objects.filter(group=group,\
-        starting_date__lte=datetime.now(), ending_date__gte=datetime.now()).first().shift.shift
+        starting_date__lte=timezone.now(), ending_date__gte=timezone.now()).first().shift.shift
         access, message = access_checker(user=this_user, door=door)
         try:
             latch = Latch.objects.get(door= door_obj)
