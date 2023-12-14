@@ -77,3 +77,5 @@ class LatchValue(TimescaleModel):
     latch = models.ForeignKey(Latch, on_delete=models.CASCADE, related_name='latchvalue')
     value = models.CharField(max_length=8,null=True)
     valid = models.BooleanField(default=True)
+    def __str__(self):
+        return ('Cabinet: '+self.latch.door.rack.cabinet.profinet_name+', Rack: '+self.latch.door.rack.name + ', Door: '+ self.latch.door.direction)

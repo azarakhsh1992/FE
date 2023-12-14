@@ -51,3 +51,5 @@ class EnergySensorValue(TimescaleModel):
     power_value = models.FloatField(null=True)
     power_unit = models.CharField(default='KW', max_length=4)
     valid = models.BooleanField(null=True)
+    def __str__(self):
+        return ('Cabinet: '+self.energysensor.rack.cabinet.profinet_name + ', Module: '+self.energysensor.measuring_environment)

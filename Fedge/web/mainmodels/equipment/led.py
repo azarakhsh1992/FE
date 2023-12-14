@@ -10,25 +10,15 @@ from django.core.exceptions import ValidationError
 class LED (Device):
     this_module_type = "LED"
     class IO_Module(models.TextChoices):
-        DO_1 = 'DO_16', 'DO 16-Kanal'
-        DO_2 = 'DO_8', 'DO 8-Kanal'
+        IOL_1 = 'IOL_1', 'IOL 1'
+        IOL_2 = 'IOL_2', 'IOL 2'
+        IOL_3 = 'IOL_3', 'IOL 3'
+        IOL_4 = 'IOL_4', 'IOL 4'
     class Port(models.TextChoices):
         P1 = 'P1', 'P1'
         P2 = 'P2', 'P2'
         P3 = 'P3', 'P3'
         P4 = 'P4', 'P4'
-        P5 = 'P5', 'P5'
-        P6 = 'P6', 'P6'
-        P7 = 'P7', 'P7'
-        P8 = 'P8', 'P8'
-        P9 = 'P9', 'P9'
-        P10 = 'P10', 'P10'
-        P11 = 'P11', 'P11'
-        P12 = 'P12', 'P12'
-        P13 = 'P13', 'P13'
-        P14 = 'P14', 'P14'
-        P15 = 'P15', 'P15'
-        P16 = 'P16', 'P16'
     class DoorDirection(models.TextChoices):
         Front = 'Front', 'Front'
         Rear = 'Rear', 'Rear'
@@ -73,6 +63,8 @@ class LedValue(TimescaleModel):
     led = models.ForeignKey(LED, on_delete=models.CASCADE, related_name='ledvalue')
     value = models.IntegerField(null=True)
     valid = models.BooleanField(default=None)
+    def __str__(self):
+        return ('Cabinet: '+self.led.door.rack.cabinet.profinet_name+', Rack: '+self.led.door.rack.name + ', Door: '+ self.led.door.direction)
 
 
 class LedValueCases(models.Model):

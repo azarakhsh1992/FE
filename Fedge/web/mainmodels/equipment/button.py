@@ -79,4 +79,6 @@ class ButtonValue(TimescaleModel):
     doorbutton = models.ForeignKey(DoorButton, on_delete=models.CASCADE, related_name='buttonvalue')
     value = models.BooleanField(null=True)
     valid = models.BooleanField(default=True)
+    def __str__(self):
+        return ('Cabinet: '+self.doorbutton.door.rack.cabinet.profinet_name+', Rack: '+self.doorbutton.door.rack.name + ', Door: '+ self.doorbutton.door.direction)
     

@@ -77,3 +77,5 @@ class DoorsensorValue(TimescaleModel):
     doorsensor = models.ForeignKey(DoorSensor, on_delete=models.CASCADE, related_name='doorsensorvalue',)
     value = models.CharField(default="closed",max_length=8)
     valid=models.BooleanField(null=True, default=True)
+    def __str__(self):
+        return ('Cabinet: '+self.doorsensor.door.rack.cabinet.profinet_name+', Rack: '+self.doorsensor.door.rack.name + ', Door: '+ self.doorsensor.door.direction)

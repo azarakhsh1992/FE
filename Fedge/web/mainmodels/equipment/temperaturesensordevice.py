@@ -12,7 +12,9 @@ class TemperatureSensor(Device):
     class IO_Module(models.TextChoices):
         IOL_1 = 'IOL_1', 'IOL 1'
         IOL_2 = 'IOL_2', 'IOL 2'
-    class Port_4(models.TextChoices):
+        IOL_3 = 'IOL_3', 'IOL 3'
+        IOL_4 = 'IOL_4', 'IOL 4'
+    class Port(models.TextChoices):
         P1 = 'P1', 'P1'
         P2 = 'P2', 'P2'
         P3 = 'P3', 'P3'
@@ -28,7 +30,7 @@ class TemperatureSensor(Device):
         Energy = 'Energy', 'Energy'
     measuring_environment = models.CharField(choices=MeasuringEnvironment.choices, default=None, max_length=16, unique=True)
     device_io_module = models.CharField(choices=IO_Module.choices,editable=True, max_length=8,null=False)
-    device_port = models.CharField(choices=Port_4.choices,editable=True, max_length=4,null=False)
+    device_port = models.CharField(choices=Port.choices,editable=True, max_length=4,null=False)
     critical_value = models.FloatField(default=70,editable=True)
     def clean(self):
         if self.measuring_environment in ["Edge_A_top","Edge_A_middle","Edge_A_bottom"] and self.rack.name !="Edge_A":
@@ -63,4 +65,5 @@ class TemperatureSensorValue(TimescaleModel):
     tempvalue_max = models.FloatField(null=True)
     humidvalue = models.FloatField(null=True)
     valid = models.BooleanField(null = True)
-    
+    def __str__(self):
+        return ('Cabinet: '+self.temperaturesensor.rack.cabinet.profinet_name+', Rack: '+self.temperaturesensor.rack.name + ', Section:'+ self.temperaturesensor.measuring_environment.replace("Edge_A_","").replace("Edge_B_",""))
