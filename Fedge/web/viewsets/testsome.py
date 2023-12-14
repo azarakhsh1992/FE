@@ -37,11 +37,12 @@ class test_access(viewsets.ModelViewSet):
         shift = ShiftAssignment.objects.filter(group=group,\
         starting_date__lte=timezone.now(), ending_date__gte=timezone.now()).first().shift.shift
         access, message = access_checker(user=this_user, door=door)
+        
         try:
             latch = Latch.objects.get(door= door_obj)
         except:
             print("Latch not found")
         if access:
-            send_mqtt_latch(latch=latch, value=True)
+            send_mqtt_latch(latch=latch, value=True, delay=2, delayed_value=False)
         response={"access": access, "message": message}
         return Response(response,status=status.HTTP_200_OK)

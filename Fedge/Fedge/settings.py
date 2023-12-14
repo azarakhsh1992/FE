@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-3ao8j^=pbx#9k11i^ief0za2c7tw8(ze5-n^)@a98-#22ic4&b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['home','127.0.0.1','localhost','192.168.1.1','192.168.88.251','0.0.0.0']
+ALLOWED_HOSTS = ['home','127.0.0.1','localhost','192.168.1.1','192.168.88.251','0.0.0.0','192.168.108.160']
 
 # Application definition
 
@@ -41,9 +41,8 @@ INSTALLED_APPS = [
     'corsheaders',
     "django_apscheduler",
     'web',
-
+    'sslserver',
 ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -67,13 +66,20 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.contrib.auth.context_processors.auth',
             ],
         },
     },
 ]
 
+###############################
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
+}
+############################
 
 LOGGING = {
     "version": 1,
@@ -96,18 +102,20 @@ LOGGING = {
     },
 }
 
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
 
 WSGI_APPLICATION = 'Fedge.wsgi.application'
 CORS_ALLOW_ALL_ORIGINS = True
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "https://localhost:7005",
-#     "https://localhost",
-#     "https://localhost:3000",
-#     "https://192.168.88.251:3000",
-#     "http://192.168.88.251:3000"
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://localhost:7005",
+    "https://localhost",
+    "https://localhost:3000",
+    "https://192.168.88.251:3000",
+    "http://192.168.88.251:3000",
+    "https://0.0.0.0:3000",
+]
 CORS_ALLOW_HEADERS = [
     'Content-Type',
     'Authorization'

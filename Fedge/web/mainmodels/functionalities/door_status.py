@@ -116,6 +116,7 @@ def led_status_find(door):
     current_time=timezone.now()
     response =""
     led_value = LedValueCases.objects.get(description="door_not_locked").value
+    latest_data=None
     try:
         door_sensor = DoorSensor.objects.get(door=door)
         latest_data = DoorsensorValue.objects.filter(doorsensordevice=door_sensor, valid=True, time_lte=current_time).latest('time')
@@ -130,5 +131,6 @@ def led_status_find(door):
             led_value = LedValueCases.objects.get(description="default_open").value
             response = "door is open"
     else:
+        
         response = "No data available"
     return led_value

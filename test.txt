@@ -11,3 +11,31 @@ LATCH;profinet_name;value;delay_value;time
 KAAASDASASDVDASASDASDD
 
 KAAASDASASDVDASSVFRFSV
+
+
+
+LED;KAAASDASASDVDASSVFRFSV;D;3;21;2;544125401
+
+Module;Profinet_name;D;delay_time;current_value;delayed_value;currenttime
+
+pw Accesspoint:
+Edge321..
+IP: 192.168.1.250
+
+
+
+  "scripts": {
+    "start": "set HTTPS=true&&set SSL_CRT_FILE=cert.pem&&set SSL_KEY_FILE=key.pem&&react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+
+
+
+in frontend/env/:
+VITE_API_URL=http://127.0.0.1:8000/api
+
+
+for connecting frontend and backend:
+npm install axios
