@@ -226,7 +226,7 @@ class EmployeeGroupAdmin(admin.ModelAdmin):
     def get_employees(self, obj):
         return ", ".join([f"{user.firstname} {user.lastname}" for user in obj.employees.all()])
     get_employees.short_description = 'Employees'
-    
+
 @admin.register(ShiftAssignment)
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ("group", "shift","starting_date","ending_date")
@@ -240,11 +240,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 @admin.register(Request)
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ("user", "description",
-              "servicelog", "button_pushed", "cancelinghdw", "cancelled_by_frontend",
-              "send_to_plc", "send_to_frontend", "time")
+              "servicelog", "button_pushed", "cancelled_by_frontend",
+              "sent_to_plc", "sent_to_frontend","access", "time")
     list_display = ("id", "user", "cabinet", "door", "rack", "description",
-              "servicelog", "button_pushed", "cancelinghdw", "cancelled_by_frontend",
-              "send_to_plc", "send_to_frontend", "time")
+              "servicelog", "button_pushed", "cancelled_by_frontend",
+              "sent_to_plc", "sent_to_frontend","access", "time")
 
 @admin.register(UserLog)
 class UserProfileAdmin(admin.ModelAdmin):

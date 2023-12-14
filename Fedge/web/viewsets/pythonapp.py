@@ -111,11 +111,24 @@ class MqttMiddleware(viewsets.ModelViewSet):
                             if value=="open":
                                 try:
                                     led = LED.objects.get(door =doorsensor.door)
-                                    value=LedValueCases.objects.get(description="default_open").value
-                                    send_mqtt_led(led=led,value=value,delay=False,delay_value=0)
+                                    current_led_value = LedValue.objects.filter(led=led,valid=True).latest("time").value
+                                    send_mqtt_led(led=LED.objects.get(door=door),\
+                                        value=current_led_value, delay=3\
+                                            ,delayed_value=LedValueCases.objects.get(description="default_open").value)
                                 except:
                                     pass
+                            elif value == "closed":
+                                try:
+                                    led = LED.objects.get(door =doorsensor.door)
+                                    current_led_value = LedValue.objects.filter(led=led,valid=True).latest("time").value
+                                    send_mqtt_led(led=LED.objects.get(door=door),\
+                                        value=current_led_value, delay=3\
+                                            ,delayed_value=LedValueCases.objects.get(description="default").value)
+                                except:
+                                    pass
+                                
                             response = {"message": "success"}
+                            
                             return Response(response, status=status.HTTP_200_OK)
                         elif data ["V"] == "False":
                             DoorsensorValue.objects.create(doorsensor=doorsensor,value=value,valid=False, time = data["Time"])
@@ -144,9 +157,6 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 elif device_moduletype == "Latch Sensor":
                     try:
                         this_latchsensor = LatchSensor.objects.get(profinet_name=profinet_name_data)
-                        print(this_latchsensor.profinet_name)
-                        print(data)
-                        print(data["V"])
                         if data ["V"] == "True":
                             LatchSensorValue.objects.create(latchsensor=this_latchsensor,value=data["value"], time = data["Time"], valid=True)
                             response = {"message": "success"}
@@ -195,18 +205,16 @@ class MqttMiddleware(viewsets.ModelViewSet):
                     try:
                         doorbtn = DoorButton.objects.get(profinet_name=profinet_name_data)
                         door = doorbtn.door
-                        rack = door.rack
-                        cabinet = rack.cabinet
                         if data ["V"] == "True":
                             ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"], time = data["Time"], valid=True)
                             #This will check for existing request for this door
                             try:
-                                obj_req = Request.objects.get(cabinet=cabinet, door= door, rack= rack, send_to_frontend=False,cancelled_by_frontend=False,button_pushed=False)
+                                request = Request.objects.get(door= door, sent_to_frontend=False,cancelled_by_frontend=False,button_pushed=False, access=True)
                             except:
                                 pass
-                            if obj_req is not None:
-                                obj_req.button_pushed=True
-                                obj_req.save()
+                            if request is not None:
+                                request.button_pushed=True
+                                request.save()
                             else:
                                 pass
                             response = {"message": "success"}

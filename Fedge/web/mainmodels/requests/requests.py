@@ -11,11 +11,11 @@ class Request(models.Model):
     rack = models.ForeignKey(Rack, related_name='requests', on_delete=models.CASCADE)
     description = models.CharField(max_length=255, blank=False, null=False)
     servicelog = models.BooleanField(default=False)
+    access = models.BooleanField(default=False)
     button_pushed = models.BooleanField(default=False, blank=False, null=False)
-    cancelinghdw = models.BooleanField(default=False, blank=False, null=False)
     cancelled_by_frontend = models.BooleanField(default=False, blank=False, null=False)
-    send_to_plc = models.BooleanField(default=False, blank=False, null=False)
-    send_to_frontend = models.BooleanField(default=False, blank=False, null=False)
+    sent_to_plc = models.BooleanField(default=False, blank=False, null=False)
+    sent_to_frontend = models.BooleanField(default=False, blank=False, null=False)
     time = models.DateTimeField()
     def save(self, *args, **kwargs):
         self.cabinet = self.door.rack.cabinet

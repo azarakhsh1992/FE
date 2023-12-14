@@ -4,9 +4,9 @@ from ..cabinetlevel.doors import Door
 from ..userrelated.groupofshifts import Shifts, EmployeeGroup, ShiftAssignment
 from ..userrelated.users import User, UserProfile
 from django.utils import timezone
+from .door_status import Check_door_status, is_safe
 
-
-def user_door_checker(user, door):
+def user_role_condition(user, door):
     #TODO: here must the accessible doors be clearly defined
     profile = UserProfile.objects.get(user=user)
     this_door = Door.objects.get(pk=door.pk)
@@ -188,22 +188,25 @@ def access_checker(user, door):
     this_door = Door.objects.get(pk=door.pk)
     profile = UserProfile.objects.get(user=this_user)
     if this_door is not None and this_user is not None:
-        door_access, door_response = user_door_checker(user=this_user, door=this_door)
+        door_access, door_response = user_role_condition(user=this_user, door=this_door)
         response_bereich = "-"
         shift_access, response_shift = access_shift(user=this_user)
+        door_status_access, door_status_response = Check_door_status(door=this_door)
+        is_safe_access, is_safe_response = is_safe(this_door=this_door)
         bereich_access = False
         
         if profile.bereich.upper() == this_door.rack.cabinet.bereich.upper():
             bereich_access = True
             response_bereich=f"You have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
         else:
-            response_bereich = f"You do not have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
-        if shift_access and bereich_access and door_access:
+            response_bereich = f"You DO NOT have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
+        # here the conditions are considered and the access is granted. If is_safe function returns access=False: here must the is_safe_access be in the conditions below.
+        if shift_access and bereich_access and door_access and door_status_access:
             access = True
         else:
             access = False
             #TODO: a log that gets the data of cabinet, rack, door, user, response, datetime that saves into another model
-        response = response_shift+response_bereich+door_response
+        response = response_shift+response_bereich+door_response+door_status_response+is_safe_response
     else:
         access = False
         response = "no door or user found"

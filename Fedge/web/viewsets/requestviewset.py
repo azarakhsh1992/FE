@@ -24,12 +24,12 @@ from ..mainmodels.userrelated.users import UserLog
 class RequestViewset(viewsets.ModelViewSet):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes=[IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes=[IsAuthenticated]
 
-    # @action(methods=['POST'], detail=False, authentication_classes = [TokenAuthentication], permission_classes=[IsAuthenticated])
-    @action(methods=['POST'], detail=False)
-    def userrequest(self, request):
+    @action(methods=['POST'], detail=False, authentication_classes = [TokenAuthentication], permission_classes=[IsAuthenticated])
+    # @action(methods=['POST'], detail=False)
+    def access_request(self, request):
         user = request.data['user']
         userobj = User.objects.get(username=user)
         if userobj:
@@ -38,14 +38,13 @@ class RequestViewset(viewsets.ModelViewSet):
             cabinet = door.rack.cabinet
             rack = door.rack
             led = LED.objects.get(door=door)
-            # for functionality un-comment below
             access, accessresponse = access_checker(user=userobj, door=door)
             print(access,accessresponse)
             if access:
                 eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
-                    description="test",\
+                    description="test",access=True,\
                         time=timezone.now(), servicelog=False, button_pushed=False,\
-                            cancelinghdw=False, cancelled_by_frontend=False, send_to_plc=False)
+                            cancelled_by_frontend=False, sent_to_plc=False)
                 
                 serialized_data = RequestSerializer(eventreq)
                 req_id = serialized_data.data.get('id')
@@ -57,9 +56,17 @@ class RequestViewset(viewsets.ModelViewSet):
                 userlog = UserLog.objects.create(user=userobj, request=eventreq)
                 return Response(response, status=status.HTTP_200_OK)
             else:
-                response = {'message': accessresponse}
+                eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
+                    description="test",access=False,\
+                        time=timezone.now(), servicelog=False, button_pushed=False,\
+                            cancelled_by_frontend=False, sent_to_plc=False)
+                serialized_data = RequestSerializer(eventreq)
+                req_id = serialized_data.data.get('id')
+                response = {'message': accessresponse,
+                            'access':access,
+                            'id': req_id}
                 current_led_value = led_status_find(door=door)
-                send_mqtt_led(led=led, value=LedValueCases.objects.get(description="access_denied").value,delay=2,delayed_value=current_led_value)
+                send_mqtt_led(led=led, value=LedValueCases.objects.get(description="access_denied").value, delay=2, delayed_value=current_led_value)
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
         else:
             response = {'message': "User's data not Valid "}
@@ -99,10 +106,10 @@ class RequestViewset(viewsets.ModelViewSet):
                     response = {'message': 'user service log for this request has been submitted'}
                     return Response(response, status=status.HTTP_400_BAD_REQUEST)
             except:
-                response={'message':'this request is not exists'}
+                response={'message':'this request does not exist'}
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
         else:
-            response = {'message': 'this user not exists'}
+            response = {'message': 'this user does not exist'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -113,26 +120,30 @@ class RequestViewset(viewsets.ModelViewSet):
         try:
             obj_req = Request.objects.get(id=req_id)
             door = obj_req.door
-            if obj_req.send_to_plc == True and obj_req.send_to_frontend == False and\
+            if obj_req.sent_to_plc == False and obj_req.access == True and obj_req.sent_to_frontend == False and\
                 obj_req.cancelled_by_frontend == False and obj_req.button_pushed == True:
                 response = {'access':True,
-                            'message': 'doori s open, please confirm servicelog after maintanance'}
+                            'message': 'door is open, please confirm service-log after you are done.'}
                 try:
-                    latch_published_status, response2=send_mqtt_latch(latch=Latch.objects.get(door=door),\
-                        value=True, delay=3, delayed_value= False)
+                    latch_published_status, response1=send_mqtt_latch(latch=Latch.objects.get(door=door),\
+                        value=True, delay=5, delayed_value= False)
                 except:
-                    response2={'message': 'no Latch found'}
+                    response1={'message': 'no Latch found'}
                 try:
                     if latch_published_status:
+                        current_led_value = led_status_find(door=door)
                         led_published_status, response2 = send_mqtt_led(led=LED.objects.get(door=door),\
-                            value=LedValueCases.objects.get(description="access_granted").value,delay=3\
-                                ,delayed_value=LedValueCases.objects.get(description="default_open").value)
+                            value=LedValueCases.objects.get(description="access_granted").value, delay=2\
+                                ,delayed_value=current_led_value)
                     else:
                         current_led_value = led_status_find(door=door)
                         led_published_status, response2 = current_led_value = send_mqtt_led(led=LED.objects.get(door=door),\
                             value=current_led_value,delay=2,delayed_value=current_led_value)
                 except:
-                    response2= {'message': 'No LED found'}
+                    response2= {'message': 'No signal lamp found'}
+                    
+                response.update(response1)
+                response.update(response2)
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'message': 'please wait'}
@@ -142,25 +153,25 @@ class RequestViewset(viewsets.ModelViewSet):
                     led_published_status, response2 = send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value,\
                         delay=2,delayed_value=current_led_value)
                 except:
-                    response2={'message': 'no LED found'}
+                    response2={'message': 'no signal lamp found'}
                 response.update(response2)
                 return Response(response, status=status.HTTP_200_OK)
         except:
-            response = {'message': 'this request not exists'}
+            response = {'message': 'this request does not exist.'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=["POST"], detail=False)
-    def canclerequest(self, request):
-        canceled_req = request.data['request']
-        canceled_id = canceled_req['id']
+    def cancelling_by_frontend(self, request):
+        cancelled_req = request.data['request']
+        cancelled_id = cancelled_req['id']
         try:
-            obj_req = Request.objects.get(id=canceled_id)
+            obj_req = Request.objects.get(id=cancelled_id)
             door=obj_req.door
             if obj_req.cancelled_by_frontend == False:
                 obj_req.cancelled_by_frontend = True
                 obj_req.save()
                 response = {
-                    'message':'request canceled',
+                    'message':'request cancelled',
                 }
                 try:
                     current_led_value = led_status_find(door=door)
@@ -173,7 +184,7 @@ class RequestViewset(viewsets.ModelViewSet):
                 pass
         except:
             response = {
-                'message':'request not exist or canceled before'
+                'message':'request not exist or cancelled before'
             }
             return Response(response,status=status.HTTP_400_BAD_REQUEST)
         
