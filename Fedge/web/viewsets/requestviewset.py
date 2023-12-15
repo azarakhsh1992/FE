@@ -24,11 +24,11 @@ from ..mainmodels.userrelated.users import UserLog
 class RequestViewset(viewsets.ModelViewSet):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes=[IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes=[IsAuthenticated]
 
-    @action(methods=['POST'], detail=False, authentication_classes = [TokenAuthentication], permission_classes=[IsAuthenticated])
-    # @action(methods=['POST'], detail=False)
+    # @action(methods=['POST'], detail=False, authentication_classes = [TokenAuthentication], permission_classes=[IsAuthenticated])
+    @action(methods=['POST'], detail=False)
     def access_request(self, request):
         user = request.data['user']
         userobj = User.objects.get(username=user)
@@ -37,36 +37,49 @@ class RequestViewset(viewsets.ModelViewSet):
             door = Door.objects.get(qr=qrcode)
             cabinet = door.rack.cabinet
             rack = door.rack
-            led = LED.objects.get(door=door)
             access, accessresponse = access_checker(user=userobj, door=door)
-            print(access,accessresponse)
             if access:
                 eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
-                    description="test",access=True,\
+                    status="Access granted - Door was not opened",access=True,\
                         time=timezone.now(), servicelog=False, button_pushed=False,\
                             cancelled_by_frontend=False, sent_to_plc=False)
-                
                 serialized_data = RequestSerializer(eventreq)
                 req_id = serialized_data.data.get('id')
-                response = {'message': accessresponse,
-                            'access':access,
-                            'id': req_id}
-                current_led_value = led_status_find(door=door)
-                send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value,delay=3,delayed_value=current_led_value)
+                response = {'Messages': accessresponse,
+                            'Access':access,
+                            'ID': req_id}
+                try:
+                    led = LED.objects.get(door=door)
+                    current_led_value = led_status_find(door=door)
+                    latch_published_status, response1=send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value,delay=3,delayed_value=current_led_value)
+                    
+                except:
+                    response1 = {'Error_p2.3': 'could not turn on the signal lamp'}
                 userlog = UserLog.objects.create(user=userobj, request=eventreq)
+                response['Messages'].update(response1)
+                eventreq.description=response
+                eventreq.save()
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
-                    description="test",access=False,\
+                    status="Access denied",access=False,\
                         time=timezone.now(), servicelog=False, button_pushed=False,\
                             cancelled_by_frontend=False, sent_to_plc=False)
                 serialized_data = RequestSerializer(eventreq)
                 req_id = serialized_data.data.get('id')
-                response = {'message': accessresponse,
-                            'access':access,
-                            'id': req_id}
-                current_led_value = led_status_find(door=door)
-                send_mqtt_led(led=led, value=LedValueCases.objects.get(description="access_denied").value, delay=2, delayed_value=current_led_value)
+                response = {'Messages': accessresponse,
+                            'Access':access,
+                            'ID': req_id}
+                try:
+                    led = LED.objects.get(door=door)
+                    current_led_value = led_status_find(door=door)
+                    latch_published_status, response1=send_mqtt_led(led=led, value=LedValueCases.objects.get(description="access_denied").value, delay=2, delayed_value=current_led_value)
+                    
+                except:
+                    response1 = {'Error_p2.3': 'could not turn on the signal lamp'}
+                response['Messages'].update(response1)
+                eventreq.description=response
+                eventreq.save()
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
         else:
             response = {'message': "User's data not Valid "}
@@ -92,8 +105,11 @@ class RequestViewset(viewsets.ModelViewSet):
                     existreq.save()
                     #TODO: send to plc: it will send event base on container for resetting LED, read from latch sensor if the latch is closed or open then
                     # send to front end as a warning, then after 3 seconds it gets the response check the latch sensor and then submit the log whatever the latch sensor is open or closed
-                    current_led_value = led_status_find(door=door)
-                    send_mqtt_led(led=LED.objects.get(door=door), value=LedValueCases.objects.get(description="door_not_locked").value,delay=2,delayed_value=current_led_value)
+                    try:
+                        current_led_value = led_status_find(door=door)
+                        send_mqtt_led(led=LED.objects.get(door=door), value=LedValueCases.objects.get(description="door_not_locked").value,delay=2,delayed_value=current_led_value)
+                    except:
+                        pass
                     try:
                         userlog = UserLog.objects.get(user=userobj, request=existreq)
                         userlog.servicelog = newservicelog
@@ -129,16 +145,23 @@ class RequestViewset(viewsets.ModelViewSet):
                         value=True, delay=5, delayed_value= False)
                 except:
                     response1={'message': 'no Latch found'}
+                if latch_published_status:
+                    obj_req.sent_to_plc = True
+                    obj_req.description = "access granted - Door opened"
+                    obj_req.save()
+                else:
+                    obj_req.description = "access granted - Door could not be opened - MQTT message not published"
+                    obj_req.save()
                 try:
+                    
+                    current_led_value = led_status_find(door=door)
                     if latch_published_status:
-                        current_led_value = led_status_find(door=door)
                         led_published_status, response2 = send_mqtt_led(led=LED.objects.get(door=door),\
                             value=LedValueCases.objects.get(description="access_granted").value, delay=2\
                                 ,delayed_value=current_led_value)
-                    else:
-                        current_led_value = led_status_find(door=door)
+                    elif latch_published_status==False:
                         led_published_status, response2 = current_led_value = send_mqtt_led(led=LED.objects.get(door=door),\
-                            value=current_led_value,delay=2,delayed_value=current_led_value)
+                        value=current_led_value,delay=2,delayed_value=current_led_value)
                 except:
                     response2= {'message': 'No signal lamp found'}
                     
@@ -169,6 +192,7 @@ class RequestViewset(viewsets.ModelViewSet):
             door=obj_req.door
             if obj_req.cancelled_by_frontend == False:
                 obj_req.cancelled_by_frontend = True
+                obj_req.description = "request expired - Door Button not pushed"
                 obj_req.save()
                 response = {
                     'message':'request cancelled',

@@ -15,6 +15,7 @@ from .mainmodels.equipment.energymodule import EnergySensor, EnergySensorValue
 from .mainmodels.requests.requests import Request
 from .mainmodels.userrelated.users import UserLog
 ######################Cabinet level########################
+
 @admin.register(Cabinet)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("id","bereich","segment","anlage","arg_sps","pultbereich_sk","station","profinet_name")
@@ -85,6 +86,8 @@ class UserProfileAdmin(admin.ModelAdmin):
             return "No Data"
     get_latest_validity.short_description = "Latest Data Validity"
     
+    
+
 @admin.register(DoorButton)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("id", "plc", "bmk", "geraet", "serial_number", "manufacturer", "profinet_name"
@@ -255,10 +258,10 @@ class UserProfileAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     fields = ("user", "description",
               "servicelog", "button_pushed", "cancelled_by_frontend",
-              "sent_to_plc", "sent_to_frontend","access", "time")
-    list_display = ("id", "user", "cabinet", "door", "rack", "description",
+              "sent_to_plc", "sent_to_frontend","access", "time","status")
+    list_display = ("id", "time","user", "cabinet","rack", "door", "status",
               "servicelog", "button_pushed", "cancelled_by_frontend",
-              "sent_to_plc", "sent_to_frontend","access", "time")
+              "sent_to_plc", "sent_to_frontend","access","description")
 
 @admin.register(UserLog)
 class UserProfileAdmin(admin.ModelAdmin):

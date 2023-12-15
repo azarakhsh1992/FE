@@ -10,10 +10,10 @@ from django.utils import timezone
 
 def is_safe(this_door):
     current_time = timezone.now()
-    door = Door.objects.get(id=this_door.id)
+    door = Door.objects.get(pk=this_door.pk)
     plc= PLC.objects.get(cabinet=door.rack.cabinet)
     rack = door.rack.name
-    response = ""
+    response = {}
     temperaturesensor1 = None
     temperaturesensor2 = None
     temperaturesensor3 = None
@@ -28,7 +28,7 @@ def is_safe(this_door):
             temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_A_bottom')
             critical_value3 = temperaturesensor3.critical_value
         except:
-            response = 'error: Temperature sensor not found'
+            response = {'Error': 'Temperature sensor not found'}
     elif rack == "Edge_B":
         try:
             temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_B_top')
@@ -38,7 +38,7 @@ def is_safe(this_door):
             temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_B_bottom')
             critical_value3 = temperaturesensor3.critical_value
         except:
-            response = 'error: Temperature sensor not found'
+            response = {'Error': 'Temperature sensor not found'}
     elif rack == "Network":
         try:
             temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_environment='Network')
@@ -48,7 +48,7 @@ def is_safe(this_door):
             temperaturesensor3= temperaturesensor1
             critical_value3 = temperaturesensor3.critical_value
         except:
-            response = 'error: Temperature sensor not found'
+            response = {'Error': 'Temperature sensor not found'}
     elif rack == "Energy":
         try:
             temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_environment='Energy')
@@ -58,7 +58,7 @@ def is_safe(this_door):
             temperaturesensor3= temperaturesensor1
             critical_value3 = temperaturesensor3.critical_value
         except:
-            response = 'error: Temperature sensor not found'
+            response = {'Error': 'Temperature sensor not found'}
 
     if temperaturesensor1 is not None and temperaturesensor2 is not None and temperaturesensor3 is not None:
         try:
@@ -79,70 +79,76 @@ def is_safe(this_door):
             sensor_validity2 = latest_value_obj2.valid
             sensor_validity3 = latest_value_obj3.valid
         else:
-            response = "No data available."
+            response = {"Error":"No Temperature sensor data available."}
             
         if type(sensor_value1)=="float" and type(sensor_value2)=="float" and type(sensor_value3)=="float":
             
             if sensor_validity1 and sensor_validity2 and sensor_validity3:
                 if sensor_value1 < critical_value1 and sensor_value2 < critical_value2 and sensor_value3 < critical_value3:
-                    response="The door is safe to open."
+                    response= {"message":"The door is safe to open."}
                     access = True
             else:
-                response= "Invalid sensor data."
+                response= {"Error":"Invalid sensor data."}
         else:
-            response="Wrong data type of the sensor values."
+            response={"Error":"Wrong data type of the sensor values."}
     else:
         return access, response
 
 
 def Check_door_status(door):
-    door_sensor = DoorSensor.objects.get(device_door = door)
     current_time = timezone.now()
+    access = False
+    this_door= Door.objects.get(pk=door.pk)
     try:
-        latest_data = DoorsensorValue.objects.filter(doorsensordevice = door_sensor, time__lte=current_time).latest('time')
+        door_sensor = DoorSensor.objects.get(door=this_door)
     except:
-        latest_data = None
-        
-    if latest_data is not None:
-        sensor_data = latest_data.value
-        sensor_validity = latest_data.valid
-    else:
-        access=False
-        response = "No data available."
-        
-    if sensor_validity:
-        if sensor_data == "closed":
-            access= True
-        elif sensor_data == "open":
-            access= False
-            response = "The door is already open "
+        response = {"Error_ds1":"Door sensor not found"}
+    try:
+        latest_data = DoorsensorValue.objects.filter(doorsensor = door_sensor, time__lte=current_time).latest('time')
+        if latest_data is not None:
+            sensor_data = latest_data.value
+            sensor_validity = latest_data.valid
         else:
             access=False
-            response = "The data is not valid."
-    else:
-        access=False
-        response = "The sensor is faulted."
+            response = {"Error_ds1":"Door sensor data not available."}
+            
+        if sensor_validity:
+            if sensor_data == "closed":
+                access= True
+                response = {"Message_ds":"The door is closed and available to be opened"}
+            elif sensor_data == "open":
+                access= False
+                response = {"Message_ds":"The door is already open"}
+            else:
+                access=False
+                response = {"Error_ds2":"The door sensor data is not valid."}
+        else:
+            access=False
+            response = {"Error_ds2":"The sensor is faulted."}
+    except:
+        latest_data = None
+        response= {"Error_ds1":"Sensor value not found"}
     return access, response
 
 def led_status_find(door):
     current_time=timezone.now()
-    response =""
+    response ={}
     led_value = LedValueCases.objects.get(description="door_not_locked").value
     latest_data=None
     try:
         door_sensor = DoorSensor.objects.get(door=door)
         latest_data = DoorsensorValue.objects.filter(doorsensordevice=door_sensor, valid=True, time_lte=current_time).latest('time')
     except:
-        response = "No sensor or valid sensor data found"
+        response = {"Error_lf":"No sensor or valid sensor data found"}
     if latest_data is not None:
         value = latest_data.value
         if value == "closed":
             led_value = LedValueCases.objects.get(description="default").value
-            response = "door is closed"
+            response = {"Message_lf":"door is closed"}
         elif value == "open":
             led_value = LedValueCases.objects.get(description="default_open").value
-            response = "door is open"
+            response = {"Message_lf":"door is open"}
     else:
-        
-        response = "No data available"
+        response = {"Error_lf":"No data available to find the signal lamp"}
+    print(led_value,response)
     return led_value

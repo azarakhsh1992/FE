@@ -4,13 +4,21 @@ from ..equipment.devices import Device
 from ..equipment.latch import Latch
 from ..equipment.led import LED
 from django.utils import timezone
+import os
+
+
+
 
 
 def send_mqtt_latch(latch,value,delay,delayed_value):
-    broker="192.168.1.1"
+    try:
+        broker=os.environ["BROKER_IP"]
+    except:
+        broker="localhost"
+    
+    # broker="192.168.1.1"
     profinet_name=''
     topic =''
-    latch_value=''
     message=''
     sent= False
     current_time= timezone.now()
@@ -20,7 +28,7 @@ def send_mqtt_latch(latch,value,delay,delayed_value):
         plc_profinet_name = latch.plc.profinet_name
         topic = plc_profinet_name
     except:
-        response= "Latch not found"
+        response= {"Error_p1.1":"Latch not found"}
         
     message= f"LATCH;{profinet_name};D;{delay};{value};{delayed_value};{current_time}".replace("True","TRUE").replace("False","FALSE")
     try:
@@ -28,23 +36,29 @@ def send_mqtt_latch(latch,value,delay,delayed_value):
         client.connect(broker, 1883, 60)  # Replace with your MQTT broker address
         client.publish(topic, message)
         client.disconnect()    
-        response= "Message sent to MQTT broker successfully"
+        response= {"Message_p1":"MQTT Message for Latch sent to broker successfully"}
         sent = True
     except:
-        response= "Cannot connect to MQTT broker"
+        response= {"Error_p1.2":"Cannot connect to broker for MQTT Message for Latch"}
     try:
         client = mqtt.Client()
         client.connect(broker, 1883, 60)  # Replace with your MQTT broker address
         client.publish(topic, message)
         client.disconnect()
-        response= "Message sent to MQTT broker successfully"
+        response= {"Message_p1":"MQTT Message for Latch sent to broker successfully"}
         sent = True
     except:
-        response= "Cannot connect to MQTT broker"
+        response= {"Error_p1.2":"Cannot connect to broker for MQTT Message for Latch"}
     return sent, response
 
 def send_mqtt_led(led,value,delay,delayed_value):
-    broker="192.168.1.1"
+    
+    try:
+        broker = os.environ["BROKER_IP"]
+    except:
+        broker="localhost"
+        
+    # broker='192.168.1.1'
     profinet_name=''
     topic =''
     message=''
@@ -57,7 +71,7 @@ def send_mqtt_led(led,value,delay,delayed_value):
         plc_profinet_name = led.plc.profinet_name
         topic = plc_profinet_name
     except:
-        response= "LED not found"
+        response= {"Error_p2.1":"LED not found"}
 
     message= f"LED;{profinet_name};D;{delay};{value};{delayed_value};{current_time}"
     try:
@@ -65,9 +79,9 @@ def send_mqtt_led(led,value,delay,delayed_value):
         client.connect(broker, 1883, 60)  # Replace with your MQTT broker address
         client.publish(topic, message)
         client.disconnect()    
-        response= "Message sent to MQTT broker successfully"
+        response= {"Message_p2":"MQTT Message for signal light sent to broker successfully"}
         sent=True
     except:
-        response= "Cannot connect to MQTT broker"
+        response= {"Error_p2.2":"Cannot connect to broker for MQTT Message for signal light"}
     
     return sent, response

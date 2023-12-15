@@ -49,6 +49,7 @@ def user_role_condition(user, door):
     else:
         door_access = False
         door_response="The employee role or the accessible cabinet is not defined."
+    door_response={"Message_r":door_response}
     return door_access,door_response
 
 
@@ -131,64 +132,64 @@ def access_shift(user):
     elif current_user_shift =="Early":
         if early_shift:
             access = True
-            response = "You are on your shift. "
+            response = {"Message_s":"You are on your shift. "}
         else:
             if not early_passed:
                 access = True
-                response = "You are on your extra time for today's shift. "
+                response = {"Message_s":"You are on your extra time for today's shift. "}
             else:
                 access = False
-                response = "You are not on your shift. "
+                response = {"Message_s":"You are not on your shift. "}
     
     elif current_user_shift =="Late":
         if late_shift:
             access = True
-            response = "You are on your shift. "
+            response = {"Message_s":"You are on your shift. "}
         else:
             if not late_passed:
                 access = True
-                response = "You are on your extra time for today's shift. "
+                response = {"Message_s":"You are on your extra time for today's shift. "}
             else:
                 access = False
-                response = "You are not on your shift. "
+                response = {"Message_s":"You are not on your shift. "}
     
     elif current_user_shift =="Night":
         if night_shift:
             access = True
-            response = "You are on your shift. "
+            response = {"Message_s":"You are on your shift. "}
         else:
             if not night_passed:
                 access = True
-                response = "You are on your extra time for today's shift. "
+                response = {"Message_s":"You are on your extra time for today's shift. "}
             else:
                 access = False
-                response = "You are not on your shift. "
+                response = {"Message_s":"You are not on your shift. "}
     
     elif current_user_shift =="Normal":
         if normal_shift:
             access = True
-            response = "You are on your shift. "
+            response = {"Message_s":"You are on your shift. "}
         else:
             if not normal_passed:
                 access = True
-                response = "You are on your extra time for today's shift. "
+                response = {"Message_s":"You are on your extra time for today's shift. "}
             else:
                 access = False
-                response = "You are not on your shift. "
+                response = {"Message_s":"You are not on your shift. "}
     else:
         access=False
-        response= "You're shift is not defined in the database. "
+        response= {"Error_s":"You're shift is not defined in the database."}
     return access,response
 
 
 def access_checker(user, door):
-    response = '-'
+    response = {}
     access = False
     this_user = user
     this_door = Door.objects.get(pk=door.pk)
     profile = UserProfile.objects.get(user=this_user)
     if this_door is not None and this_user is not None:
-        door_access, door_response = user_role_condition(user=this_user, door=this_door)
+        door_access, role_response = user_role_condition(user=this_user, door=this_door)
         response_bereich = "-"
         shift_access, response_shift = access_shift(user=this_user)
         door_status_access, door_status_response = Check_door_status(door=this_door)
@@ -197,19 +198,24 @@ def access_checker(user, door):
         
         if profile.bereich.upper() == this_door.rack.cabinet.bereich.upper():
             bereich_access = True
-            response_bereich=f"You have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
+            response_bereich={"Message_b":f"You have access on this area (Bereich: {this_door.rack.cabinet.bereich})."}
         else:
-            response_bereich = f"You DO NOT have access on this area (Bereich: {this_door.rack.cabinet.bereich}). "
+            response_bereich = {"Message_b":f"You DO NOT have access on this area (Bereich: {this_door.rack.cabinet.bereich})."}
         # here the conditions are considered and the access is granted. If is_safe function returns access=False: here must the is_safe_access be in the conditions below.
         if shift_access and bereich_access and door_access and door_status_access:
             access = True
         else:
             access = False
             #TODO: a log that gets the data of cabinet, rack, door, user, response, datetime that saves into another model
-        response = response_shift+response_bereich+door_response+door_status_response+is_safe_response
+        
+        response.update(door_status_response)
+        response.update(role_response)
+        response.update(response_bereich)
+        response.update( response_shift)
+        response.update(is_safe_response)
     else:
         access = False
-        response = "no door or user found"
+        response = {"Error":"no door or user found"}
     return access, response
 
     #TODO: A function of logging the event should be added to the end of this function
