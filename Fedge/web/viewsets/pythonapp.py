@@ -15,6 +15,7 @@ from ..mainmodels.cabinetlevel.doors import Door
 from ..mainmodels.cabinetlevel.cabinets import Cabinet,Rack
 from ..mainmodels.functionalities.mqtt_publish import send_mqtt_led
 from ..mainmodels.functionalities.door_status import led_status_find
+from django.utils import timezone
 
 class MqttMiddleware(viewsets.ModelViewSet):
     queryset = Device.objects.all()
@@ -209,7 +210,10 @@ class MqttMiddleware(viewsets.ModelViewSet):
                             ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"], time = data["Time"], valid=True)
                             #This will check for existing request for this door
                             try:
-                                request = Request.objects.get(door= door, sent_to_frontend=False,cancelled_by_frontend=False,button_pushed=False, access=True)
+                                ### Here just checks for the request in the last one minute
+                                current_time = timezone.now()
+                                start_time = current_time - timezone.timedelta(minutes=1)
+                                request = Request.objects.filter(door= door, sent_to_frontend=False,cancelled_by_frontend=False,button_pushed=False, access=True, time__range=[start_time,current_time]).latest("time")
                             except:
                                 pass
                             if request is not None:

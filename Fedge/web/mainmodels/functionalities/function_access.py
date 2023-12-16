@@ -202,7 +202,7 @@ def access_checker(user, door):
         else:
             response_bereich = {"Message_b":f"You DO NOT have access on this area (Bereich: {this_door.rack.cabinet.bereich})."}
         # here the conditions are considered and the access is granted. If is_safe function returns access=False: here must the is_safe_access be in the conditions below.
-        if shift_access and bereich_access and door_access and door_status_access:
+        if shift_access and bereich_access and door_access and door_status_access and is_safe_access:
             access = True
         else:
             access = False

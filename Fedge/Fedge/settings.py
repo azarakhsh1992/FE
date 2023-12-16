@@ -153,6 +153,7 @@ DATABASES = {
         'USER': 'fedge',
         'PASSWORD': '75401614',
         'HOST': 'localhost',  # Set to the address of your database
+        # 'HOST': '127.0.0.1',  # Set to the address of your database
         'PORT': '5432',  # Leave as an empty string to use the default port
     }
 }

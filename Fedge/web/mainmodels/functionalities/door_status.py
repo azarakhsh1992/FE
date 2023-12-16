@@ -28,7 +28,7 @@ def is_safe(this_door):
             temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_A_bottom')
             critical_value3 = temperaturesensor3.critical_value
         except:
-            response = {'Error': 'Temperature sensor not found'}
+            response = {'Error_safety1': 'Temperature sensor not found'}
     elif rack == "Edge_B":
         try:
             temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_B_top')
@@ -38,7 +38,7 @@ def is_safe(this_door):
             temperaturesensor3= TemperatureSensor.objects.get(plc=plc, measuring_environment='Edge_B_bottom')
             critical_value3 = temperaturesensor3.critical_value
         except:
-            response = {'Error': 'Temperature sensor not found'}
+            response = {'Error_safety1': 'Temperature sensor not found'}
     elif rack == "Network":
         try:
             temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_environment='Network')
@@ -48,7 +48,7 @@ def is_safe(this_door):
             temperaturesensor3= temperaturesensor1
             critical_value3 = temperaturesensor3.critical_value
         except:
-            response = {'Error': 'Temperature sensor not found'}
+            response = {'Error_safety1': 'Temperature sensor not found'}
     elif rack == "Energy":
         try:
             temperaturesensor1= TemperatureSensor.objects.get(plc=plc, measuring_environment='Energy')
@@ -58,7 +58,7 @@ def is_safe(this_door):
             temperaturesensor3= temperaturesensor1
             critical_value3 = temperaturesensor3.critical_value
         except:
-            response = {'Error': 'Temperature sensor not found'}
+            response = {'Error_safety1': 'Temperature sensor not found'}
 
     if temperaturesensor1 is not None and temperaturesensor2 is not None and temperaturesensor3 is not None:
         try:
@@ -79,18 +79,23 @@ def is_safe(this_door):
             sensor_validity2 = latest_value_obj2.valid
             sensor_validity3 = latest_value_obj3.valid
         else:
-            response = {"Error":"No Temperature sensor data available."}
+            response = {"Error_safety2":"No Temperature sensor data available."}
             
         if type(sensor_value1)=="float" and type(sensor_value2)=="float" and type(sensor_value3)=="float":
             
             if sensor_validity1 and sensor_validity2 and sensor_validity3:
                 if sensor_value1 < critical_value1 and sensor_value2 < critical_value2 and sensor_value3 < critical_value3:
-                    response= {"message":"The door is safe to open."}
+                    response= {"message_safety1":"The door is safe to open."}
                     access = True
+                else:
+                    response= {"message_safety1":"The door is not safe to open."}
+                    # this condition determines if the door should stay close when the temperature is above the critical value
+                    access = True
+                    # access = False
             else:
-                response= {"Error":"Invalid sensor data."}
+                response= {"Error_safety3":"Invalid sensor data."}
         else:
-            response={"Error":"Wrong data type of the sensor values."}
+            response={"Error_safety4":"Wrong data type of the sensor values."}
     else:
         return access, response
 
