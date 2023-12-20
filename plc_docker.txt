@@ -1,0 +1,22 @@
+winscp for explorer in the PLC environment
+
+
+upload the docker ipk to software uploads
+
+after installation of docker: assign the sd card storage to docker files and space needed for docker:
+
+1- cd /etc/docker
+2- nano daemon.json
+3- edit the json  for the "data-root":"/media/<name of sd card>/docker 
+
+for connecting to the internet through wifi on the laptop:
+
+1- share the internet from the wifi to Ethernet1
+configure the network on the PLC as such:
+2- ip address in the range of laptop ethernet; eg. 192.168.137.12
+3- set Default Gateway after the laptop Ethernet IP address ( it uses DHCP server on windows to get the ip address and DNS
+in the internet, so it uses laptop ethernet port as gateway to reach DHCP server )
+4- for DNS resolving we use the ip address of the laptop ethernet to set a New Server ip
+5- on routing we enable the IP Forwarding
+
+NO need to have a static route to gateway
