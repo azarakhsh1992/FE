@@ -26,11 +26,11 @@ import ast
 class RequestViewset(viewsets.ModelViewSet):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
-    # authentication_classes = [TokenAuthentication]
-    # permission_classes=[IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    permission_classes=[IsAuthenticated]
 
-    # @action(methods=['POST'], detail=False, authentication_classes = [TokenAuthentication], permission_classes=[IsAuthenticated])
-    @action(methods=['POST'], detail=False)
+    @action(methods=['POST'], detail=False, authentication_classes = [TokenAuthentication], permission_classes=[IsAuthenticated])
+    # @action(methods=['POST'], detail=False)
     def access_request(self, request):
         user = request.data['user']
         userobj = User.objects.get(username=user)
@@ -82,16 +82,16 @@ class RequestViewset(viewsets.ModelViewSet):
                 response['Messages'].update(response1)
                 eventreq.description=response
                 eventreq.save()
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_200_OK)
         else:
             response = {'message': "User's data not Valid "}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=["POST"], detail=False)
     def open_door(self, request):
-        # req_frontend = request.data['request']
-        # req_id = req_frontend['id']
-        req_id = request.data['id']
+        req_frontend = request.data['request']
+        req_id = req_frontend['id']
+        # req_id = request.data['id']
         try:
             obj_req = Request.objects.get(id=req_id)
             door = obj_req.door
@@ -142,9 +142,9 @@ class RequestViewset(viewsets.ModelViewSet):
         
     @action(methods=["POST"], detail=False)
     def cancelling_by_frontend(self, request):
-        # cancelled_req = request.data['request']
-        # cancelled_id = cancelled_req['id']
-        cancelled_id = request.data['id']
+        cancelled_req = request.data['request']
+        cancelled_id = cancelled_req['id']
+        # cancelled_id = request.data['id']
         try:
             obj_req = Request.objects.get(id=cancelled_id)
             door=obj_req.door

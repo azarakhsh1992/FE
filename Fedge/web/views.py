@@ -32,8 +32,8 @@ class UserViewset(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowAny]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [AllowAny]
     @action(methods=['POST'], detail=False)
     def profiles(self, request):
         if 'profile' in request.data:
