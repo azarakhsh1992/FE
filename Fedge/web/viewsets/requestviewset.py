@@ -47,9 +47,9 @@ class RequestViewset(viewsets.ModelViewSet):
                             cancelled_by_frontend=False, sent_to_plc=False)
                 serialized_data = RequestSerializer(eventreq)
                 req_id = serialized_data.data.get('id')
-                response = {'Messages': accessresponse,
-                            'Access':access,
-                            'ID': req_id}
+                response = {'message': accessresponse,
+                            'access':access,
+                            'id': req_id}
                 try:
                     led = LED.objects.get(door=door)
                     current_led_value = led_status_find(door=door)
@@ -58,7 +58,7 @@ class RequestViewset(viewsets.ModelViewSet):
                 except:
                     response1 = {'Error_p2.3': 'could not turn on the signal lamp'}
                 userlog = UserLog.objects.create(user=userobj, request=eventreq)
-                response['Messages'].update(response1)
+                response['message'].update(response1)
                 eventreq.description=response
                 eventreq.save()
                 return Response(response, status=status.HTTP_200_OK)
@@ -69,9 +69,9 @@ class RequestViewset(viewsets.ModelViewSet):
                             cancelled_by_frontend=False, sent_to_plc=False)
                 serialized_data = RequestSerializer(eventreq)
                 req_id = serialized_data.data.get('id')
-                response = {'Messages': accessresponse,
-                            'Access':access,
-                            'ID': req_id}
+                response = {'message': accessresponse,
+                            'access':access,
+                            'id': req_id}
                 try:
                     led = LED.objects.get(door=door)
                     current_led_value = led_status_find(door=door)
@@ -79,7 +79,7 @@ class RequestViewset(viewsets.ModelViewSet):
                     
                 except:
                     response1 = {'Error_p2.3': 'could not turn on the signal lamp'}
-                response['Messages'].update(response1)
+                response['message'].update(response1)
                 eventreq.description=response
                 eventreq.save()
                 return Response(response, status=status.HTTP_200_OK)
@@ -163,7 +163,7 @@ class RequestViewset(viewsets.ModelViewSet):
                     response = {'message_request':'request expired'}
                 
                 new_description = ast.literal_eval(obj_req.description)
-                new_description['Messages'].update(response)
+                new_description['message'].update(response)
                 obj_req.description = new_description
                 obj_req.save()
                 return Response(response,status=status.HTTP_200_OK)
