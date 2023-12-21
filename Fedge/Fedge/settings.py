@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     "django_apscheduler",
     'web',
-    'sslserver',
+    # 'sslserver',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -669,14 +669,14 @@ class Monitoring(viewsets.ModelViewSet):
                     
                     
             response = {
-                "Edge_A Front":payload_AF,
-                "Edge_A Rear": payload_AR,
+                "Edge_A_Front":payload_AF,
+                "Edge_A_Rear": payload_AR,
                 "Edge_B_Front": payload_BF,
-                "Edge_B Rear": payload_BR,
-                "Network": payload_N,
-                "Energy": payload_E,
-                "Cooling Front": payload_CF,
-                "Cooling Rear": payload_CR
+                "Edge_B_Rear": payload_BR,
+                "Network_Network": payload_N,
+                "Energy_Energy": payload_E,
+                "Cooling_Front": payload_CF,
+                "Cooling_Rear": payload_CR
             }
 
             return Response(response, status=status.HTTP_200_OK)
