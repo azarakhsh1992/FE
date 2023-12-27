@@ -107,6 +107,7 @@ class RequestViewset(viewsets.ModelViewSet):
                 if latch_published_status:
                     obj_req.sent_to_plc = True
                     obj_req.status = "access granted - Door opened"
+                    obj_req.sent_to_frontend =True
                     obj_req.save()
                 else:
                     obj_req.status = "access granted - Door could not be opened - MQTT message not published"
@@ -148,7 +149,7 @@ class RequestViewset(viewsets.ModelViewSet):
         try:
             obj_req = Request.objects.get(id=cancelled_id)
             door=obj_req.door
-            if obj_req.cancelled_by_frontend == False:
+            if obj_req.cancelled_by_frontend == False and obj_req.sent_to_frontend==False:
                 obj_req.cancelled_by_frontend = True
                 obj_req.status = "request expired - Door Button not pushed"
                 obj_req.save()
@@ -165,6 +166,7 @@ class RequestViewset(viewsets.ModelViewSet):
                 new_description = ast.literal_eval(obj_req.description)
                 new_description['message'].update(response)
                 obj_req.description = new_description
+                obj_req.sent_to_frontend =True
                 obj_req.save()
                 return Response(response,status=status.HTTP_200_OK)
             else:
@@ -219,12 +221,3 @@ class RequestViewset(viewsets.ModelViewSet):
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-        
-        
-        
-        
-        
-        
-        
-        

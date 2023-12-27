@@ -17,7 +17,7 @@ def is_safe(this_door):
     temperaturesensor1 = None
     temperaturesensor2 = None
     temperaturesensor3 = None
-    access = False
+    access = True
     
     if rack == "Edge_A":
         try:

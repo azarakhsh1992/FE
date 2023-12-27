@@ -22,6 +22,7 @@ class Monitoring(viewsets.ModelViewSet):
         try:
             current_time =timezone.now()
             qrcode = data["qr"]
+            door = Door.objects.get(qr=qrcode)
             this_plc = PLC.objects.get(cabinet = Door.objects.get(qr=qrcode).rack.cabinet)
             payload_temp ={}
             payload_energy ={}
@@ -35,6 +36,7 @@ class Monitoring(viewsets.ModelViewSet):
             payload_tempB = {}
             payload_tempN = {}
             payload_tempE = {}
+            payload_scanned_door ={"Cabinet": door.rack.cabinet.profinet_name, "Rack" : door.rack.name, "Door": door.direction}
 
             for sensor in energy_sensors:
                 values = EnergySensorValue.objects.filter(energysensor=sensor, valid=True, time__lte=current_time)
@@ -99,7 +101,7 @@ class Monitoring(viewsets.ModelViewSet):
                 if values.exists():
                     latest_value_sensors = values.latest("time")
                     payload_doorsensor.update({
-                        sensor.door.rack.name+'_'+sensor.door.direction: {
+                        (sensor.door.rack.name+'_'+sensor.door.direction).replace("_Network","").replace("_Energy",""): {
                             "Time": latest_value_sensors.time,
                             "Current": latest_value_sensors.value,
                             "Validity": latest_value_sensors.valid
@@ -108,7 +110,7 @@ class Monitoring(viewsets.ModelViewSet):
                 else:
                     print(f"No data for door sensor {sensor}")
 
-            response = {"Temperature":payload_temp, "Energy":payload_energy, "Door_Sensors": payload_doorsensor}
+            response = {"Temperature":payload_temp, "Energy":payload_energy, "Door_Sensors": payload_doorsensor,"scanned_door": payload_scanned_door}
             return Response(response, status=status.HTTP_200_OK)
         
         except Exception as e:
@@ -669,14 +671,14 @@ class Monitoring(viewsets.ModelViewSet):
                     
                     
             response = {
-                "Edge_A Front":payload_AF,
-                "Edge_A Rear": payload_AR,
+                "Edge_A_Front":payload_AF,
+                "Edge_A_Rear": payload_AR,
                 "Edge_B_Front": payload_BF,
-                "Edge_B Rear": payload_BR,
+                "Edge_B_Rear": payload_BR,
                 "Network": payload_N,
                 "Energy": payload_E,
-                "Cooling Front": payload_CF,
-                "Cooling Rear": payload_CR
+                "Cooling_Front": payload_CF,
+                "Cooling_Rear": payload_CR
             }
 
             return Response(response, status=status.HTTP_200_OK)

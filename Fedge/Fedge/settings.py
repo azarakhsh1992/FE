@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-3ao8j^=pbx#9k11i^ief0za2c7tw8(ze5-n^)@a98-#22ic4&b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['home','127.0.0.1','localhost','192.168.1.1','192.168.88.251','0.0.0.0','192.168.108.160']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -102,20 +102,28 @@ LOGGING = {
     },
 }
 
-CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
+# CORS_ORIGIN_WHITELIST = ['http://localhost:3000','http://192.168.1.150:3000']
 
 WSGI_APPLICATION = 'Fedge.wsgi.application'
-CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://localhost:7005",
-    "https://localhost",
-    "https://localhost:3000",
-    "https://192.168.88.251:3000",
-    "http://192.168.88.251:3000",
-    "https://0.0.0.0:3000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://192.168.1.150:3000",
+#     "https://192.168.1.150:3000",
+#     "https://localhost:7005",
+#     "https://localhost",
+#     "https://localhost:3000",
+#     "https://192.168.88.251:3000",
+#     "http://192.168.88.251:3000",
+#     "https://0.0.0.0:3000",
+#     "http://192.168.1.250",
+#     "https://192.168.1.10:3000",
+#     "https://192.168.1.10",
+#     "http://192.168.1.10:3000",
+#     "http://192.168.137.1:3000",
+#     "htt://192.168.1.10",
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = [
     'Content-Type',
     'Authorization'
