@@ -39,3 +39,6 @@ VITE_API_URL=http://127.0.0.1:8000/api
 
 for connecting frontend and backend:
 npm install axios
+
+
+python manage.py runsslserver --certificate cert.pem --key key.pem 0.0.0.0:8000
