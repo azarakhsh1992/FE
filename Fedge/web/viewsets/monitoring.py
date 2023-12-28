@@ -637,9 +637,9 @@ class Monitoring(viewsets.ModelViewSet):
                 if filtered_values.exists():
                     for i in range(0,10):
                         try:
-                            door_status = filtered_values[i].value
-                            time1 = filtered_values[i].time
-                            time2 = filtered_values[i+1].time
+                            door_status = filtered_values[i+1].value
+                            time1 = filtered_values[i+1].time
+                            time2 = filtered_values[i].time
                             payload.update({i+1:{
                                 "status":door_status,
                                 "from":time1,
