@@ -1,5 +1,6 @@
 winscp for explorer in the PLC environment
 
+POINT: When the connection to the broker is nto established correctly, the PLC program will not work correctly.
 
 upload the docker ipk to software uploads
 

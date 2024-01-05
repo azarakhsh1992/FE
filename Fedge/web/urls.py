@@ -7,7 +7,6 @@ from django.urls import path, re_path
 
 
 from .viewsets.cabinetanddoor import CabinetViewset, DoorViewset
-from .viewsets.moduleviewsets import ContainerViewset
 from .viewsets.requestviewset import RequestViewset
 from .viewsets.pythonapp import MqttMiddleware
 from .viewsets.testsome import test_access
@@ -20,7 +19,6 @@ router.register(r'cabinet', CabinetViewset)
 router.register(r'doors', DoorViewset)
 router.register(r'employeegroup', views.EmployeeGroupViewset)
 router.register(r'shifts', views.ShiftsViewset)
-router.register(r'containers', ContainerViewset)
 router.register(r'requests', RequestViewset)
 router.register(r'mqttmiddleware', MqttMiddleware)
 router.register(r'test_access', test_access)

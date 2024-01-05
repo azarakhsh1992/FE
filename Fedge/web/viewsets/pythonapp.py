@@ -23,18 +23,18 @@ class MqttMiddleware(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False)
     def temp(self,request):
         data = request.data
-        if "T"and "Tmin" and "Tmax" and "RH" and "V" and "Time" in data:
+        if "profinet_name" and "T"and "Tmin" and "Tmax" and "RH" and "validity" and "Time" in data:
             try:
                 data_profinet = data['profinet_name']
-                # response_data={data["T"],data["Tmin"],data["Tmax"],data["RH"],data["V"],data["Time"]}
+                # response_data={data["T"],data["Tmin"],data["Tmax"],data["RH"],data["validity"],data["Time"]}
                 tsensor = TemperatureSensor.objects.get(profinet_name=data_profinet)
                 try:
-                    if data["V"] == "True":
+                    if data["validity"] == "True":
                         TemperatureSensorValue.objects.create(temperaturesensor=tsensor, valid = True,\
                             tempvalue=data["T"],tempvalue_min=data["Tmin"],tempvalue_max=data["Tmax"],humidvalue=data["RH"],time=data["Time"])
                         response = {"message":"success"}
                         return Response(response, status=status.HTTP_200_OK)
-                    elif data["V"] == "False":
+                    elif data["validity"] == "False":
                         TemperatureSensorValue.objects.create(temperaturesensor=tsensor,tempvalue=data["T"],tempvalue_min=data["Tmin"],tempvalue_max=data["Tmax"],humidvalue=data["RH"]\
                             ,valid=False,time=data["Time"])
                         response = {"message": "success, Validity:False"}
@@ -59,18 +59,18 @@ class MqttMiddleware(viewsets.ModelViewSet):
     def energy(self,request):
         data = request.data
         print(data)
-        if "E" and "UnitE" and "P" and "UnitP" and "V" and "Time" in data:
+        if "profinet_name" and "E" and "UnitE" and "P" and "UnitP" and "validity" and "Time" in data:
             try:
                 data_profinet = data['profinet_name']
-                # response_data={data["T"],data["Tmin"],data["Tmax"],data["RH"],data["V"],data["Time"]}
+                # response_data={data["T"],data["Tmin"],data["Tmax"],data["RH"],data["validity"],data["Time"]}
                 esensor = EnergySensor.objects.get(profinet_name=data_profinet)
                 try:
-                    if data["V"] == "True":
+                    if data["validity"] == "True":
                         EnergySensorValue.objects.create(energysensor=esensor, valid = True,\
                             energy_value=data["E"],energy_unit=data["UnitE"],power_value=data["P"],power_unit=data["UnitP"],time=data["Time"])
                         response = {"message":"success"}
                         return Response(response, status=status.HTTP_200_OK)
-                    elif data["V"] == "False":
+                    elif data["validity"] == "False":
                         EnergySensorValue.objects.create(energysensor=esensor,energy_value=data["E"],energy_unit=data["UnitE"],power_value=data["P"],power_unit=data["UnitP"]\
                             ,valid=False,time=data["Time"])
                         print("here")
@@ -94,10 +94,10 @@ class MqttMiddleware(viewsets.ModelViewSet):
     @csrf_exempt 
     @action(methods=['POST'],detail=False)
     def dido(self, request):
-        # response_data={data["value"],data["V"],data["Time"]}
+        # response_data={data["value"],data["validity"],data["Time"]}
         data = request.data
         
-        if "value" and "V" and "Time" in data:
+        if "profinet_name" and "value" and "validity" and "Time" in data:
             try:
                 device_moduletype= Device.objects.get(profinet_name=data["profinet_name"]).module_type
                 profinet_name_data = data["profinet_name"]
@@ -107,7 +107,7 @@ class MqttMiddleware(viewsets.ModelViewSet):
                     try:
                         doorsensor = DoorSensor.objects.get(profinet_name=profinet_name_data)
                         value=data["value"]
-                        if data ["V"] == "True":
+                        if data ["validity"] == "True":
                             DoorsensorValue.objects.create(doorsensor=doorsensor,value=value,valid=True, time = data["Time"])
                             if value=="open":
                                 try:
@@ -131,7 +131,7 @@ class MqttMiddleware(viewsets.ModelViewSet):
                             response = {"message": "success"}
                             
                             return Response(response, status=status.HTTP_200_OK)
-                        elif data ["V"] == "False":
+                        elif data ["validity"] == "False":
                             DoorsensorValue.objects.create(doorsensor=doorsensor,value=value,valid=False, time = data["Time"])
                             response = {"message": "success: Validity:False"}
                             return Response(response, status=status.HTTP_200_OK)
@@ -143,11 +143,11 @@ class MqttMiddleware(viewsets.ModelViewSet):
                     
                     try:
                         this_latch = Latch.objects.get(profinet_name=profinet_name_data)
-                        if data["V"] == "True":
+                        if data["validity"] == "True":
                             LatchValue.objects.create(latch=this_latch, value=data["value"], time = data["Time"], valid=True)
                             response = {"message": "success"}
                             return Response(response, status=status.HTTP_200_OK)
-                        elif data["V"] == "False":
+                        elif data["validity"] == "False":
                             LatchValue.objects.create(latch=this_latch,value=data["value"],valid=False, time = data["Time"])
                             response = {"message": "success, Validity:False"}
                             return Response(response, status=status.HTTP_200_OK)
@@ -158,11 +158,11 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 elif device_moduletype == "Latch Sensor":
                     try:
                         this_latchsensor = LatchSensor.objects.get(profinet_name=profinet_name_data)
-                        if data ["V"] == "True":
+                        if data ["validity"] == "True":
                             LatchSensorValue.objects.create(latchsensor=this_latchsensor,value=data["value"], time = data["Time"], valid=True)
                             response = {"message": "success"}
                             return Response(response, status=status.HTTP_200_OK)
-                        elif data["V"] == "False":
+                        elif data["validity"] == "False":
                             LatchSensorValue.objects.create(latchsensor=this_latchsensor,value=data["value"],valid=False, time = data["Time"])
                             response = {"message": "success, Validity:False"}
                             return Response(response, status=status.HTTP_200_OK)
@@ -173,11 +173,17 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 elif device_moduletype == "LED":
                     try:
                         this_led = LED.objects.get(profinet_name=profinet_name_data)
-                        if data ["V"] == "True":
-                            LedValue.objects.create(led=this_led,value=data["value"], time = data["Time"], valid=True)
+                        print(this_led.port)
+                        if data ["validity"] == "True":
+                            print(data["value"], type(data["value"]))
+                            int_value = int(data["value"])
+                            print(int(data["value"]), type(int(data["value"])))
+                            LedValue.objects.create(led=this_led,value=int(data["value"]), time = data["Time"], valid=True)
+                            print("HEREES")
+                            print(this_led.rack)
                             response = {"message": "success"}
                             return Response(response, status=status.HTTP_200_OK)
-                        elif data ["V"] == "False":
+                        elif data ["validity"] == "False":
                             LedValue.objects.create(led=this_led,value=data["value"],valid=False, time = data["Time"])
                             response = {"message": "success, Validity:False"}
                             return Response(response, status=status.HTTP_200_OK)
@@ -189,11 +195,11 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 # elif device_moduletype == "LED":
                 #     try:
                 #         this_led = LED.objects.get(profinet_name=profinet_name_data)
-                #         if data ["V"] == "True":
+                #         if data ["validity"] == "True":
                 #             LedValue.objects.create(led=this_led,value=data["value"], time = data["Time"], valid=True)
                 #             response = {"message": "success"}
                 #             return Response(response, status=status.HTTP_200_OK)
-                #         elif data ["V"] == "False":
+                #         elif data ["validity"] == "False":
                 #             LedValue.objects.create(led=this_led,value=data["value"],valid=False, time = data["Time"])
                 #             response = {"message": "success, Validity:False"}
                 #             return Response(response, status=status.HTTP_200_OK)
@@ -206,7 +212,7 @@ class MqttMiddleware(viewsets.ModelViewSet):
                     try:
                         doorbtn = DoorButton.objects.get(profinet_name=profinet_name_data)
                         door = doorbtn.door
-                        if data ["V"] == "True":
+                        if data ["validity"] == "True":
                             ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"], time = data["Time"], valid=True)
                             #This will check for existing request for this door
                             try:
@@ -223,7 +229,7 @@ class MqttMiddleware(viewsets.ModelViewSet):
                                 pass
                             response = {"message": "success"}
                             return Response(response, status=status.HTTP_200_OK)
-                        elif data ["V"] == "False":
+                        elif data ["validity"] == "False":
                             ButtonValue.objects.create(doorbutton=doorbtn, valid=False, time = data["Time"],value=data["value"])
                             response = {"message": "success, Validity:False"}
                             return Response(response, status=status.HTTP_200_OK)

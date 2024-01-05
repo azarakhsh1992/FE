@@ -43,6 +43,6 @@ class test_access(viewsets.ModelViewSet):
         except:
             print("Latch not found")
         if access:
-            send_mqtt_latch(latch=latch, value=True, delay=2, delayed_value=False)
+            send_mqtt_latch(latch=latch, value="open", delay=2, delayed_value="close")
         response={"access": access, "message": message}
         return Response(response,status=status.HTTP_200_OK)

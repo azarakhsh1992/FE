@@ -91,7 +91,6 @@ class RequestViewset(viewsets.ModelViewSet):
     def open_door(self, request):
         req_frontend = request.data['request']
         req_id = req_frontend['id']
-        # req_id = request.data['id']
         try:
             obj_req = Request.objects.get(id=req_id)
             door = obj_req.door
@@ -101,7 +100,7 @@ class RequestViewset(viewsets.ModelViewSet):
                             'message': 'door is open, please confirm service-log after you are done.'}
                 try:
                     latch_published_status, response1=send_mqtt_latch(latch=Latch.objects.get(door=door),\
-                        value=True, delay=5, delayed_value= False)
+                        value="open", delay=5, delayed_value= "close")
                 except:
                     response1={'message': 'no Latch found'}
                 if latch_published_status:
@@ -145,7 +144,6 @@ class RequestViewset(viewsets.ModelViewSet):
     def cancelling_by_frontend(self, request):
         cancelled_req = request.data['request']
         cancelled_id = cancelled_req['id']
-        # cancelled_id = request.data['id']
         try:
             obj_req = Request.objects.get(id=cancelled_id)
             door=obj_req.door

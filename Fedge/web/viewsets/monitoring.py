@@ -9,7 +9,7 @@ from ..mainmodels.cabinetlevel.doors import Door
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.db.models import Min, Max, Avg
-
+import json
 
 
 class Monitoring(viewsets.ModelViewSet):
@@ -651,7 +651,6 @@ class Monitoring(viewsets.ModelViewSet):
                                 "from":"-",
                                 "to":"-",
                                 }})
-                            
                     if sensor.door.rack.name=="Edge_A" and sensor.door_direction=="Front":
                         payload_AF.update(payload)
                     if sensor.door.rack.name=="Edge_A" and sensor.door_direction=="Rear":
@@ -680,7 +679,6 @@ class Monitoring(viewsets.ModelViewSet):
                 "Cooling_Front": payload_CF,
                 "Cooling_Rear": payload_CR
             }
-
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
             response = {"message": "Data does not match"}

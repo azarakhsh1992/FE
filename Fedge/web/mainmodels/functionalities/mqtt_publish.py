@@ -14,7 +14,7 @@ def send_mqtt_latch(latch,value,delay,delayed_value):
     try:
         broker=os.environ["BROKER_IP"]
     except:
-        broker="localhost"
+        broker="192.168.137.1"
     
     # broker="192.168.1.1"
     profinet_name=''
@@ -30,7 +30,7 @@ def send_mqtt_latch(latch,value,delay,delayed_value):
     except:
         response= {"Error_p1.1":"Latch not found"}
         
-    message= f"LATCH;{profinet_name};D;{delay};{value};{delayed_value};{current_time}".replace("True","TRUE").replace("False","FALSE")
+    message= f"LATCH;{profinet_name};delay_time/value/delayed_value/time;{delay};{value};{delayed_value};{current_time}".replace("True","TRUE").replace("False","FALSE")
     try:
         client = mqtt.Client()
         client.connect(broker, 1883, 60)  # Replace with your MQTT broker address
@@ -56,7 +56,7 @@ def send_mqtt_led(led,value,delay,delayed_value):
     try:
         broker = os.environ["BROKER_IP"]
     except:
-        broker="localhost"
+        broker="192.168.137.1"
         
     # broker='192.168.1.1'
     profinet_name=''
@@ -73,7 +73,7 @@ def send_mqtt_led(led,value,delay,delayed_value):
     except:
         response= {"Error_p2.1":"LED not found"}
 
-    message= f"LED;{profinet_name};D;{delay};{value};{delayed_value};{current_time}"
+    message= f"LED;{profinet_name};delay_time/value/delayed_value/time;{delay};{value};{delayed_value};{current_time}"
     try:
         client = mqtt.Client()
         client.connect(broker, 1883, 60)  # Replace with your MQTT broker address

@@ -68,6 +68,7 @@ class FullGroupShiftSerializer(serializers.ModelSerializer):
         serialized_data = serializer.data
         firstnames = [user.get('firstname') for user in serialized_data]
         return firstnames
+
 #TODO: this serializers must be modified
 
 
