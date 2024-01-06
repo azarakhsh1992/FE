@@ -12,7 +12,7 @@ class Device(models.Model):
     #TODO: profinet name of the PLC must be checked; if Gerät and BMK is for Device, it should be editted as PLC to be Funktionseinheit
     #TODO: module inheritance works, Form class must be created for each module to implement uniqueness conditions
     rack= models.ForeignKey(Rack, editable=True, related_name="device", null=False, on_delete=models.CASCADE)
-    geraet = models.CharField(max_length=3, default=None)
+    geraet = models.CharField(max_length=3, default='---')
     bmk = models.CharField(max_length=4, default=None)
     serial_number = models.CharField(max_length=50, unique=True)
     manufacturer = models.CharField(max_length=50)
@@ -23,7 +23,7 @@ class Device(models.Model):
     class Meta:
         unique_together = ('port', 'io_module','plc')
 
-
+        
     def save(self, *args, **kwargs):
         self.geraet=self.geraet.upper()
         self.bmk=self.bmk.upper()
@@ -31,7 +31,6 @@ class Device(models.Model):
         super(Device, self).save(*args, **kwargs)
     def __str__(self):
         return self.profinet_name
-
 
 
 

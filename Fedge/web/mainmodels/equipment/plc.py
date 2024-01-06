@@ -9,8 +9,8 @@ class PLC (models.Model):
     cabinet = models.OneToOneField(Cabinet, related_name='plc', on_delete=models.CASCADE)
     module_type = 'PLC'
     funktionseinheit = models.CharField(max_length=3, default=None, help_text="Funktionseinheit must have three character")
-    geraet = models.CharField(max_length=3, default=None)
-    bmk = models.CharField(max_length=4, default=None)
+    geraet = models.CharField(max_length=3, default='---')
+    bmk = models.CharField(max_length=4, default='KFU1')
     ip_address = models.GenericIPAddressField(default=None, unique=True)
     serial_number = models.CharField(max_length=32, unique=True)
     mac_address = models.CharField(max_length=32, default=None)

@@ -44,6 +44,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     # fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer", "port","rack")
     readonly_fields = list_display
 
+
 #################Devices#######################
 @admin.register(TemperatureSensor)
 class UserProfileAdmin(admin.ModelAdmin):

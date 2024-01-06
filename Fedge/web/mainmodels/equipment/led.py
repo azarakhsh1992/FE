@@ -29,7 +29,9 @@ class LED (Device):
     device_io_module = models.CharField(choices=IO_Module.choices,editable=True, max_length=8,null=False)
     device_port = models.CharField(choices=Port.choices,editable=True, max_length=4,null=False)
     def clean(self):
-        if self.rack.name in ["Edge_A","Edge_B","Cooling"] and self.door_direction not in ["Front", "Rear"]:
+        if self.rack not in Rack.objects.filter(cabinet=self.plc.cabinet) :
+            raise ValidationError(f"wrong selection: Please select this cabinet: {self.plc.cabinet.profinet_name}")
+        elif self.rack.name in ["Edge_A","Edge_B","Cooling"] and self.door_direction not in ["Front", "Rear"]:
             raise ValidationError("Wrong selection: The door must be either 'Front' or 'Rear' for this rack.")
 
         elif self.rack.name =="Energy" and self.door_direction != "Energy":
@@ -38,17 +40,23 @@ class LED (Device):
             raise ValidationError("Wrong selection: The door must be 'Network rack' since you have chosen the Network for the rack.")
         elif Door.objects.filter(direction=self.door_direction, rack=Rack.objects.get(cabinet=self.plc.cabinet, name = self.rack.name)).exists()==False:
             raise ValidationError("This door does not exist")
-        elif self.device_io_module == "DO_8" and self.device_port in ["P9", "P10", "P11", "P12", "P13", "P14", "P15", "P16"]:
-            raise ValidationError("This module only has 8 ports. Please select a port number from P1 to P8")
-        
+
         elif Device.objects.filter(port=self.device_port, io_module=self.device_io_module, plc=self.plc).exclude(pk=self.pk).exists():
-            raise ValidationError("A device with this combination of port, io_module, and plc already exists.")
+            
+            devices= Device.objects.filter(plc=self.plc).exclude(pk=self.pk)
+            x=1
+            y={}
+            for device in devices:
+                if device.io_module in ["IOL_1", "IOL_2", "IOL_3","IOL_4"]:
+                    y.update({f"{x}":{device.io_module:device.port}})
+                    x+=1
+            message= f"these ports are occupied:{y}"
+            
+            raise ValidationError(f"A device with this combination of port, io_module, and plc already exists.{message}")
         elif self.bmk!=None and len(self.bmk) != 4:
             raise ValidationError("bmk must have exactly 4 characters")
         elif self.geraet!=None and len(self.geraet) != 3:
             raise ValidationError("Geraet must have exactly 3 characters")
-
-
     def save(self, *args, **kwargs):
         self.full_clean()
         self.module_type=self.this_module_type
@@ -56,8 +64,7 @@ class LED (Device):
         self.io_module=self.device_io_module
         self.door=Door.objects.get(direction=self.door_direction, rack=Rack.objects.get(cabinet=self.plc.cabinet, name = self.rack.name))
         super(LED, self).save(*args, **kwargs)
-    # class Meta:
-    #     unique_together = ["door","rack"]
+
 
 class LedValue(TimescaleModel):
     led = models.ForeignKey(LED, on_delete=models.CASCADE, related_name='ledvalue')

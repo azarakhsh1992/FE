@@ -33,7 +33,9 @@ class TemperatureSensor(Device):
     device_port = models.CharField(choices=Port.choices,editable=True, max_length=4,null=False)
     critical_value = models.FloatField(default=70,editable=True)
     def clean(self):
-        if self.measuring_environment in ["Edge_A_top","Edge_A_middle","Edge_A_bottom"] and self.rack.name !="Edge_A":
+        if self.rack not in Rack.objects.filter(cabinet=self.plc.cabinet) :
+            raise ValidationError(f"wrong selection: Please select this cabinet: {self.plc.cabinet.profinet_name}")
+        elif self.measuring_environment in ["Edge_A_top","Edge_A_middle","Edge_A_bottom"] and self.rack.name !="Edge_A":
             raise ValidationError("Wrong selection: Rack and measuring environment do not match")
         elif self.measuring_environment in ["Edge_B_top","Edge_B_middle","Edge_B_bottom"] and self.rack.name !="Edge_B":
             raise ValidationError("Wrong selection: Rack and measuring environment do not match")
@@ -42,7 +44,15 @@ class TemperatureSensor(Device):
         elif self.measuring_environment=="Energy" and self.rack.name !="Energy":
             raise ValidationError("Wrong selection: Rack and measuring environment do not match")
         elif Device.objects.filter(port=self.device_port, io_module=self.device_io_module, plc=self.plc).exclude(pk=self.pk).exists():
-            raise ValidationError("A device with this combination of port, io_module, and plc already exists.")
+            devices= Device.objects.filter(plc=self.plc).exclude(pk=self.pk)
+            x=1
+            y={}
+            for device in devices:
+                if device.io_module in ["IOL_1", "IOL_2", "IOL_3","IOL_4"]:
+                    y.update({f"{x}":{device.io_module:device.port}})
+                    x+=1
+            message= f"these ports are occupied:{y}"
+            raise ValidationError(f"A device with this combination of port, io_module, and plc already exists.{message}")
         elif self.bmk!=None and len(self.bmk) != 4:
             raise ValidationError("bmk must have exactly 4 characters")
         elif self.geraet!=None and len(self.geraet) != 3:

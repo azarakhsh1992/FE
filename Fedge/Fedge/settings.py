@@ -140,17 +140,6 @@ CORS_ALLOW_HEADERS = [
 #     },
 # }
 
-# postgres
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'fedge',
-#         'USER': 'fedge',
-#         'PASSWORD': '75401614',
-#         'HOST': 'localhost',  # Set to the address of your database
-#         'PORT': '5432',  # Leave as an empty string to use the default port
-#     }
-# }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

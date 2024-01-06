@@ -56,7 +56,15 @@ class DoorSensor(Device):
         
         
         elif Device.objects.filter(port=self.device_port, io_module=self.device_io_module, plc=self.plc).exclude(pk=self.pk).exists():
-            raise ValidationError("A device with this combination of port, io_module, and plc already exists.")
+            devices= Device.objects.filter(plc=self.plc).exclude(pk=self.pk)
+            x=1
+            y={}
+            for device in devices:
+                if device.io_module in ["DI1_16", "DI2_16", "DI_2"]:
+                    y.update({f"{x}":{device.io_module:device.port}})
+                    x+=1
+            message= f"these ports are occupied:{y}"
+            raise ValidationError(f"A device with this combination of port, io_module, and plc already exists.{message}")
         elif self.bmk!=None and len(self.bmk) != 4:
             raise ValidationError("bmk must have exactly 4 characters")
         elif self.geraet!=None and len(self.geraet) != 3:

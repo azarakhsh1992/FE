@@ -8,6 +8,7 @@ Latch sensors : 8
 Door buttons : 8
 Latches : 8
 LEDs : 8
+AC alarm sensors : 2
 
 parent profinet name for devices: 
 self.plc.cabinet.bereich+self.plc.cabinet.segment+self.plc.cabinet.anlage+self.plc.cabinet.arg_sps+self.plc.cabinet.station+self.plc.funktionseinheit
@@ -17,84 +18,86 @@ in the middleware python app= plc.profinet_name[0:15]
 added part to the parent profinet_name:
 Gerät+BMK
 
+PLC: KFU1
 
-Temperature sensors:
+Temperature sensors: BT
 
-1. Rack_Edge_A_top:
-2. Rack_Edge_A_middle:
-3. Rack_Edge_A_bottom:
-4. Rack_Edge_B_top:
-5. Rack_Edge_B_middle:
-6. Rack_Edge_B_bottom:
-7. Rack_Network:
-8. Rack_Energy:
+1. Rack_Edge_A_top: BT01
+2. Rack_Edge_A_middle: BT02
+3. Rack_Edge_A_bottom: BT03
+4. Rack_Edge_B_top: BT04
+5. Rack_Edge_B_middle: BT05
+6. Rack_Edge_B_bottom: BT06
+7. Rack_Network: BT07
+8. Rack_Energy: BT08
 
-Energy sensors:
+Energy sensors: PG
 
-1. Energy_module1:
-2. Energy_module2:
-
-
-Door sensors:
-
-1. Rack_Edge_A_Front:
-2. Rack_Edge_A_Rear:
-3. Rack_Edge_B_Front:
-4. Rack_Edge_B_Rear:
-5. Rack_AC_Front:
-6. Rack_AC_Rear:
-7. Rack_Network:
-8. Rack_Energy:
+1. Energy_module1: PG01
+2. Energy_module2: PG02
 
 
+Door sensors: BGE
 
-Latch sensors:
-
-1. Rack_Edge_A_Front:
-2. Rack_Edge_A_Rear:
-3. Rack_Edge_B_Front:
-4. Rack_Edge_B_Rear:
-5. Rack_AC_Front:
-6. Rack_AC_Rear:
-7. Rack_Network:
-8. Rack_Energy:
+1. Rack_Edge_A_Front: BGE1
+2. Rack_Edge_A_Rear: BGE2
+3. Rack_Edge_B_Front: BGE3
+4. Rack_Edge_B_Rear: BGE4
+5. Rack_AC_Front: BGE5
+6. Rack_AC_Rear: BGE6
+7. Rack_Network: BGE7
+8. Rack_Energy: BGE8
 
 
 
-Door buttons:
+Latch sensors: BGT
 
-1. Rack_Edge_A_Front:
-2. Rack_Edge_A_Rear:
-3. Rack_Edge_B_Front:
-4. Rack_Edge_B_Rear:
-5. Rack_AC_Front:
-6. Rack_AC_Rear:
-7. Rack_Network:
-8. Rack_Energy:
-
-
-Latches:
-
-1. Rack_Edge_A_Front:
-2. Rack_Edge_A_Rear:
-3. Rack_Edge_B_Front:
-4. Rack_Edge_B_Rear:
-5. Rack_AC_Front:
-6. Rack_AC_Rear:
-7. Rack_Network:
-8. Rack_Energy:
-
-
-LEDs:
-
-1. Rack_Edge_A_Front:
-2. Rack_Edge_A_Rear:
-3. Rack_Edge_B_Front:
-4. Rack_Edge_B_Rear:
-5. Rack_AC_Front:
-6. Rack_AC_Rear:
-7. Rack_Network:
-8. Rack_Energy:
+1. Rack_Edge_A_Front:BGT1
+2. Rack_Edge_A_Rear:BGT2
+3. Rack_Edge_B_Front:BGT3
+4. Rack_Edge_B_Rear:BGT4
+5. Rack_AC_Front:BGT5
+6. Rack_AC_Rear:BGT6
+7. Rack_Network:BGT7
+8. Rack_Energy:BGT8
 
 
 
+Door buttons: SF
+
+1. Rack_Edge_A_Front:SF01
+2. Rack_Edge_A_Rear:SF02
+3. Rack_Edge_B_Front:SF03
+4. Rack_Edge_B_Rear:SF04
+5. Rack_AC_Front:SF05
+6. Rack_AC_Rear:SF06
+7. Rack_Network:SF07
+8. Rack_Energy:SF08
+
+
+Latches: MB
+
+1. Rack_Edge_A_Front:MB01
+2. Rack_Edge_A_Rear:MB02
+3. Rack_Edge_B_Front:MB03
+4. Rack_Edge_B_Rear:MB04
+5. Rack_AC_Front:MB05
+6. Rack_AC_Rear:MB06
+7. Rack_Network:MB07
+8. Rack_Energy:MB08
+
+
+LEDs: PF
+
+1. Rack_Edge_A_Front:PF01
+2. Rack_Edge_A_Rear:PF02
+3. Rack_Edge_B_Front:PF03
+4. Rack_Edge_B_Rear:PF04
+5. Rack_AC_Front:PF05
+6. Rack_AC_Rear:PF06
+7. Rack_Network:PF07
+8. Rack_Energy:PF08
+
+Cooling system alarm sensors: BG
+1. ACM1: BG01
+2. ACM2: BG02
