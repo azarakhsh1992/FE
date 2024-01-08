@@ -2,7 +2,8 @@ from django.db import models
 from .plc import PLC
 from ..cabinetlevel.doors import Door
 from ..cabinetlevel.cabinets import Rack
-from ..equipment.devices import Device, TimescaleModel
+from ..equipment.devices import Device
+from ..timescale import TimescaleModel
 from django.core.exceptions import ValidationError
 
 

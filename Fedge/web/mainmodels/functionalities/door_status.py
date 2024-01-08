@@ -92,8 +92,8 @@ def is_safe(this_door):
                     # this condition determines if the door should stay close when the temperature is above the critical value
                     access = True
                     # access = False
-            else:
-                response= {"Error_safety3":"Invalid sensor data."}
+            else: 
+                response= {"Error_safety3":"Invalid sensordata."}
         else:
             response={"Error_safety4":"Wrong data type of the sensor values."}
     else:

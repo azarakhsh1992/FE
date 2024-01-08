@@ -2,7 +2,8 @@ from django.db import models
 from .plc import PLC
 from ..cabinetlevel.doors import Door
 from ..cabinetlevel.cabinets import Cabinet, Rack
-from ..equipment.devices import Device,TimescaleModel
+from ..equipment.devices import Device
+from ..timescale import TimescaleModel
 from django.core.exceptions import ValidationError
 from django import forms
 
@@ -85,7 +86,11 @@ class DoorSensor(Device):
 
 class DoorsensorValue(TimescaleModel):
     doorsensor = models.ForeignKey(DoorSensor, on_delete=models.CASCADE, related_name='doorsensorvalue',)
-    value = models.CharField(default="closed",max_length=8)
+    class Value(models.TextChoices):
+        Open = "open"
+        Close = "close"
+        No_Data = "No Data"
+    value = models.CharField(choices=Value.choices,max_length=8, default=Value.No_Data)
     valid=models.BooleanField(null=True, default=True)
     def __str__(self):
         return ('Cabinet: '+self.doorsensor.door.rack.cabinet.profinet_name+', Rack: '+self.doorsensor.door.rack.name + ', Door: '+ self.doorsensor.door.direction)

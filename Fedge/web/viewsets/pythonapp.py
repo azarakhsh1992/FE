@@ -12,7 +12,7 @@ from ..mainmodels.equipment.coolingAlarm import ACM, ACMValue
 from..mainmodels.equipment.devices import Device
 from django.views.decorators.csrf import csrf_exempt
 from ..mainmodels.requests.requests import Request
-from ..mainmodels.cabinetlevel.doors import Door
+from ..mainmodels.cabinetlevel.doors import Door, DoorStatus
 from ..mainmodels.cabinetlevel.cabinets import Cabinet,Rack
 from ..mainmodels.functionalities.mqtt_publish import send_mqtt_led
 from ..mainmodels.functionalities.door_status import led_status_find
@@ -106,11 +106,34 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 if device_moduletype == "Door Sensor":
                     try:
                         doorsensor = DoorSensor.objects.get(profinet_name=profinet_name_data)
-                        value=data["value"]
+                        doorsensorvalue=data["value"]
                         door = doorsensor.door
+                        current_time=data["Time"] 
                         if data ["validity"] == "True":
-                            DoorsensorValue.objects.create(doorsensor=doorsensor,value=value,valid=True, time = data["Time"])
-                            if value=="open":
+                            
+                            DoorsensorValue.objects.create(doorsensor=doorsensor,value=doorsensorvalue,valid=True, time = current_time)
+                            try:
+                                door_status = DoorStatus.objects.filter(door=door,status=DoorStatus.Status.No_Data).latest("time")
+                            except DoorStatus.DoesNotExist:
+                                door_status = None
+                            try:
+                                latchsensor = LatchSensor.objects.get(door=door)
+                                latchsensorvalue = LatchSensorValue.objects.filter(latchsensor=latchsensor, valid=True).latest("time").value
+                            except LatchSensorValue.DoesNotExist:
+                                latchsensorvalue = LatchSensorValue.Value.No_Data
+                                
+                            if door_status is not None:
+                                if door_status.status_door_sensor==door_status.StatusDoorSensor.No_Data:
+                                    door_status.status_door_sensor=doorsensorvalue
+                                    door_status.status_latch_sensor=latchsensorvalue
+                                    door_status.time=current_time
+                                    door_status.save()
+                                else:
+                                    DoorStatus.objects.create(door=door,status_door_sensor=doorsensorvalue,status_latch_sensor=latchsensorvalue,time=current_time)
+                            else:
+                                DoorStatus.objects.create(door=door,status_door_sensor=doorsensorvalue,status_latch_sensor=latchsensorvalue,time=current_time)
+                                
+                            if doorsensorvalue=="open":
                                 try:
                                     led = LED.objects.get(door =door)
                                     current_led_value = led_status_find(door=door)
@@ -119,7 +142,7 @@ class MqttMiddleware(viewsets.ModelViewSet):
                                             ,delayed_value=LedValueCases.objects.get(description="default_open").value)
                                 except:
                                     pass
-                            elif value == "close":
+                            elif doorsensorvalue == "close":
                                 try:
                                     led = LED.objects.get(door =door)
                                     current_led_value = led_status_find(door=door)
@@ -133,7 +156,7 @@ class MqttMiddleware(viewsets.ModelViewSet):
                             
                             return Response(response, status=status.HTTP_200_OK)
                         elif data ["validity"] == "False":
-                            DoorsensorValue.objects.create(doorsensor=doorsensor,value=value,valid=False, time = data["Time"])
+                            DoorsensorValue.objects.create(doorsensor=doorsensor,value=doorsensorvalue,valid=False, time = current_time)
                             response = {"message": "success: Validity:False"}
                             return Response(response, status=status.HTTP_200_OK)
                     except:
@@ -186,15 +209,39 @@ class MqttMiddleware(viewsets.ModelViewSet):
         ########################################################################
                 elif device_moduletype == "Latch Sensor":
                     try:
-                        this_latchsensor = LatchSensor.objects.get(profinet_name=profinet_name_data)
+                        latchsensor = LatchSensor.objects.get(profinet_name=profinet_name_data)
+                        latchsensorvalue=data["value"]
+                        door = latchsensor.door
+                        current_time=data["Time"] 
                         if data ["validity"] == "True":
-                            LatchSensorValue.objects.create(latchsensor=this_latchsensor,value=data["value"], time = data["Time"], valid=True)
+                            LatchSensorValue.objects.create(latchsensor=latchsensor,value=latchsensorvalue, time = current_time, valid=True)
+                            try:
+                                door_status = DoorStatus.objects.filter(door=door,status=DoorStatus.Status.No_Data).latest("time")
+                            except DoorStatus.DoesNotExist:
+                                door_status = None
+                            try:
+                                doorsensor = DoorSensor.objects.get(door=door)
+                                doorsensorvalue = DoorsensorValue.objects.filter(doorsensor=doorsensor, valid=True).latest("time").value
+                            except DoorsensorValue.DoesNotExist:
+                                doorsensorvalue = DoorsensorValue.Value.No_Data
+                                
+                            if door_status is not None:
+                                if door_status.status_latch_sensor==door_status.StatusLatchSensor.No_Data:
+                                    door_status.status_latch_sensor=latchsensorvalue
+                                    door_status.status_door_sensor=doorsensorvalue
+                                    door_status.time=current_time
+                                    door_status.save()
+                                else:
+                                    DoorStatus.objects.create(door=door,status_door_sensor=doorsensorvalue,status_latch_sensor=latchsensorvalue,time=current_time)
+                            else:
+                                DoorStatus.objects.create(door=door,status_door_sensor=doorsensorvalue,status_latch_sensor=latchsensorvalue,time=current_time)
                             response = {"message": "success"}
                             return Response(response, status=status.HTTP_200_OK)
                         elif data["validity"] == "False":
-                            LatchSensorValue.objects.create(latchsensor=this_latchsensor,value=data["value"],valid=False, time = data["Time"])
+                            LatchSensorValue.objects.create(latchsensor=latchsensor,value=data["value"],valid=False, time = current_time)
                             response = {"message": "success, Validity:False"}
-                            return Response(response, status=status.HTTP_200_OK)
+                        
+                        return Response(response, status=status.HTTP_200_OK)
                     except:
                         response = {"message": "Data does not match"}
                         return Response(response, status=status.HTTP_400_BAD_REQUEST)

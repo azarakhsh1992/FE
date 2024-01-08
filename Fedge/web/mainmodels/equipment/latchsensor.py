@@ -1,8 +1,10 @@
+from collections.abc import Iterable
 from django.db import models
 from .plc import PLC
 from ..cabinetlevel.doors import Door
 from ..cabinetlevel.cabinets import Rack
-from ..equipment.devices import Device, TimescaleModel
+from ..equipment.devices import Device
+from ..timescale import TimescaleModel
 from django.core.exceptions import ValidationError
 
 
@@ -84,7 +86,11 @@ class LatchSensor(Device):
 
 class LatchSensorValue(TimescaleModel):
     latchsensor = models.ForeignKey(LatchSensor, on_delete=models.CASCADE, related_name='latchsensorvalue')
-    value = models.BooleanField(null=True)
-    valid=models.BooleanField(null=True)
+    class Value(models.TextChoices):
+        Open = "open"
+        Close = "close"
+        No_Data = "No Data"
+    value = models.CharField(choices=Value.choices,max_length=8, default=Value.No_Data)
+    valid=models.BooleanField(null=True,default=True)
     def __str__(self):
         return ('Cabinet: '+self.latchsensor.door.rack.cabinet.profinet_name+', Rack: '+self.latchsensor.door.rack.name + ', Door: '+ self.latchsensor.door.direction)

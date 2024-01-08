@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .mainmodels.cabinetlevel.cabinets import Cabinet, Rack
 from .mainmodels.userrelated.users import UserProfile
-from .mainmodels.cabinetlevel.doors import Door
+from .mainmodels.cabinetlevel.doors import Door,DoorStatus
 from .mainmodels.equipment.temperaturesensordevice import TemperatureSensor, TemperatureSensorValue
 from .mainmodels.equipment.led import LED, LedValue, LedValueCases
 from .mainmodels.equipment.latch import Latch, LatchValue
@@ -30,8 +30,20 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Door)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ("id","direction","rack","qr")
-    fields = ("direction", "rack")
+    list_display = ("id","direction","rack","qr","get_latest_status")
+    fields = ("direction", "qr","rack")
+    def get_latest_status(self, obj):
+        try:
+            latest_value = DoorStatus.objects.filter(door=obj).latest('time')
+            return latest_value.status
+        except DoorStatus.DoesNotExist:
+            return "No Data"
+    get_latest_status.short_description = "Last status"
+
+@admin.register(DoorStatus)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("door","status","status_door_sensor","status_latch_sensor","time")
+    fields = ("door","status_door_sensor","status_latch_sensor","time")
 ########################PLC and Device Model########################
 @admin.register(PLC)
 class UserProfileAdmin(admin.ModelAdmin):

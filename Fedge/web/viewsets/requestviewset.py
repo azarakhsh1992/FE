@@ -7,7 +7,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from ..mainmodels.cabinetlevel.cabinets import Cabinet
-from ..mainmodels.cabinetlevel.doors import Door
+from ..mainmodels.cabinetlevel.doors import Door, DoorStatus
 from ..mainmodels.equipment.plc import PLC
 from ..mainmodels.equipment.latch import Latch
 from ..mainmodels.equipment.led import LED,LedValueCases
@@ -22,15 +22,17 @@ from ..mainmodels.functionalities.door_status import led_status_find
 from ..mainmodels.userrelated.users import UserLog
 import json
 import ast
+from ..mainmodels.equipment.doorsensor import DoorSensor, DoorsensorValue
+from ..mainmodels.equipment.latchsensor import LatchSensor,LatchSensorValue
 
 class RequestViewset(viewsets.ModelViewSet):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes=[IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes=[IsAuthenticated]
 
-    @action(methods=['POST'], detail=False, authentication_classes = [TokenAuthentication], permission_classes=[IsAuthenticated])
-    # @action(methods=['POST'], detail=False)
+    # @action(methods=['POST'], detail=False, authentication_classes = [TokenAuthentication], permission_classes=[IsAuthenticated])
+    @action(methods=['POST'], detail=False)
     def access_request(self, request):
         user = request.data['user']
         userobj = User.objects.get(username=user)
@@ -219,5 +221,96 @@ class RequestViewset(viewsets.ModelViewSet):
         else:
             response = {'message': 'this user does not exist'}
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
-
-
+    @action(methods=['POST'],detail=False)
+    def test (self, request):
+        try:
+            # doorsensor = DoorSensor.objects.get(profinet_name=request.data["ds"])
+            # doorsensorvalue = request.data["dsv"] 
+            latchsensorvalue = request.data["lsv"]
+            latchsensor = LatchSensor.objects.get(profinet_name=request.data["ls"])
+            # dsvc=DoorsensorValue.objects.create(doorsensor=doorsensor,value=doorsensorvalue,\
+            #     valid=True,time=timezone.now())
+            lsvc=LatchSensorValue.objects.create(latchsensor=latchsensor,value=latchsensorvalue,\
+                valid=True,time=timezone.now())
+            door=latchsensor.door
+            
+            DoorStatus.objects.create(door=door, status_latch_sensor=lsvc.value,\
+                time=timezone.now())
+            response = {'message': ' submitted successfully'}
+            return Response(response,status=status.HTTP_200_OK)
+        except:
+            response = {'message': 'not successful'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(methods=['POST'],detail=False)
+    def test2 (self, request):
+        try:
+            current_time=timezone.now()##time
+            latchsensor = LatchSensor.objects.get(profinet_name=request.data["ls"])###data
+            latchsensorvalue = request.data["lsv"]##data
+            door=latchsensor.door
+            lsvc=LatchSensorValue.objects.create(latchsensor=latchsensor,value=latchsensorvalue,\
+                valid=True,time=current_time)
+            try:
+                door_status = DoorStatus.objects.filter(door=door,status=DoorStatus.Status.No_Data).latest("time")
+            except DoorStatus.DoesNotExist:
+                door_status = None
+            try:
+                doorsensor = DoorSensor.objects.get(door=door)
+                doorsensorvalue = DoorsensorValue.objects.filter(doorsensor=doorsensor, valid=True).latest("time").value
+            except DoorsensorValue.DoesNotExist:
+                doorsensorvalue = DoorsensorValue.Value.No_Data
+                
+            if door_status is not None:
+                if door_status.status_latch_sensor==door_status.StatusLatchSensor.No_Data:
+                    door_status.status_latch_sensor=latchsensorvalue
+                    door_status.status_door_sensor=doorsensorvalue
+                    door_status.time=current_time
+                    door_status.save()
+                    response = {'message': ' submitted successfully'}
+                else:
+                    DoorStatus.objects.create(door=door,status_latch_sensor=latchsensorvalue,status_door_sensor=doorsensorvalue,time=current_time)
+                    response = {'message': ' submitted successfully'}
+            else:
+                DoorStatus.objects.create(door=door,status_latch_sensor=latchsensorvalue,status_door_sensor=doorsensorvalue,time=current_time)
+                response = {'message': ' submitted successfully'}
+            response = {'message': ' submitted successfully'}
+            return Response(response,status=status.HTTP_200_OK)
+        except:
+            response = {'message': 'not successful'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(methods=['POST'],detail=False)
+    def test3 (self, request):
+        try:
+            current_time=timezone.now()##time
+            doorsensor = DoorSensor.objects.get(profinet_name=request.data["ds"])###data
+            doorsensorvalue = request.data["dsv"]##data
+            door=doorsensor.door
+            lsvc=DoorsensorValue.objects.create(doorsensor=doorsensor,value=doorsensorvalue,\
+                valid=True,time=current_time)
+            try:
+                door_status = DoorStatus.objects.filter(door=door,status=DoorStatus.Status.No_Data).latest("time")
+            except DoorStatus.DoesNotExist:
+                door_status = None
+            try:
+                latchsensor = LatchSensor.objects.get(door=door)
+                latchsensorvalue = LatchSensorValue.objects.filter(latchsensor=latchsensor, valid=True).latest("time").value
+            except LatchSensorValue.DoesNotExist:
+                latchsensorvalue = LatchSensorValue.Value.No_Data
+                
+            if door_status is not None:
+                if door_status.status_door_sensor==door_status.StatusDoorSensor.No_Data:
+                    door_status.status_door_sensor=doorsensorvalue
+                    door_status.status_latch_sensor=latchsensorvalue
+                    door_status.time=current_time
+                    door_status.save()
+                else:
+                    DoorStatus.objects.create(door=door,status_door_sensor=doorsensorvalue,status_latch_sensor=latchsensorvalue,time=current_time)
+            else:
+                DoorStatus.objects.create(door=door,status_door_sensor=doorsensorvalue,status_latch_sensor=latchsensorvalue,time=current_time)
+            response = {'message': ' submitted successfully'}
+            return Response(response,status=status.HTTP_200_OK)
+        except:
+            response = {'message': 'not successful'}
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
