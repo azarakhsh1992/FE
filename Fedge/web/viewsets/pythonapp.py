@@ -8,6 +8,7 @@ from..mainmodels.equipment.latch import Latch,LatchValue
 from..mainmodels.equipment.latchsensor import LatchSensor,LatchSensorValue
 from..mainmodels.equipment.led import LED,LedValue, LedValueCases
 from..mainmodels.equipment.button import DoorButton,ButtonValue
+from ..mainmodels.equipment.coolingAlarm import ACM, ACMValue
 from..mainmodels.equipment.devices import Device
 from django.views.decorators.csrf import csrf_exempt
 from ..mainmodels.requests.requests import Request
@@ -96,7 +97,6 @@ class MqttMiddleware(viewsets.ModelViewSet):
     def dido(self, request):
         # response_data={data["value"],data["validity"],data["Time"]}
         data = request.data
-        
         if "profinet_name" and "value" and "validity" and "Time" in data:
             try:
                 device_moduletype= Device.objects.get(profinet_name=data["profinet_name"]).module_type
@@ -107,23 +107,24 @@ class MqttMiddleware(viewsets.ModelViewSet):
                     try:
                         doorsensor = DoorSensor.objects.get(profinet_name=profinet_name_data)
                         value=data["value"]
+                        door = doorsensor.door
                         if data ["validity"] == "True":
                             DoorsensorValue.objects.create(doorsensor=doorsensor,value=value,valid=True, time = data["Time"])
                             if value=="open":
                                 try:
-                                    led = LED.objects.get(door =doorsensor.door)
-                                    current_led_value = LedValue.objects.filter(led=led,valid=True).latest("time").value
-                                    send_mqtt_led(led=LED.objects.get(door=door),\
-                                        value=current_led_value, delay=3\
+                                    led = LED.objects.get(door =door)
+                                    current_led_value = led_status_find(door=door)
+                                    send_mqtt_led(led=led,\
+                                        value=current_led_value, delay=0\
                                             ,delayed_value=LedValueCases.objects.get(description="default_open").value)
                                 except:
                                     pass
-                            elif value == "closed":
+                            elif value == "close":
                                 try:
-                                    led = LED.objects.get(door =doorsensor.door)
-                                    current_led_value = LedValue.objects.filter(led=led,valid=True).latest("time").value
-                                    send_mqtt_led(led=LED.objects.get(door=door),\
-                                        value=current_led_value, delay=3\
+                                    led = LED.objects.get(door =door)
+                                    current_led_value = led_status_find(door=door)
+                                    send_mqtt_led(led=led,\
+                                        value=current_led_value, delay=0\
                                             ,delayed_value=LedValueCases.objects.get(description="default").value)
                                 except:
                                     pass
@@ -139,6 +140,34 @@ class MqttMiddleware(viewsets.ModelViewSet):
                         response = {"message": "Data does not match"}
                         return Response(response, status=status.HTTP_400_BAD_REQUEST)
         ################################################################
+                elif device_moduletype == "Door Button":
+                    try:
+                        doorbtn = DoorButton.objects.get(profinet_name=profinet_name_data)
+                        print(doorbtn.bmk)
+                        door = doorbtn.door
+                        if data ["validity"] == "True":
+                            value=ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"], time = data["Time"], valid=True)
+                            print(value.value)
+                            #This will check for existing request for this door
+                            try:
+                                ### Here just checks for the request in the last one minute
+                                current_time = timezone.now()
+                                start_time = current_time - timezone.timedelta(minutes=1)
+                                request = Request.objects.filter(door= door, sent_to_frontend=False,cancelled_by_frontend=False,button_pushed=False, access=True, time__range=[start_time,current_time]).latest("time")
+                                request.button_pushed=True
+                                request.save()
+                                response = {"message": "success"}
+                            except:
+                                response = {"message": "success, no existing request found"}
+                            return Response(response, status=status.HTTP_200_OK)
+                        elif data ["validity"] == "False":
+                            ButtonValue.objects.create(doorbutton=doorbtn, valid=False, time = data["Time"],value=data["value"])
+                            response = {"message": "success, Validity:False"}
+                            return Response(response, status=status.HTTP_200_OK)
+                    except:
+                        response = {"message": "Data does not match"}
+                        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+        ####################################################################
                 elif device_moduletype == "Latch":
                     
                     try:
@@ -164,6 +193,22 @@ class MqttMiddleware(viewsets.ModelViewSet):
                             return Response(response, status=status.HTTP_200_OK)
                         elif data["validity"] == "False":
                             LatchSensorValue.objects.create(latchsensor=this_latchsensor,value=data["value"],valid=False, time = data["Time"])
+                            response = {"message": "success, Validity:False"}
+                            return Response(response, status=status.HTTP_200_OK)
+                    except:
+                        response = {"message": "Data does not match"}
+                        return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                    
+        ##########################################################################
+                elif device_moduletype == "AC Alarm Sensor":
+                    try:
+                        this_acm = ACM.objects.get(profinet_name=profinet_name_data)
+                        if data ["validity"] == "True":
+                            ACMValue.objects.create(acm=this_acm,value=data["value"], time = data["Time"], valid=True)
+                            response = {"message": "success"}
+                            return Response(response, status=status.HTTP_200_OK)
+                        elif data["validity"] == "False":
+                            ACMValue.objects.create(acm=this_acm,value=data["value"],valid=False, time = data["Time"])
                             response = {"message": "success, Validity:False"}
                             return Response(response, status=status.HTTP_200_OK)
                     except:
@@ -208,35 +253,6 @@ class MqttMiddleware(viewsets.ModelViewSet):
                 #         return Response(response, status=status.HTTP_400_BAD_REQUEST)
         ##########################################################################
 
-                elif device_moduletype == "Door Button":
-                    try:
-                        doorbtn = DoorButton.objects.get(profinet_name=profinet_name_data)
-                        door = doorbtn.door
-                        if data ["validity"] == "True":
-                            ButtonValue.objects.create(doorbutton=doorbtn,value=data["value"], time = data["Time"], valid=True)
-                            #This will check for existing request for this door
-                            try:
-                                ### Here just checks for the request in the last one minute
-                                current_time = timezone.now()
-                                start_time = current_time - timezone.timedelta(minutes=1)
-                                request = Request.objects.filter(door= door, sent_to_frontend=False,cancelled_by_frontend=False,button_pushed=False, access=True, time__range=[start_time,current_time]).latest("time")
-                            except:
-                                pass
-                            if request is not None:
-                                request.button_pushed=True
-                                request.save()
-                            else:
-                                pass
-                            response = {"message": "success"}
-                            return Response(response, status=status.HTTP_200_OK)
-                        elif data ["validity"] == "False":
-                            ButtonValue.objects.create(doorbutton=doorbtn, valid=False, time = data["Time"],value=data["value"])
-                            response = {"message": "success, Validity:False"}
-                            return Response(response, status=status.HTTP_200_OK)
-                    except:
-                        response = {"message": "Data does not match"}
-                        return Response(response, status=status.HTTP_400_BAD_REQUEST)
-        ####################################################################
                 else:
                     response = {"message": "module not found in the database"}
                     return Response(response, status=status.HTTP_400_BAD_REQUEST)

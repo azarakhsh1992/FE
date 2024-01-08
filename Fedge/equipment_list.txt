@@ -43,10 +43,10 @@ Door sensors: BGE
 2. Rack_Edge_A_Rear: BGE2
 3. Rack_Edge_B_Front: BGE3
 4. Rack_Edge_B_Rear: BGE4
-5. Rack_AC_Front: BGE5
-6. Rack_AC_Rear: BGE6
-7. Rack_Network: BGE7
-8. Rack_Energy: BGE8
+5. Rack_Network: BGE5
+6. Rack_Energy: BGE6
+7. Rack_AC_Front: BGE7
+8. Rack_AC_Rear: BGE8
 
 
 
@@ -56,10 +56,10 @@ Latch sensors: BGT
 2. Rack_Edge_A_Rear:BGT2
 3. Rack_Edge_B_Front:BGT3
 4. Rack_Edge_B_Rear:BGT4
-5. Rack_AC_Front:BGT5
-6. Rack_AC_Rear:BGT6
-7. Rack_Network:BGT7
-8. Rack_Energy:BGT8
+5. Rack_Network:BGT5
+6. Rack_Energy:BGT6
+7. Rack_AC_Front:BGT7
+8. Rack_AC_Rear:BGT8
 
 
 
@@ -69,10 +69,10 @@ Door buttons: SF
 2. Rack_Edge_A_Rear:SF02
 3. Rack_Edge_B_Front:SF03
 4. Rack_Edge_B_Rear:SF04
-5. Rack_AC_Front:SF05
-6. Rack_AC_Rear:SF06
-7. Rack_Network:SF07
-8. Rack_Energy:SF08
+5. Rack_Network:SF05
+6. Rack_Energy:SF06
+7. Rack_AC_Front:SF07
+8. Rack_AC_Rear:SF08
 
 
 Latches: MB
@@ -81,10 +81,10 @@ Latches: MB
 2. Rack_Edge_A_Rear:MB02
 3. Rack_Edge_B_Front:MB03
 4. Rack_Edge_B_Rear:MB04
-5. Rack_AC_Front:MB05
-6. Rack_AC_Rear:MB06
-7. Rack_Network:MB07
-8. Rack_Energy:MB08
+5. Rack_Network:MB05
+6. Rack_Energy:MB06
+7. Rack_AC_Front:MB07
+8. Rack_AC_Rear:MB08
 
 
 LEDs: PF
@@ -93,10 +93,10 @@ LEDs: PF
 2. Rack_Edge_A_Rear:PF02
 3. Rack_Edge_B_Front:PF03
 4. Rack_Edge_B_Rear:PF04
-5. Rack_AC_Front:PF05
-6. Rack_AC_Rear:PF06
-7. Rack_Network:PF07
-8. Rack_Energy:PF08
+5. Rack_Network:PF05
+6. Rack_Energy:PF06
+7. Rack_AC_Front:PF07
+8. Rack_AC_Rear:PF08
 
 Cooling system alarm sensors: BG
 1. ACM1: BG01

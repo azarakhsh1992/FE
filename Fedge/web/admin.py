@@ -7,6 +7,7 @@ from .mainmodels.equipment.led import LED, LedValue, LedValueCases
 from .mainmodels.equipment.latch import Latch, LatchValue
 from .mainmodels.equipment.plc import PLC
 from .mainmodels.equipment.doorsensor import DoorSensor, DoorsensorValue
+from .mainmodels.equipment.coolingAlarm import ACM, ACMValue
 from .mainmodels.equipment.latchsensor import LatchSensor, LatchSensorValue
 from .mainmodels.equipment.button import DoorButton, ButtonValue
 from .mainmodels.userrelated.groupofshifts import EmployeeGroup,Shifts, ShiftAssignment
@@ -57,6 +58,20 @@ class UserProfileAdmin(admin.ModelAdmin):
             latest_value = TemperatureSensorValue.objects.filter(temperaturesensor=obj).latest('time')
             return latest_value.valid
         except TemperatureSensorValue.DoesNotExist:
+            return "No Data"
+    get_latest_validity.short_description = "Latest Data Validity"
+    
+@admin.register(ACM)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("id", "plc", "geraet","bmk", "serial_number", "manufacturer", "profinet_name"
+                    , "module_type", "io_module", "port",
+                    "measuring_environment","rack","get_latest_validity")
+    fields = ("plc", "bmk", "geraet", "serial_number", "manufacturer", "device_io_module", "device_port" ,"measuring_environment","rack")
+    def get_latest_validity(self, obj):
+        try:
+            latest_value = ACMValue.objects.filter(acm=obj).latest('time')
+            return latest_value.valid
+        except ACMValue.DoesNotExist:
             return "No Data"
     get_latest_validity.short_description = "Latest Data Validity"
 
@@ -200,6 +215,16 @@ class UserProfileAdmin(admin.ModelAdmin):
                     ,"humidvalue","valid")
     fields = ("time","temperaturesensor", "tempvalue", "tempvalue_min", "tempvalue_max"
                     , "humidvalue", "valid")
+    def custom_time(self, obj):
+        return obj.time.strftime('%Y-%m-%d %H:%M:%S.%f')
+    custom_time.short_description = "Date and Time"
+    def rack(self, obj):
+        return obj.__str__()
+
+@admin.register(ACMValue)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("custom_time","acm","rack","value","valid")
+    fields = ("time","acm","value", "valid")
     def custom_time(self, obj):
         return obj.time.strftime('%Y-%m-%d %H:%M:%S.%f')
     custom_time.short_description = "Date and Time"

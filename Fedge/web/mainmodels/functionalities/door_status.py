@@ -118,7 +118,7 @@ def Check_door_status(door):
             response = {"Error_ds1":"Door sensor data not available."}
             
         if sensor_validity:
-            if sensor_data == "closed":
+            if sensor_data == "close":
                 access= True
                 response = {"Message_ds":"The door is closed and available to be opened"}
             elif sensor_data == "open":
@@ -136,24 +136,25 @@ def Check_door_status(door):
     return access, response
 
 def led_status_find(door):
+    print("from here")
     current_time=timezone.now()
     response ={}
-    led_value = LedValueCases.objects.get(description="door_not_locked").value
     latest_data=None
     try:
         door_sensor = DoorSensor.objects.get(door=door)
-        latest_data = DoorsensorValue.objects.filter(doorsensordevice=door_sensor, valid=True, time_lte=current_time).latest('time')
+        latest_data = DoorsensorValue.objects.filter(doorsensor=door_sensor, valid=True, time__lte=current_time).latest('time')
     except:
         response = {"Error_lf":"No sensor or valid sensor data found"}
     if latest_data is not None:
         value = latest_data.value
-        if value == "closed":
+        if value == "close":
             led_value = LedValueCases.objects.get(description="default").value
             response = {"Message_lf":"door is closed"}
         elif value == "open":
             led_value = LedValueCases.objects.get(description="default_open").value
             response = {"Message_lf":"door is open"}
     else:
+        led_value = LedValueCases.objects.get(description="door_not_locked").value
         response = {"Error_lf":"No data available to find the signal lamp"}
     print(led_value,response)
     return led_value

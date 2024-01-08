@@ -40,6 +40,7 @@ class RequestViewset(viewsets.ModelViewSet):
             cabinet = door.rack.cabinet
             rack = door.rack
             access, accessresponse = access_checker(user=userobj, door=door)
+            
             if access:
                 eventreq = Request.objects.create(user=userobj, cabinet=cabinet, door=door, rack=rack,\
                     status="Access granted - Door was not opened",access=True,\
@@ -53,7 +54,8 @@ class RequestViewset(viewsets.ModelViewSet):
                 try:
                     led = LED.objects.get(door=door)
                     current_led_value = led_status_find(door=door)
-                    latch_published_status, response1=send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value,delay=3,delayed_value=current_led_value)
+                    latch_published_status, response1=send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value,delay=0,delayed_value=\
+                        LedValueCases.objects.get(description="wait_button").value)
                     
                 except:
                     response1 = {'Error_p2.3': 'could not turn on the signal lamp'}
@@ -76,7 +78,7 @@ class RequestViewset(viewsets.ModelViewSet):
                     led = LED.objects.get(door=door)
                     current_led_value = led_status_find(door=door)
                     latch_published_status, response1=send_mqtt_led(led=led, value=LedValueCases.objects.get(description="access_denied").value, delay=2, delayed_value=current_led_value)
-                    
+                    print(current_led_value)
                 except:
                     response1 = {'Error_p2.3': 'could not turn on the signal lamp'}
                 response['message'].update(response1)
@@ -127,13 +129,13 @@ class RequestViewset(viewsets.ModelViewSet):
                 return Response(response, status=status.HTTP_200_OK)
             else:
                 response = {'Message': 'Waiting! Please push the Button'}
-                try:
-                    led = LED.objects.get(door=door)
-                    current_led_value = led_status_find(door=door)
-                    led_published_status, response2 = send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value,\
-                        delay=2,delayed_value=current_led_value)
-                except:
-                    response2={'message': 'no signal lamp found'}
+                # try:
+                #     led = LED.objects.get(door=door)
+                #     current_led_value = led_status_find(door=door)
+                #     led_published_status, response2 = send_mqtt_led(led=led, value=LedValueCases.objects.get(description="wait_button").value,\
+                #         delay=2,delayed_value=current_led_value)
+                # except:
+                #     response2={'message': 'no signal lamp found'}
                 return Response(response, status=status.HTTP_200_OK)
         except:
             response = {'message': 'this request does not exist.'}

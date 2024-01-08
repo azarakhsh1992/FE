@@ -127,7 +127,7 @@ def access_shift(user):
 
     if current_day== 5 or current_day == 6:
         access = False
-        response = "Today is not a working day. "
+        response = {"Message_s":"Today is not a working day. "}
     
     elif current_user_shift =="Early":
         if early_shift:
@@ -208,11 +208,19 @@ def access_checker(user, door):
             access = False
             #TODO: a log that gets the data of cabinet, rack, door, user, response, datetime that saves into another model
         
+        print(response_shift)
+        print(door_status_response)
+        print(role_response)
         response.update(door_status_response)
         response.update(role_response)
         response.update(response_bereich)
-        response.update( response_shift)
+        response.update(response_shift)
         response.update(is_safe_response)
+        print(door_access)
+        print(shift_access)
+        print(bereich_access)
+        print(is_safe_access)
+        print(door_status_access)
     else:
         access = False
         response = {"Error":"no door or user found"}

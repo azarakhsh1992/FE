@@ -21,7 +21,7 @@ def send_mqtt_latch(latch,value,delay,delayed_value):
     topic =''
     message=''
     sent= False
-    current_time= timezone.now()
+    current_time = timezone.now().time()
     try:
         latch = Latch.objects.get(pk=latch.pk)
         profinet_name = latch.profinet_name
@@ -53,17 +53,17 @@ def send_mqtt_latch(latch,value,delay,delayed_value):
 
 def send_mqtt_led(led,value,delay,delayed_value):
     
-    try:
-        broker = os.environ["BROKER_IP"]
-    except:
-        broker="192.168.137.1"
-        
-    # broker='192.168.1.1'
+    # try:
+    #     broker = os.environ["BROKER_IP"]
+    # except:
+    #     broker="192.168.137.1"
+    print("thihsish")
+    broker='192.168.137.1'
     profinet_name=''
     topic =''
     message=''
     sent= False
-    current_time= timezone.now()
+    current_time = timezone.now().time()
 
     try:
         led = LED.objects.get(pk=led.pk)
