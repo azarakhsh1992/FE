@@ -140,6 +140,7 @@ def led_status_find(door):
     current_time=timezone.now()
     response ={}
     latest_data=None
+        #TODO: here must the DoorStatus be considered
     try:
         door_sensor = DoorSensor.objects.get(door=door)
         latest_data = DoorsensorValue.objects.filter(doorsensor=door_sensor, valid=True, time__lte=current_time).latest('time')
